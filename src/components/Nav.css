@@ -1,0 +1,43 @@
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  height: var(--nav-h); padding-inline: var(--gut);
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  backdrop-filter: saturate(150%) blur(12px);
+  -webkit-backdrop-filter: saturate(150%) blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.4s var(--ease), background 0.4s var(--ease);
+}
+.nav.stuck { border-bottom-color: var(--line); }
+.brandmark { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.brandmark .rv { font-size: 18px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); }
+.brandmark .rv em { font-style: normal; color: var(--brass-2); }
+.brandmark .divider { width: 1px; height: 15px; background: var(--line-2); transform: translateY(2px); }
+.brandmark .dept { font-size: 9.5px; color: var(--slate-3); white-space: nowrap; }
+
+.nav-right { display: flex; align-items: center; gap: 22px; }
+.nav-link { position: relative; color: var(--slate-2); transition: color 0.25s var(--ease); }
+.nav-link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -5px; height: 1.5px;
+  background: var(--brass); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease);
+}
+.nav-link:hover { color: var(--ink); }
+.nav-link:hover::after { transform: scaleX(1); }
+
+.theme-btn {
+  width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--line-2);
+  background: transparent; color: var(--slate-2); cursor: pointer; font-size: 14px;
+  display: grid; place-items: center; transition: border-color 0.25s, color 0.25s, transform 0.25s;
+}
+.theme-btn:hover { color: var(--ink); border-color: var(--slate); transform: translateY(-1px); }
+
+.nav-cta { padding: 10px 16px; }
+
+@media (max-width: 860px) {
+  .brandmark .divider, .brandmark .dept { display: none; }
+  .nav-link { display: none; }
+}
+@media (max-width: 520px) {
+  .nav-cta span.arrow { display: none; }
+  .nav-cta { padding: 10px 14px; }
+}

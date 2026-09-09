@@ -1,0 +1,6 @@
+.process-h { font-size: var(--step-3); color: var(--ink); margin-bottom: 44px; }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-top: 1px solid var(--line); }
+.step { padding: 26px 24px 30px 0; border-bottom: 1px solid var(--line); }
+.step-n { font-size: 38px; color: var(--brass); }
+.step-h { margin: 16px 0 8px; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+.step-p { margin: 0; font-size: 12.5px; line-height: 1.65; color: var(--slate-2); }

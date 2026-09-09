@@ -1,0 +1,39 @@
+import Eyebrow from "../ui/Eyebrow";
+import { useReveal } from "../../hooks/useReveal";
+import { useCountUp } from "../../hooks/useCountUp";
+import { STATS } from "../../data/placements";
+import "./Record.css";
+
+function StatTile({ s }) {
+  // count-up only for the plain integer tiles
+  const isInt = /^[\d,]+$/.test(s.v);
+  const target = isInt ? Number(s.v.replace(/,/g, "")) : 0;
+  const [ref, count] = useCountUp(target);
+  return (
+    <div className={`stat ${s.hero ? "stat-hero" : ""}`}>
+      <div className="stat-v num" ref={isInt ? ref : null}>
+        {isInt ? count : s.v}
+        {s.unit && <em>{s.unit}</em>}
+      </div>
+      <span className="stat-k mono">{s.k}</span>
+      <p className="stat-note">{s.note}</p>
+    </div>
+  );
+}
+
+export default function Record() {
+  const ref = useReveal();
+  return (
+    <section className="section record" id="record">
+      <div className="wrap">
+        <Eyebrow idx="01">The record</Eyebrow>
+        <h2 className="serif record-h">What a year at RVU actually produced.</h2>
+      </div>
+      <div className="wrap record-grid-wrap">
+        <div className="stat-grid reveal" ref={ref}>
+          {STATS.map((s) => <StatTile key={s.k} s={s} />)}
+        </div>
+      </div>
+    </section>
+  );
+}

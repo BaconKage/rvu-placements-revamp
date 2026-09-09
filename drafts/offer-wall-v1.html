@@ -1,0 +1,705 @@
+<title>The Offer Wall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  color-scheme: light;
+
+  --paper:#fbfaf7;
+  --paper-2:#f7f4ee;
+  --card:#ffffff;
+
+  --ink:#050a09;
+  --slate:#233039;
+  --slate-2:#3a4b57;
+  --slate-3:#6b7c88;
+  --slate-4:#a8b4bc;
+  --slate-5:#dde3e7;
+
+  --brass:#d0a863;
+  --brass-d:#a8823f;
+  --brass-dd:#6b5228;
+  --brass-l:#e3c896;
+  --brass-w:#f9f3e6;
+
+  --line:rgba(35,48,57,.13);
+  --line-2:rgba(35,48,57,.24);
+  --line-on-slate:rgba(240,226,198,.16);
+
+  --serif:'Playfair Display',Georgia,'Times New Roman',serif;
+  --sans:'Montserrat',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  --ease:cubic-bezier(.22,1,.36,1);
+  --gut:clamp(18px,4.4vw,64px);
+  --maxw:1240px;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+a{color:inherit}
+:focus-visible{outline:2px solid var(--brass-d);outline-offset:3px;border-radius:2px}
+
+/* ---------- type primitives ---------- */
+.mono{
+  font-family:var(--mono);
+  font-size:10.5px;
+  font-weight:500;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--slate-3);
+}
+.display{
+  font-family:var(--serif);
+  font-weight:500;
+  letter-spacing:-.026em;
+  line-height:1.04;
+  margin:0;
+  text-wrap:balance;
+}
+.lede{
+  color:var(--slate-2);
+  max-width:62ch;
+  font-size:15.5px;
+  line-height:1.75;
+  margin:0;
+}
+.num{
+  font-family:var(--serif);
+  font-weight:500;
+  letter-spacing:-.035em;
+  font-variant-numeric:tabular-nums lining-nums;
+  color:var(--slate);
+  line-height:.92;
+}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gut)}
+
+/* ---------- nav ---------- */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:80;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;
+  padding:14px var(--gut);
+  background:rgba(251,250,247,.86);
+  backdrop-filter:saturate(150%) blur(10px);
+  -webkit-backdrop-filter:saturate(150%) blur(10px);
+  border-bottom:1px solid transparent;
+  transition:border-color .4s var(--ease);
+}
+.nav.stuck{border-bottom-color:var(--brass)}
+.brandmark{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brandmark .rv{
+  font-family:var(--serif);font-size:19px;font-weight:600;
+  letter-spacing:-.02em;color:var(--ink);
+}
+.brandmark .rv em{font-style:normal;color:var(--brass-d)}
+.brandmark .div{width:1px;height:15px;background:var(--line-2);transform:translateY(2px)}
+.brandmark .sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--slate-3);white-space:nowrap}
+.nav-cta{
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  padding:9px 15px;border:1px solid var(--slate);background:var(--slate);color:var(--brass-w);
+  border-radius:4px;text-decoration:none;white-space:nowrap;
+  transition:background .3s var(--ease),color .3s var(--ease);
+}
+.nav-cta:hover{background:var(--ink)}
+@media(max-width:620px){.brandmark .div,.brandmark .sub{display:none}}
+
+/* ---------- the wall ---------- */
+.wall{
+  position:relative;
+  height:clamp(560px,80svh,860px);
+  margin-top:0;
+  overflow:hidden;
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+  touch-action:none;
+  cursor:grab;
+}
+.wall.dragging{cursor:grabbing}
+.wall::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:
+    linear-gradient(to bottom,var(--paper) 0,rgba(251,250,247,0) 130px),
+    linear-gradient(to top,var(--paper) 0,rgba(251,250,247,0) 120px);
+}
+.plane{position:absolute;top:0;left:0;will-change:transform}
+
+.ocard{
+  position:absolute;
+  width:246px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:14px 15px 13px;
+  box-shadow:0 1px 1px rgba(35,48,57,.04),0 10px 22px -14px rgba(35,48,57,.30);
+  transition:box-shadow .35s var(--ease),transform .35s var(--ease),border-color .35s var(--ease);
+}
+.ocard .top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.ocard .sector{
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--slate-3);
+}
+.ocard .dot{width:5px;height:5px;border-radius:50%;background:var(--slate-4);flex:none}
+.ocard .amt{font-family:var(--serif);font-weight:500;font-size:29px;letter-spacing:-.03em;line-height:1;color:var(--slate);font-variant-numeric:tabular-nums}
+.ocard .amt small{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.14em;color:var(--slate-3);margin-left:5px;vertical-align:middle}
+.ocard .prog{font-size:11.5px;color:var(--slate-2);margin-top:7px;line-height:1.45}
+.ocard .slot{
+  margin-top:12px;padding-top:11px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--slate-4);
+}
+.ocard .slot span{
+  display:inline-block;padding:3px 8px;border:1px dashed var(--line-2);border-radius:3px;color:var(--slate-3);
+}
+.ocard.far{opacity:.5}
+.ocard.mid{opacity:.82}
+.ocard:hover{border-color:var(--brass);box-shadow:0 1px 1px rgba(35,48,57,.05),0 18px 34px -18px rgba(107,82,40,.45);opacity:1}
+
+.ocard.peak{background:var(--slate);border-color:var(--slate)}
+.ocard.peak .sector{color:var(--brass)}
+.ocard.peak .dot{background:var(--brass)}
+.ocard.peak .amt{color:var(--brass-w)}
+.ocard.peak .amt small{color:var(--brass)}
+.ocard.peak .prog{color:var(--slate-4)}
+.ocard.peak .slot{border-top-color:var(--line-on-slate);color:var(--brass)}
+.ocard.peak .slot span{border-style:solid;border-color:var(--brass);color:var(--brass-w)}
+
+/* hero copy over the wall */
+.wall-copy{
+  position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(680px,calc(100% - 2*var(--gut)));text-align:center;pointer-events:none;
+  transition:opacity .5s var(--ease);
+}
+.wall-copy::before{
+  content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:150%;height:230%;z-index:-1;border-radius:50%;
+  background:radial-gradient(closest-side,var(--paper) 0 52%,rgba(251,250,247,.86) 72%,rgba(251,250,247,0) 100%);
+}
+.wall.dragging .wall-copy{opacity:.1}
+.wall-copy h1{font-size:clamp(2.3rem,5.6vw,4.15rem)}
+.wall-copy .eyebrow{display:block;margin-bottom:18px}
+.wall-copy .lede{margin:18px auto 0;max-width:47ch;font-size:14.5px}
+
+.hint{
+  position:absolute;z-index:5;left:50%;bottom:24px;transform:translateX(-50%);
+  display:flex;align-items:center;gap:9px;white-space:nowrap;
+  padding:8px 14px;border:1px solid var(--line);border-radius:999px;
+  background:var(--card);box-shadow:0 6px 18px -12px rgba(35,48,57,.4);
+}
+.hint .pulse{width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none}
+@media(prefers-reduced-motion:no-preference){
+  .hint .pulse{animation:pulse 2.6s ease-out infinite}
+}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(208,168,99,.7)}70%{box-shadow:0 0 0 8px rgba(208,168,99,0)}100%{box-shadow:0 0 0 0 rgba(208,168,99,0)}}
+.hint button{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+  border:0;background:none;color:var(--brass-dd);cursor:pointer;padding:0 0 0 10px;
+  border-left:1px solid var(--line);
+}
+.hint button:hover{color:var(--ink)}
+
+.puck{
+  position:fixed;z-index:90;top:0;left:0;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+  width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;
+  background:var(--brass);color:var(--slate);
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;
+  opacity:0;transform:scale(.6);
+  transition:opacity .3s var(--ease),transform .3s var(--ease);
+}
+.puck.on{opacity:1;transform:scale(1)}
+@media(hover:none),(max-width:900px){.puck{display:none}}
+
+/* ---------- sections ---------- */
+section{padding-block:clamp(56px,8vw,104px)}
+.eyebrow-row{display:flex;align-items:baseline;gap:14px;margin-bottom:26px}
+.eyebrow-row .rule{flex:1;height:1px;background:var(--line)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:1px;background:var(--line);border-block:1px solid var(--line)}
+.stat{background:var(--paper);padding:26px 22px 24px}
+.stat .v{font-size:clamp(2.5rem,5vw,3.6rem)}
+.stat .v em{font-style:normal;font-size:.44em;letter-spacing:.04em;color:var(--slate-3);font-family:var(--mono);margin-left:6px}
+.stat .k{margin-top:12px;display:block}
+.stat .note{font-size:11.5px;color:var(--slate-3);margin-top:5px;line-height:1.5}
+.stat.hero-stat{background:var(--brass-w)}
+.stat.hero-stat .v{color:var(--brass-dd)}
+
+/* kinetic line */
+.kinetic{padding-block:clamp(64px,10vw,132px);text-align:center}
+.kin{font-family:var(--serif);font-weight:400;font-size:clamp(1.55rem,4.6vw,3.1rem);line-height:1.22;color:var(--ink);letter-spacing:-.02em;margin:0}
+.kin .w{display:inline-block;margin-right:calc(var(--k,1) * .30em)}
+.kin .w:last-child{margin-right:0}
+.kin .w.hi{color:var(--brass-d)}
+
+/* ledger band */
+.band{
+  margin-inline:var(--gut);
+  background:var(--slate);
+  border-radius:16px;
+  padding:clamp(34px,5.4vw,66px) clamp(20px,4vw,58px);
+  color:var(--brass-w);
+}
+.band .mono{color:var(--brass)}
+.band .eyebrow-row .rule{background:var(--line-on-slate)}
+.band h2{color:var(--brass-w);font-size:clamp(1.7rem,3.5vw,2.6rem)}
+.band .lede{color:var(--slate-4)}
+
+.ledger{width:100%;border-collapse:collapse;margin-top:34px;font-variant-numeric:tabular-nums}
+.ledger th{
+  text-align:left;font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--brass);padding:0 12px 10px 0;border-bottom:1px solid var(--brass);
+}
+.ledger th.r,.ledger td.r{text-align:right;padding-right:0}
+.ledger td{padding:11px 12px 11px 0;border-bottom:1px solid var(--line-on-slate);font-size:13.5px;color:var(--brass-w)}
+.ledger tr.school td{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);padding-top:26px;border-bottom-color:var(--line-on-slate)}
+.ledger tr.school:first-child td{padding-top:14px}
+.ledger tbody tr:not(.school):hover td{background:rgba(208,168,99,.09);color:#fff}
+.ledger td.r{font-family:var(--mono);font-size:13px;color:var(--slate-4)}
+.ledger tbody tr:not(.school):hover td.r{color:var(--brass)}
+.ledger tr.total td{border-bottom:0;border-top:1px solid var(--brass);padding-top:15px;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass)}
+.ledger tr.total td.r{font-size:15px;letter-spacing:0;color:var(--brass-w)}
+.table-scroll{overflow-x:auto}
+.band .foot{margin-top:20px;font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--slate-4);line-height:1.8}
+
+/* distribution */
+.dist{display:flex;flex-direction:column;gap:2px;margin-top:30px}
+.drow{display:grid;grid-template-columns:minmax(112px,158px) 1fr auto;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
+.drow:first-child{border-top:1px solid var(--line)}
+.drow .band-label{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--slate-2)}
+.drow .track{height:9px;background:var(--slate-5);border-radius:2px;overflow:hidden}
+.drow .fill{height:100%;background:var(--slate-2);border-radius:2px;transition:background .3s var(--ease)}
+.drow .cnt{font-family:var(--mono);font-size:12px;color:var(--slate-3);min-width:52px;text-align:right;font-variant-numeric:tabular-nums}
+.drow:hover .fill{background:var(--brass)}
+.drow:hover .cnt{color:var(--brass-dd)}
+.drow.peak-row .fill{background:var(--brass-d)}
+.foot-note{margin-top:18px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--slate-3);line-height:1.85;max-width:70ch}
+
+/* process — a real sequence, so it is numbered */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:0;margin-top:34px;border-top:1px solid var(--line)}
+.step{padding:24px 22px 26px 0;border-bottom:1px solid var(--line)}
+.step .n{font-family:var(--serif);font-size:34px;font-weight:500;color:var(--brass);line-height:1;letter-spacing:-.03em}
+.step h3{margin:14px 0 7px;font-size:14.5px;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+.step p{margin:0;font-size:12.5px;line-height:1.65;color:var(--slate-2)}
+
+/* footer */
+footer{border-top:1px solid var(--line);background:var(--paper-2);padding-block:44px}
+.f-grid{display:flex;flex-wrap:wrap;gap:34px;justify-content:space-between;align-items:flex-start}
+.f-grid address{font-style:normal;font-size:13px;color:var(--slate-2);line-height:1.75;max-width:30ch}
+.f-grid a{color:var(--brass-dd);text-decoration-color:var(--brass);text-underline-offset:3px}
+.disclaimer{margin-top:36px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;line-height:2;color:var(--slate-3);max-width:78ch}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+
+<nav class="nav" id="nav">
+  <div class="brandmark">
+    <span class="rv">R<em>V</em> University</span>
+    <span class="div"></span>
+    <span class="sub">Corporate &amp; Alumni Relations</span>
+  </div>
+  <a class="nav-cta" href="#recruit">Recruit now</a>
+</nav>
+
+<h1 class="sr-only">RV University placements — the offer wall</h1>
+
+<div class="wall" id="wall" tabindex="0" role="region" aria-label="Draggable wall of RV University placement offers. Use arrow keys to pan.">
+  <div class="plane" id="plane"></div>
+
+  <div class="wall-copy" id="wallCopy">
+    <span class="mono eyebrow">RV University / Bengaluru / Placements 2025</span>
+    <p class="display" style="font-size:clamp(2.3rem,5.6vw,4.15rem)">Four hundred<br>and twenty-five<br>ways out of here.</p>
+    <p class="lede">Every card on this wall is a real offer made to an RV University graduate. Drag it around. There is no brochure underneath.</p>
+  </div>
+
+  <div class="hint">
+    <span class="pulse"></span>
+    <span class="mono" style="letter-spacing:.14em">Drag the wall</span>
+    <button type="button" id="recentre">Recentre</button>
+  </div>
+</div>
+
+<div class="puck" id="puck">DRAG</div>
+
+<section class="wrap" id="outcomes" style="padding-bottom:0">
+  <div class="eyebrow-row">
+    <span class="mono">The record</span>
+    <span class="rule"></span>
+  </div>
+  <p class="display" style="font-size:clamp(1.7rem,3.6vw,2.6rem);max-width:20ch">What a year at RVU actually produced.</p>
+</section>
+
+<section style="padding-top:38px">
+  <div class="wrap" style="padding-inline:0">
+    <div class="stats">
+      <div class="stat hero-stat">
+        <div class="num v">₹43.5<em>LPA</em></div>
+        <span class="mono k">Highest package</span>
+        <p class="note">Offered by Aviatrix.</p>
+      </div>
+      <div class="stat">
+        <div class="num v">425</div>
+        <span class="mono k">Offers made</span>
+        <p class="note">Across every school.</p>
+      </div>
+      <div class="stat">
+        <div class="num v">250<em>+</em></div>
+        <span class="mono k">Organisations</span>
+        <p class="note">MNCs, GCCs, consulting, finance, startups.</p>
+      </div>
+      <div class="stat">
+        <div class="num v">1,608</div>
+        <span class="mono k">Eligible students</span>
+        <p class="note">Across six schools.</p>
+      </div>
+      <div class="stat">
+        <div class="num v">25<em>%</em></div>
+        <span class="mono k">Held more than one</span>
+        <p class="note">A quarter of placed students chose between offers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="kinetic wrap" id="kineticSec">
+  <p class="kin" id="kin"></p>
+</section>
+
+<section style="padding-block:0">
+  <div class="band">
+    <div class="eyebrow-row">
+      <span class="mono">Who is on the wall</span>
+      <span class="rule"></span>
+    </div>
+    <h2 class="display">Six schools. Seventeen programmes. One eligibility list.</h2>
+    <p class="lede" style="margin-top:16px">A recruiter picking a slot is really picking a cohort. This is that cohort, as filed with Corporate &amp; Alumni Relations.</p>
+
+    <div class="table-scroll">
+      <table class="ledger">
+        <thead>
+          <tr><th>Programme</th><th class="r">Eligible</th></tr>
+        </thead>
+        <tbody id="ledgerBody"></tbody>
+      </table>
+    </div>
+    <p class="foot">Figures as published on rvu.edu.in/placements. Programme rows sum to 1,591; the published cohort total is 1,608 — to be reconciled with CAR before this page ships.</p>
+  </div>
+</section>
+
+<section class="wrap" id="spread">
+  <div class="eyebrow-row">
+    <span class="mono">The spread</span>
+    <span class="rule"></span>
+  </div>
+  <p class="display" style="font-size:clamp(1.7rem,3.6vw,2.6rem);max-width:22ch">The highest package is one offer. Here is the shape of the rest.</p>
+
+  <div class="dist" id="dist"></div>
+  <p class="foot-note">Counts read from the salary distribution chart published on rvu.edu.in and rounded. Minimum recorded offer ≈ ₹4 LPA. Exact figures to be supplied by CAR.</p>
+</section>
+
+<section class="wrap" id="process" style="padding-top:0">
+  <div class="eyebrow-row">
+    <span class="mono">How a student gets there</span>
+    <span class="rule"></span>
+  </div>
+  <p class="display" style="font-size:clamp(1.7rem,3.6vw,2.6rem);max-width:20ch">Five gates, in order.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="n">01</div>
+      <h3>Register with CAR</h3>
+      <p>Registration &amp; Declaration Form filed with Corporate &amp; Alumni Relations. Nothing proceeds without it.</p>
+    </div>
+    <div class="step">
+      <div class="n">02</div>
+      <h3>Pre-placement training</h3>
+      <p>Domain and technical training, soft skills, behavioural and networking intelligence. 80% attendance is mandatory.</p>
+    </div>
+    <div class="step">
+      <div class="n">03</div>
+      <h3>Clear eligibility</h3>
+      <p>No academic backlogs. No pending disciplinary cases. Internship or capstone complete.</p>
+    </div>
+    <div class="step">
+      <div class="n">04</div>
+      <h3>Sit the drives</h3>
+      <p>250+ organisations run on campus. Apply only to roles you would genuinely join.</p>
+    </div>
+    <div class="step">
+      <div class="n">05</div>
+      <h3>Honour the offer</h3>
+      <p>An accepted offer is final. Concerns go to CAR, not to the recruiter.</p>
+    </div>
+  </div>
+</section>
+
+<footer id="recruit">
+  <div class="wrap">
+    <div class="f-grid">
+      <div>
+        <span class="mono">Recruit at RVU</span>
+        <p class="display" style="font-size:clamp(1.5rem,3vw,2.1rem);margin-top:12px;max-width:16ch">Take a slot on the wall.</p>
+      </div>
+      <address>
+        Corporate &amp; Alumni Relations<br>
+        5th Floor, D Block, RV Vidyanikethan Post<br>
+        8th Mile, Mysuru Road, Bengaluru 560059<br>
+        <a href="mailto:placements@rvu.edu.in">placements@rvu.edu.in</a>
+      </address>
+    </div>
+    <p class="disclaimer">
+      Design mock — RV University Placement Website Revamp Competition. All statistics, programme names, cohort figures and process rules are taken from the placements page currently published on rvu.edu.in. Recruiter names are deliberately left as empty slots: the wall is a template CAR fills, not a claim about who recruits here. Aviatrix appears because RVU publishes it as the source of the ₹43.5 LPA offer.
+    </p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- seeded rng so the layout is stable across reloads ---------- */
+  function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+  var rnd = mulberry32(20250915);
+
+  /* ---------- real published data ---------- */
+  var SECTORS = ['MNC','GCC','TECHNOLOGY','CONSULTING','FINANCIAL','STARTUP'];
+  var PROGS = [
+    'B.Tech (Hons.) — CSE','B.Tech (Hons.) — CSE','B.Tech (Hons.) — CSE',
+    'B.Sc (Hons.) — Computer Science','B.Sc (Hons.) — Computer Science',
+    'M.Tech','MBA','MBA','BBA (Hons.)','BBA (Hons.)','B.Com (Hons.)','B.Com (Hons.)',
+    'M.Sc Economics','B.Des (Hons.)','M.Des','B.Sc Psychology','M.Sc Psychology',
+    'B.Sc Criminology &amp; Cyber Law','LL.M','B.Sc Filmmaking','B.A Politics &amp; Int’l Relations'
+  ];
+  // band mix sampled in proportion to the published distribution
+  var BANDS = [];
+  (function(){
+    var i;
+    for(i=0;i<5;i++) BANDS.push('20–33');
+    for(i=0;i<12;i++) BANDS.push('10–20');
+    for(i=0;i<18;i++) BANDS.push('4–10');
+  })();
+
+  var SCHOOLS = [
+    ['School of Computer Science &amp; Engineering', [['B.Tech (Hons.)',547],['B.Sc (Hons.)',172],['M.Tech',18]]],
+    ['School of Economics &amp; Business', [['MBA',177],['B.Com (Hons.)',170],['BBA (Hons.)',162],['M.Sc Economics',16],['B.Sc Economics',4]]],
+    ['School of Design &amp; Innovation', [['B.Des (Hons.)',123],['M.Des',34]]],
+    ['School of Law', [['B.Sc Criminology &amp; Cyber Law',70],['LL.M',35]]],
+    ['School of Liberal Arts &amp; Sciences', [['B.Sc Psychology',30],['M.Sc Psychology',23],['B.A Politics &amp; Int’l Relations',4],['B.Sc Environmental Science',2]]],
+    ['School of Film, Media &amp; Creative Arts', [['B.Sc Filmmaking',4]]]
+  ];
+
+  var DIST = [
+    ['₹20–33 LPA', 20, false],
+    ['₹10–20 LPA', 45, false],
+    ['Below ₹10 LPA', 85, false]
+  ];
+
+  /* ---------- build the wall ---------- */
+  var COLS = 7, ROWS = 6, CELL_W = 344, CELL_H = 296;
+  var PLANE_W = COLS * CELL_W, PLANE_H = ROWS * CELL_H;
+  var plane = document.getElementById('plane');
+  plane.style.width = PLANE_W + 'px';
+  plane.style.height = PLANE_H + 'px';
+
+  function shuffle(a){var i,j,t;for(i=a.length-1;i>0;i--){j=Math.floor(rnd()*(i+1));t=a[i];a[i]=a[j];a[j]=t}return a}
+  var bag = shuffle(BANDS.slice());
+
+  var html = '', bi = 0, placedPeak = false;
+  for(var r=0;r<ROWS;r++){
+    for(var c=0;c<COLS;c++){
+      var centreCell = (c>=2 && c<=4 && r>=2 && r<=3);
+      if(centreCell) continue;
+
+      var isPeak = (!placedPeak && r===1 && c===5);
+      var band = isPeak ? null : bag[bi++ % bag.length];
+      if(isPeak) placedPeak = true;
+
+      var x = c*CELL_W + 26 + rnd()*46;
+      var y = r*CELL_H + 22 + rnd()*44;
+      var rot = (rnd()*7.4 - 3.7).toFixed(2);
+      var depth = rnd();
+      var cls = depth < 0.26 ? 'far' : (depth < 0.55 ? 'mid' : '');
+
+      var sector = SECTORS[Math.floor(rnd()*SECTORS.length)];
+      var prog = PROGS[Math.floor(rnd()*PROGS.length)];
+
+      html += '<article class="ocard ' + (isPeak ? 'peak' : cls) + '" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px;transform:rotate(' + rot + 'deg)">'
+        + '<div class="top"><span class="sector">' + (isPeak ? 'Highest · Technology' : sector) + '</span><span class="dot"></span></div>'
+        + '<div class="amt">₹' + (isPeak ? '43.5' : band) + '<small>LPA</small></div>'
+        + '<div class="prog">' + (isPeak ? 'B.Tech (Hons.) — CSE' : prog) + '</div>'
+        + '<div class="slot">' + (isPeak ? '<span>Aviatrix</span>' : '<span>Company</span>') + '</div>'
+        + '</article>';
+    }
+  }
+  plane.innerHTML = html;
+
+  /* ---------- drag ---------- */
+  var wall = document.getElementById('wall');
+  var wallCopy = document.getElementById('wallCopy');
+  var tx = 0, ty = 0, vx = 0, vy = 0;
+  var dragging = false, sx = 0, sy = 0, lx = 0, ly = 0, moved = false, touched = false;
+  var driftT = 0, base = {x:0, y:0};
+
+  function bounds(){
+    var w = wall.clientWidth, h = wall.clientHeight;
+    return {
+      minX: Math.min(0, w - PLANE_W), maxX: 0,
+      minY: Math.min(0, h - PLANE_H), maxY: 0
+    };
+  }
+  function clamp(v, lo, hi){ return v < lo ? lo : (v > hi ? hi : v); }
+  function apply(){ plane.style.transform = 'translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0)'; }
+
+  function centre(animate){
+    var b = bounds();
+    base.x = clamp((wall.clientWidth - PLANE_W)/2, b.minX, b.maxX);
+    base.y = clamp((wall.clientHeight - PLANE_H)/2, b.minY, b.maxY);
+    if(animate && !reduced){
+      plane.style.transition = 'transform .9s ' + 'cubic-bezier(.22,1,.36,1)';
+      setTimeout(function(){ plane.style.transition = ''; }, 950);
+    }
+    tx = base.x; ty = base.y; vx = vy = 0;
+    apply();
+  }
+  centre(false);
+  addEventListener('resize', function(){ centre(false); }, {passive:true});
+
+  wall.addEventListener('pointerdown', function(e){
+    dragging = true; touched = true; moved = false;
+    wall.classList.add('dragging');
+    sx = lx = e.clientX; sy = ly = e.clientY; vx = vy = 0;
+    wall.setPointerCapture(e.pointerId);
+  });
+  wall.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    var dx = e.clientX - lx, dy = e.clientY - ly;
+    lx = e.clientX; ly = e.clientY;
+    vx = dx; vy = dy;
+    var b = bounds();
+    tx = clamp(tx + dx, b.minX, b.maxX);
+    ty = clamp(ty + dy, b.minY, b.maxY);
+    if(Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) > 6) moved = true;
+    apply();
+  });
+  function endDrag(){
+    if(!dragging) return;
+    dragging = false;
+    wall.classList.remove('dragging');
+    if(!reduced && moved) glide();
+  }
+  wall.addEventListener('pointerup', endDrag);
+  wall.addEventListener('pointercancel', endDrag);
+
+  function glide(){
+    var b = bounds();
+    vx *= 0.94; vy *= 0.94;
+    tx = clamp(tx + vx, b.minX, b.maxX);
+    ty = clamp(ty + vy, b.minY, b.maxY);
+    apply();
+    if(Math.abs(vx) > 0.15 || Math.abs(vy) > 0.15) requestAnimationFrame(glide);
+  }
+
+  wall.addEventListener('keydown', function(e){
+    var step = 90, b = bounds(), hit = true;
+    if(e.key === 'ArrowLeft') tx = clamp(tx + step, b.minX, b.maxX);
+    else if(e.key === 'ArrowRight') tx = clamp(tx - step, b.minX, b.maxX);
+    else if(e.key === 'ArrowUp') ty = clamp(ty + step, b.minY, b.maxY);
+    else if(e.key === 'ArrowDown') ty = clamp(ty - step, b.minY, b.maxY);
+    else hit = false;
+    if(hit){ touched = true; e.preventDefault(); apply(); }
+  });
+
+  document.getElementById('recentre').addEventListener('click', function(){ touched = true; centre(true); });
+
+  /* idle drift until the visitor takes over */
+  if(!reduced){
+    (function drift(){
+      if(!touched && !dragging){
+        driftT += 0.0038;
+        tx = base.x + Math.sin(driftT) * 16;
+        ty = base.y + Math.cos(driftT * 0.72) * 11;
+        apply();
+      }
+      requestAnimationFrame(drift);
+    })();
+  }
+
+  /* ---------- cursor puck ---------- */
+  var puck = document.getElementById('puck');
+  if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+    addEventListener('pointermove', function(e){
+      puck.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)' + (puck.classList.contains('on') ? ' scale(1)' : ' scale(.6)');
+    }, {passive:true});
+    wall.addEventListener('pointerenter', function(){ puck.classList.add('on'); });
+    wall.addEventListener('pointerleave', function(){ puck.classList.remove('on'); });
+  }
+
+  /* ---------- ledger ---------- */
+  var lb = document.getElementById('ledgerBody'), rows = '';
+  SCHOOLS.forEach(function(s){
+    rows += '<tr class="school"><td colspan="2">' + s[0] + '</td></tr>';
+    s[1].forEach(function(p){
+      rows += '<tr><td>' + p[0] + '</td><td class="r">' + p[1] + '</td></tr>';
+    });
+  });
+  rows += '<tr class="total"><td>Total eligible cohort</td><td class="r">1,608</td></tr>';
+  lb.innerHTML = rows;
+
+  /* ---------- distribution ---------- */
+  var max = 0;
+  DIST.forEach(function(d){ if(d[1] > max) max = d[1]; });
+  document.getElementById('dist').innerHTML = DIST.map(function(d){
+    return '<div class="drow"><span class="band-label">' + d[0] + '</span>'
+      + '<span class="track"><span class="fill" style="width:' + Math.round(d[1]/max*100) + '%"></span></span>'
+      + '<span class="cnt">≈' + d[1] + '</span></div>';
+  }).join('') + '<div class="drow peak-row"><span class="band-label">₹43.5 LPA</span>'
+      + '<span class="track"><span class="fill" style="width:2%"></span></span>'
+      + '<span class="cnt">1</span></div>';
+
+  /* ---------- kinetic line (used exactly once) ---------- */
+  var LINE = ['This','is','where','four','years','becomes','one','morning','in','a','room','with','a','stranger.'];
+  var kin = document.getElementById('kin');
+  kin.innerHTML = LINE.map(function(w,i){
+    return '<span class="w' + (i>=5 && i<=7 ? ' hi' : '') + '">' + w + '</span>';
+  }).join('');
+
+  if(!reduced){
+    var sec = document.getElementById('kineticSec'), ticking = false;
+    function onScroll(){
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(function(){
+        var r = sec.getBoundingClientRect(), vh = innerHeight;
+        var p = 1 - (r.top - vh*0.18) / (vh*0.68);
+        kin.style.setProperty('--k', clamp(p, 0, 1).toFixed(3));
+        ticking = false;
+      });
+    }
+    addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+  }
+
+  /* ---------- nav hairline ---------- */
+  var nav = document.getElementById('nav');
+  addEventListener('scroll', function(){
+    nav.classList.toggle('stuck', scrollY > 24);
+  }, {passive:true});
+})();
+</script>

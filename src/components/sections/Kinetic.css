@@ -1,0 +1,9 @@
+.kinetic { padding-block: clamp(72px, 11vw, 150px); text-align: center; }
+.kin {
+  font-size: clamp(1.5rem, 4.4vw, 3rem); color: var(--ink);
+  line-height: 1.24; letter-spacing: -0.02em; font-weight: 400;
+  max-width: 22ch; margin-inline: auto; padding-inline: var(--gut);
+}
+.kw { display: inline-block; margin-right: calc(var(--k, 0) * 0.28em); transition: margin-right 0.1s linear; }
+.kw:last-child { margin-right: 0; }
+.kw.hi { color: var(--brass-2); font-style: italic; }

@@ -1,0 +1,99 @@
+.hero { position: relative; }
+.wall {
+  position: relative; overflow: hidden;
+  height: clamp(600px, 88svh, 920px);
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  cursor: grab; touch-action: none;
+}
+.wall.dragging { cursor: grabbing; }
+
+/* soft brass atmosphere — the only 'glow', very restrained */
+.wall-atmos {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 70% 12%, rgba(208,168,99,0.14), transparent 70%),
+    radial-gradient(52% 46% at 12% 88%, rgba(35,48,57,0.06), transparent 70%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .wall-atmos { animation: atmos 16s ease-in-out infinite alternate; }
+}
+@keyframes atmos { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(-2%, 1.5%, 0) scale(1.06); } }
+
+.plane { position: absolute; top: 0; left: 0; z-index: 1; will-change: transform; }
+
+/* fade the wall into the paper top & bottom */
+.wall::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background:
+    linear-gradient(var(--paper), transparent 128px),
+    linear-gradient(0deg, var(--paper), transparent 128px);
+}
+
+.wall-copy {
+  position: absolute; z-index: 3; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(700px, calc(100% - 2 * var(--gut)));
+  text-align: center; pointer-events: none;
+  transition: opacity 0.5s var(--ease);
+}
+.wall-copy::before {
+  content: ""; position: absolute; left: 50%; top: 50%; z-index: -1;
+  transform: translate(-50%, -50%);
+  width: 128%; height: 172%; border-radius: 50%;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--paper) 92%, transparent) 0 40%,
+    color-mix(in srgb, var(--paper) 62%, transparent) 66%,
+    transparent 100%);
+}
+.wall.dragging .wall-copy { opacity: 0.12; }
+.wall-copy > * { pointer-events: auto; }
+
+.hero-kicker { display: block; margin-bottom: 20px; color: var(--brass-2); }
+.hero-h1 { font-size: var(--step-4); color: var(--ink); }
+.hero-h1 .hero-em { font-style: italic; color: var(--brass-2); }
+.hero-lede {
+  margin: 22px auto 0; max-width: 46ch; color: var(--slate-2);
+  font-size: var(--step-0); line-height: 1.7;
+}
+.hero-actions { display: flex; gap: 12px; justify-content: center; margin-top: 32px; flex-wrap: wrap; }
+
+.wall-hud {
+  position: absolute; z-index: 4; left: 50%; bottom: 26px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 11px; white-space: nowrap;
+  padding: 9px 15px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--card); box-shadow: var(--shadow-sm);
+}
+.wall-hud .mono { font-size: 9.5px; letter-spacing: 0.16em; color: var(--slate-2); }
+.wall-hud .pulse { width: 5px; height: 5px; border-radius: 50%; background: var(--brass); flex: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .wall-hud .pulse { animation: hudPulse 2.6s ease-out infinite; }
+}
+@keyframes hudPulse {
+  0% { box-shadow: 0 0 0 0 rgba(208,168,99,0.7); }
+  70% { box-shadow: 0 0 0 8px rgba(208,168,99,0); }
+  100% { box-shadow: 0 0 0 0 rgba(208,168,99,0); }
+}
+.recentre { border: 0; background: none; color: var(--brass-dd); cursor: pointer; padding-left: 11px; border-left: 1px solid var(--line); font-size: 9.5px; letter-spacing: 0.16em; }
+.recentre:hover { color: var(--ink); }
+
+/* recruiter/stat ticker */
+.ticker {
+  overflow: hidden; border-bottom: 1px solid var(--line);
+  background: var(--paper-2); padding-block: 14px;
+}
+.ticker-row { display: flex; width: max-content; }
+@media (prefers-reduced-motion: no-preference) {
+  .ticker-row { animation: scroll-x 34s linear infinite; }
+}
+@keyframes scroll-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ticker-item {
+  display: inline-flex; align-items: center; gap: 22px;
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em;
+  color: var(--slate-2); padding-right: 22px; white-space: nowrap;
+}
+.ticker-sep { color: var(--brass); }
+
+@media (max-width: 600px) {
+  .ocard { width: 210px; }
+}

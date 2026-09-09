@@ -1,0 +1,100 @@
+/* ==========================================================================
+   RVU Placements — design tokens
+   Sourced from RV University's own published CSS variables:
+     --gcid-primary-color:   #d0a863  (brass)
+     --gcid-secondary-color: #233039  (slate)
+     --gcid-heading-color:   #050a09  (ink)
+   Light is the default. Dark is opt-in via [data-theme="dark"].
+   ========================================================================== */
+:root {
+  color-scheme: light;
+
+  /* grounds */
+  --paper:        #fbfaf7;   /* warm, never pure white */
+  --paper-2:      #f6f2ea;
+  --card:         #ffffff;
+  --sunk:         #f1ede4;
+
+  /* ink / slate ramp */
+  --ink:          #0b1113;
+  --slate:        #233039;
+  --slate-2:      #3a4b57;
+  --slate-3:      #6b7c88;
+  --slate-4:      #a6b2ba;
+  --slate-5:      #dbe1e5;
+
+  /* brass ramp */
+  --brass:        #d0a863;
+  --brass-2:      #c2974a;   /* text-safe brass on paper */
+  --brass-d:      #a8823f;
+  --brass-dd:     #6b5228;
+  --brass-l:      #e7d1a2;
+  --brass-wash:   #f7efdf;
+
+  /* semantic (kept apart from the accent) */
+  --live:         #2f8f5b;
+  --live-wash:    #e6f1ea;
+
+  --line:         rgba(35, 48, 57, 0.13);
+  --line-2:       rgba(35, 48, 57, 0.26);
+  --on-slate:     rgba(240, 226, 198, 0.15);
+  --on-slate-2:   rgba(240, 226, 198, 0.28);
+
+  --shadow-sm:    0 1px 2px rgba(35,48,57,.05), 0 6px 16px -12px rgba(35,48,57,.28);
+  --shadow:       0 2px 4px rgba(35,48,57,.05), 0 22px 44px -22px rgba(35,48,57,.34);
+  --shadow-brass: 0 18px 40px -20px rgba(107,82,40,.5);
+
+  /* type */
+  --serif: "Fraunces", Georgia, "Times New Roman", serif;      /* display + numerals */
+  --alt:   "Sora", system-ui, sans-serif;                        /* wordmark / accents */
+  --sans:  "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono:  "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --step--1: clamp(0.78rem, 0.75rem + 0.15vw, 0.86rem);
+  --step-0:  clamp(0.94rem, 0.9rem + 0.2vw, 1rem);
+  --step-1:  clamp(1.1rem, 1rem + 0.5vw, 1.3rem);
+  --step-2:  clamp(1.5rem, 1.2rem + 1.4vw, 2.4rem);
+  --step-3:  clamp(2rem, 1.4rem + 2.8vw, 3.6rem);
+  --step-4:  clamp(2.6rem, 1.4rem + 5.4vw, 6rem);
+  --step-5:  clamp(3.2rem, 1.2rem + 9vw, 8.5rem);
+
+  --ease:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --gut:  clamp(18px, 4.4vw, 72px);
+  --maxw: 1280px;
+
+  --nav-h: 62px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper:   #0f1418;
+  --paper-2: #141b21;
+  --card:    #1a232a;
+  --sunk:    #10171c;
+
+  --ink:     #f4f1ea;
+  --slate:   #d7dee3;
+  --slate-2: #b3bec6;
+  --slate-3: #8c99a2;
+  --slate-4: #5f6d76;
+  --slate-5: #2b3841;
+
+  --brass:   #e0bd7c;
+  --brass-2: #e0bd7c;
+  --brass-d: #d0a863;
+  --brass-dd:#ecd6a6;
+  --brass-l: #6b5228;
+  --brass-wash: #1e2831;
+
+  --line:     rgba(215, 222, 227, 0.12);
+  --line-2:   rgba(215, 222, 227, 0.22);
+  --on-slate: rgba(240, 226, 198, 0.15);
+  --on-slate-2: rgba(240, 226, 198, 0.28);
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.5), 0 6px 16px -12px rgba(0,0,0,.7);
+  --shadow:    0 2px 4px rgba(0,0,0,.5), 0 22px 44px -22px rgba(0,0,0,.8);
+  --shadow-brass: 0 18px 40px -20px rgba(224,189,124,.35);
+}

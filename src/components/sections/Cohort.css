@@ -1,0 +1,40 @@
+.cohort { padding-block: clamp(30px, 5vw, 60px); }
+.band {
+  margin-inline: var(--gut);
+  background: var(--slate);
+  border-radius: 20px;
+  padding: clamp(34px, 5.4vw, 72px) clamp(22px, 4.4vw, 64px);
+  color: var(--brass-wash);
+  box-shadow: var(--shadow);
+}
+.band .eyebrow .mono, .band .eyebrow .idx { color: var(--brass); }
+.band .eyebrow .line { background: var(--on-slate); }
+.band-h { font-size: var(--step-3); color: var(--brass-wash); }
+.band-lede { color: var(--slate-4); margin-top: 18px; max-width: 54ch; }
+
+.ledger-scroll { overflow-x: auto; margin-top: 38px; }
+.ledger { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 380px; }
+.ledger th {
+  text-align: left; font-family: var(--mono); font-size: 9.5px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--brass);
+  padding: 0 12px 12px 0; border-bottom: 1px solid var(--brass);
+}
+.ledger th.r, .ledger td.r { text-align: right; padding-right: 0; }
+.ledger td {
+  padding: 12px 12px 12px 0; border-bottom: 1px solid var(--on-slate);
+  font-size: 13.5px; color: var(--brass-wash);
+}
+.ledger td.r { font-family: var(--mono); font-size: 13px; color: var(--slate-4); }
+.ledger tr.school td {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--brass); padding-top: 28px;
+}
+.ledger tbody tr.school:first-child td { padding-top: 12px; }
+.ledger tbody tr:not(.school):not(.total):hover td { background: rgba(208,168,99,0.09); color: #fff; }
+.ledger tbody tr:not(.school):not(.total):hover td.r { color: var(--brass); }
+.ledger tr.total td {
+  border-bottom: 0; border-top: 1px solid var(--brass); padding-top: 16px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brass);
+}
+.ledger tr.total td.r { font-size: 16px; letter-spacing: 0; color: var(--brass-wash); }
+.band-foot { margin-top: 20px; font-size: 9.5px; letter-spacing: 0.1em; line-height: 1.9; color: var(--slate-4); max-width: 76ch; text-transform: none; }

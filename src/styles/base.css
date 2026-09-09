@@ -1,0 +1,137 @@
+@import "./tokens.css";
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+
+::selection { background: var(--brass-wash); color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--brass-2);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* ---- shared primitives ---- */
+.wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gut); }
+
+.mono {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--slate-3);
+}
+
+.serif {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 40, "WONK" 0;
+  letter-spacing: -0.015em;
+  line-height: 1.04;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.alt {
+  font-family: var(--alt);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.num {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-optical-sizing: auto;
+  letter-spacing: -0.025em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.lede {
+  color: var(--slate-2);
+  max-width: 60ch;
+  font-size: var(--step-1);
+  line-height: 1.7;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* eyebrow with rule */
+.eyebrow {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.eyebrow .line { flex: 1; height: 1px; background: var(--line); }
+.eyebrow .idx { font-family: var(--mono); font-size: var(--step--1); color: var(--brass-2); letter-spacing: 0.14em; }
+
+/* section rhythm */
+.section { padding-block: clamp(64px, 9vw, 132px); }
+
+/* scroll-reveal: visible at rest, lifts in when observed. Never parked at 0. */
+.reveal { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0.001;
+    transform: translateY(18px);
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    transition-delay: var(--d, 0ms);
+  }
+  .reveal.in { opacity: 1; transform: none; }
+}
+
+/* the primary button */
+.btn {
+  --bg: var(--slate);
+  --fg: var(--brass-wash);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border: 1px solid var(--bg);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn:active { transform: translateY(0); }
+.btn .arrow { transition: transform 0.35s var(--ease); }
+.btn:hover .arrow { transform: translateX(4px); }
+.btn.ghost {
+  --bg: transparent;
+  --fg: var(--slate);
+  border-color: var(--line-2);
+}
+.btn.ghost:hover { border-color: var(--slate); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
