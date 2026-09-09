@@ -1,12 +1,16 @@
 import { useMemo } from "react";
-import { buildOfferWall } from "../../data/placements";
+import { buildOfferWall, COPY } from "../../data/placements";
 import { useDraggableWall } from "../../hooks/useDraggableWall";
+import { useMagnetic } from "../../hooks/useMagnetic";
 import OfferCard from "../ui/OfferCard";
+import Words from "../ui/Words";
 import "./Hero.css";
 
 export default function Hero() {
   const { cards, planeW, planeH } = useMemo(() => buildOfferWall(), []);
   const { frameRef, planeRef, recentre } = useDraggableWall(planeW, planeH);
+  const magA = useMagnetic(0.5);
+  const magB = useMagnetic(0.4);
 
   return (
     <header className="hero" id="top">
@@ -16,31 +20,33 @@ export default function Hero() {
         tabIndex={0}
         role="region"
         aria-label="A draggable wall of RV University placement offers. Use arrow keys to pan."
+        data-lenis-prevent
       >
         <div className="wall-atmos" aria-hidden="true" />
         <div className="plane" ref={planeRef} style={{ width: planeW, height: planeH }}>
-          {cards.map((c) => <OfferCard key={c.id} card={c} />)}
+          {cards.map((c, i) => (
+            <div className="ocard-in" style={{ "--i": i }} key={c.id}>
+              <OfferCard card={c} />
+            </div>
+          ))}
         </div>
 
         <div className="wall-copy">
-          <span className="mono hero-kicker">RV University / Bengaluru / Placements 2025</span>
+          <span className="mono hero-kicker">{COPY.eyebrow}</span>
           <h1 className="serif hero-h1">
-            Four hundred<br />and twenty-five<br />
-            <span className="hero-em">ways out of here.</span>
+            <Words text={COPY.heroLead} as="span" className="l1" />
+            <Words text={COPY.heroTrail} as="span" className="l2" delay={260} hi={new Set([1, 2])} />
           </h1>
-          <p className="hero-lede">
-            Every card on this wall is a real offer made to an RVU graduate.
-            Drag it around — there is no brochure underneath.
-          </p>
+          <p className="hero-lede rise">{COPY.heroSub}</p>
           <div className="hero-actions">
-            <a className="btn" href="#recruit">Recruit at RVU <span className="arrow">→</span></a>
-            <a className="btn ghost" href="#record">See the record</a>
+            <a className="btn magnetic" ref={magA} href="#recruit">Recruit now <span className="arrow">→</span></a>
+            <a className="btn ghost magnetic" ref={magB} href="#record">See the record</a>
           </div>
         </div>
 
         <div className="wall-hud">
           <span className="pulse" aria-hidden="true" />
-          <span className="mono">Drag the wall</span>
+          <span className="mono">Drag the wall — every card is one real offer</span>
           <button type="button" className="recentre mono" onClick={recentre}>Recentre</button>
         </div>
       </div>
@@ -57,6 +63,6 @@ export default function Hero() {
 }
 
 const TICKER = [
-  "425 OFFERS", "250+ RECRUITERS", "₹43.5 LPA HIGHEST", "1,608 ELIGIBLE",
-  "6 SCHOOLS", "25% MULTIPLE OFFERS", "FORTUNE 500 GCCs", "MNC · CONSULTING · FINANCE",
+  "425 OFFERS FACILITATED", "250+ RECRUITERS", "₹43.5 LPA HIGHEST", "1,600+ GRADUATES",
+  "6 SCHOOLS", "MNC · GCC · TECH", "CONSULTING · FINANCIAL · STARTUP",
 ];

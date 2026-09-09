@@ -60,6 +60,7 @@
 
   --ease:    cubic-bezier(0.22, 1, 0.36, 1);
   --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-nk: cubic-bezier(0.86, 0, 0.07, 1);   /* nk.studio's dramatic expo ease */
 
   --gut:  clamp(18px, 4.4vw, 72px);
   --maxw: 1280px;

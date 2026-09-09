@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Eyebrow from "../ui/Eyebrow";
+import Words from "../ui/Words";
 import { useReveal } from "../../hooks/useReveal";
 import { SCHOOLS, COHORT_TOTAL } from "../../data/placements";
 import "./Cohort.css";
@@ -14,11 +15,11 @@ export default function Cohort() {
   return (
     <section className="cohort" id="cohort">
       <div className="band reveal" ref={ref}>
-        <Eyebrow idx="02">Who is on the wall</Eyebrow>
-        <h2 className="serif band-h">1,608 students.<br />Every block is a programme.</h2>
+        <Eyebrow idx="04">Schools eligible for recruitment</Eyebrow>
+        <h2 className="serif band-h"><Words text="Every block is a programme." hi={new Set([1])} /></h2>
         <p className="lede band-lede">
-          Width is a school, height is a programme, area is headcount. You can
-          see B.Tech carry the year — no table needed.
+          Width is a school, height a programme, area the headcount eligible for
+          recruitment. B.Tech carries the year.
         </p>
 
         <div className="mosaic" role="list">

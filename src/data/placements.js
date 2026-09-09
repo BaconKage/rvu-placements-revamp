@@ -16,11 +16,11 @@ export const HEADLINE = {
 };
 
 export const STATS = [
-  { v: "₹43.5", unit: "LPA", k: "Highest package", note: "Offered by Aviatrix.", hero: true },
-  { v: "425", unit: "", k: "Offers made", note: "Across every school." },
-  { v: "250", unit: "+", k: "Organisations", note: "MNCs · GCCs · consulting · finance · startups." },
-  { v: "1,608", unit: "", k: "Eligible students", note: "Six schools, one list." },
-  { v: "25", unit: "%", k: "Held more than one", note: "A quarter chose between offers." },
+  { v: "₹43.5", unit: "LPA", k: "Highest package", note: "The highest annual compensation offered during the year.", hero: true },
+  { v: "425", unit: "", k: "Offers facilitated", note: "CAR facilitated over 400 placement offers." },
+  { v: "250", unit: "+", k: "Recruiting organisations", note: "MNCs, GCCs, tech, consulting, financial, startups." },
+  { v: "1,600", unit: "+", k: "Industry-ready graduates", note: "A multidisciplinary talent pool." },
+  { v: "6", unit: "", k: "Schools eligible", note: "Engineering to Liberal Arts." },
 ];
 
 // School → programmes → eligible headcount (as published)
@@ -170,3 +170,35 @@ export function buildSwarm(seed = 4242) {
   dots.push({ v: 43.5, band: "peak", who: "Aviatrix" });
   return dots;
 }
+
+// ---- Verbatim copy from rvu.edu.in/placements ----
+export const COPY = {
+  eyebrow: "RV University · Bengaluru · Placements",
+  heroLead: "Empowering Industry Innovators",
+  heroTrail: "with Top-Tier Talent",
+  heroSub:
+    "Access a multidisciplinary talent pool of 1,600+ industry-ready graduates trained in cutting-edge technologies.",
+  tagline: "Empowering Industry Innovators with Top-Tier Talent",
+  carIntro:
+    "The Corporate & Alumni Relations office is the university's primary interface between students, industry, alumni, startups and academic schools — managing the recruitment ecosystem and student employability.",
+};
+
+// "Why Recruit at RV University" — verbatim names + descriptions
+export const WHY = [
+  { h: "Industry-Ready Talent", p: "Hire students equipped with strong academic foundations and practical, industry-relevant skills." },
+  { h: "Diverse Talent Pool", p: "Recruit from multidisciplinary programs including Engineering, Business, Design, Economics, Media, and Liberal Arts." },
+  { h: "Industry-Integrated Learning", p: "Students gain hands-on experience through internships, live projects, capstones, and experiential learning." },
+  { h: "Future-Focused Curriculum", p: "Graduates are prepared with digital, analytical, entrepreneurial, and leadership capabilities for evolving workplaces." },
+  { h: "Seamless Recruitment Support", p: "Our Corporate & Alumni Relations (CAR) team ensures a smooth and efficient hiring process from start to finish." },
+  { h: "Strong Academic Excellence", p: "Backed by the legacy of the RV Group, the university nurtures high-performing, ethical, and responsible professionals." },
+];
+
+// Student Eligibility — verbatim requirements
+export const ELIGIBILITY = [
+  "No academic backlogs at the time of registering for placement drives.",
+  "Minimum 80% attendance in mandatory pre-placement training.",
+  "Submission of the Placement Registration & Declaration Form.",
+  "Completion of required experiential components (internship / immersion / capstone).",
+  "Compliance with all company-specific eligibility criteria.",
+  "No pending disciplinary case with STDC.",
+];

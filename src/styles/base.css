@@ -135,3 +135,46 @@ button { font: inherit; color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ==========================================================================
+   Transition system — nk.studio expo easing + aardvark clip-path wipes
+   ========================================================================== */
+
+/* clip-path WIPE reveal: content is masked, then unveiled left→right */
+@media (prefers-reduced-motion: no-preference) {
+  .wipe {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1.05s var(--ease-nk);
+    transition-delay: var(--d, 0ms);
+  }
+  .wipe.in { clip-path: inset(0 0 0 0); }
+}
+
+/* staggered word RISE — each word climbs from behind a mask */
+.words { display: inline; }
+.words .w {
+  display: inline-block;
+  white-space: pre;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .words .w { overflow: hidden; }
+  .words .w > span {
+    display: inline-block;
+    transform: translateY(110%);
+    transition: transform 0.9s var(--ease-nk);
+    transition-delay: calc(var(--i, 0) * 55ms + var(--d, 0ms));
+  }
+  .words.in .w > span { transform: translateY(0); }
+}
+
+/* soft rise reveal on nk easing */
+@media (prefers-reduced-motion: no-preference) {
+  .rise { opacity: 0.001; transform: translateY(26px); transition: opacity 0.8s var(--ease-nk), transform 0.9s var(--ease-nk); transition-delay: var(--d, 0ms); }
+  .rise.in { opacity: 1; transform: none; }
+}
+
+/* magnetic button wrapper (JS sets --mx/--my) */
+.magnetic { transition: transform 0.35s var(--ease); will-change: transform; }
+.magnetic:hover { transform: translate(var(--mx, 0), var(--my, 0)); }
+
+.words .w-hi { font-style: italic; color: var(--brass-2); }

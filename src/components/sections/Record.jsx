@@ -1,4 +1,5 @@
 import Eyebrow from "../ui/Eyebrow";
+import Words from "../ui/Words";
 import { useReveal } from "../../hooks/useReveal";
 import { useCountUp } from "../../hooks/useCountUp";
 import { STATS } from "../../data/placements";
@@ -27,7 +28,7 @@ export default function Record() {
     <section className="section record" id="record">
       <div className="wrap">
         <Eyebrow idx="01">The record</Eyebrow>
-        <h2 className="serif record-h">What a year at RVU actually produced.</h2>
+        <h2 className="serif record-h"><Words text="The year, in the numbers CAR reported." hi={new Set([5])} /></h2>
       </div>
       <div className="wrap record-grid-wrap">
         <div className="stat-grid reveal" ref={ref}>

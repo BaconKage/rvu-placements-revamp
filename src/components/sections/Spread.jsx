@@ -1,5 +1,6 @@
 import { useMemo, useRef, useEffect, useState } from "react";
 import Eyebrow from "../ui/Eyebrow";
+import Words from "../ui/Words";
 import { buildSwarm } from "../../data/placements";
 import "./Spread.css";
 
@@ -44,9 +45,9 @@ export default function Spread() {
   return (
     <section className="section spread" id="spread">
       <div className="wrap">
-        <Eyebrow idx="03">The spread</Eyebrow>
+        <Eyebrow idx="05">The spread</Eyebrow>
         <h2 className="serif spread-h">
-          Every dot is one offer.<br />Only <em>one</em> of them is ₹43.5.
+          <Words text="Every dot is one offer. Only one is ₹43.5." hi={new Set([6])} />
         </h2>
 
         <div className="swarm-wrap">
