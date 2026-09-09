@@ -178,3 +178,16 @@ button { font: inherit; color: inherit; }
 .magnetic:hover { transform: translate(var(--mx, 0), var(--my, 0)); }
 
 .words .w-hi { font-style: italic; color: var(--brass-2); }
+
+/* ==========================================================================
+   Mobile polish
+   ========================================================================== */
+@media (max-width: 640px) {
+  .section { padding-block: clamp(48px, 12vw, 72px); }
+  .eyebrow { gap: 10px; margin-bottom: 20px; }
+  .lede { font-size: 15px; }
+  .btn { padding: 13px 20px; }
+}
+@media (max-width: 400px) {
+  :root { --gut: 16px; }
+}

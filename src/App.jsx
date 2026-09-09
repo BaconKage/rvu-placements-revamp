@@ -5,8 +5,8 @@ import Nav from "./components/Nav";
 import Hero from "./components/sections/Hero";
 import Record from "./components/sections/Record";
 import WhyRecruit from "./components/sections/WhyRecruit";
+import Companies from "./components/sections/Companies";
 import Cohort from "./components/sections/Cohort";
-import Spread from "./components/sections/Spread";
 import Process from "./components/sections/Process";
 import Recruit from "./components/sections/Recruit";
 
@@ -21,8 +21,8 @@ export default function App() {
         <Hero />
         <Record />
         <WhyRecruit />
+        <Companies />
         <Cohort />
-        <Spread />
         <Process />
         <Recruit />
       </main>

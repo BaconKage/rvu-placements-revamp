@@ -1,8 +1,7 @@
 .ocard {
   position: absolute;
   width: 236px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--card) 100%, transparent), var(--card));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--card) 100%, transparent), var(--card));
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 15px 16px 14px;
@@ -19,47 +18,42 @@
 .ocard-corner {
   position: absolute; top: 0; right: 0; width: 34px; height: 34px;
   background: linear-gradient(225deg, var(--brass) 0 50%, transparent 50%);
-  opacity: .0; transition: opacity .45s var(--ease);
+  opacity: 0; transition: opacity .45s var(--ease);
 }
 .ocard:hover .ocard-corner { opacity: .9; }
 
-.ocard-top { display: flex; align-items: center; gap: 9px; margin-bottom: 13px; }
+.ocard-top { display: flex; align-items: center; justify-content: space-between; gap: 9px; margin-bottom: 14px; }
 .ocard-mono {
-  width: 26px; height: 26px; flex: none; display: grid; place-items: center;
-  border-radius: 7px; background: var(--sunk); color: var(--slate-2);
-  font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .04em;
+  width: 28px; height: 28px; flex: none; display: grid; place-items: center;
+  border-radius: 8px; background: var(--sunk); color: var(--slate-2);
+  font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .02em;
 }
-.ocard-sector {
-  font-family: var(--mono); font-size: 9px; letter-spacing: .18em;
-  text-transform: uppercase; color: var(--slate-3);
+.ocard-via {
+  font-family: var(--mono); font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--slate-4); border: 1px solid var(--line-2); border-radius: 999px; padding: 3px 8px;
 }
-.ocard-amt { font-size: 31px; color: var(--slate); letter-spacing: -.03em; }
-.ocard-amt small {
-  font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .14em;
-  color: var(--slate-3); margin-left: 5px; vertical-align: middle;
-}
-.ocard-prog { font-size: 11.5px; color: var(--slate-2); margin-top: 8px; line-height: 1.4; }
+.ocard-co { font-size: 21px; color: var(--ink); letter-spacing: -.02em; line-height: 1.05; }
+.ocard-role { font-size: 11.5px; color: var(--slate-2); margin-top: 6px; line-height: 1.35; }
 .ocard-slot {
   display: flex; align-items: center; gap: 7px;
-  margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--line);
-  font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase;
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
   color: var(--slate-3);
 }
-.ocard-slot .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--slate-4); flex: none; }
+.ocard-slot .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brass); flex: none; }
+.ocard-sector { margin-left: auto; color: var(--slate-4); }
 
-/* the one brass card — the ₹43.5 peak */
-.ocard.peak {
+/* featured — recognizable brands, slate treatment */
+.ocard.feat {
   background: linear-gradient(165deg, var(--slate), color-mix(in srgb, var(--slate) 82%, #000));
   border-color: var(--brass);
   box-shadow: var(--shadow-brass);
 }
-.ocard.peak .ocard-mono { background: rgba(208,168,99,.16); color: var(--brass); }
-.ocard.peak .ocard-sector { color: var(--brass); }
-.ocard.peak .ocard-amt { color: var(--brass-wash); }
-.ocard.peak .ocard-amt small { color: var(--brass); }
-.ocard.peak .ocard-prog { color: var(--slate-4); }
-.ocard.peak .ocard-slot { border-top-color: var(--on-slate); color: var(--brass-wash); }
-.ocard.peak .ocard-slot .dot { background: var(--brass); box-shadow: 0 0 8px var(--brass); }
-.ocard.peak .ocard-corner { opacity: .9; }
+.ocard.feat .ocard-mono { background: rgba(208,168,99,.16); color: var(--brass); }
+.ocard.feat .ocard-via { color: var(--brass); border-color: var(--brass); }
+.ocard.feat .ocard-co { color: var(--brass-wash); }
+.ocard.feat .ocard-role { color: var(--slate-4); }
+.ocard.feat .ocard-slot { border-top-color: var(--on-slate); color: var(--brass-wash); }
+.ocard.feat .ocard-sector { color: var(--brass); }
 
-@media (max-width: 600px) { .ocard { width: 200px; } }
+@media (max-width: 600px) { .ocard { width: 208px; } .ocard-co { font-size: 18px; } }

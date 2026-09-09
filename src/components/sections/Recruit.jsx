@@ -36,10 +36,9 @@ export default function Recruit() {
           <span className="brandmark-foot alt">R<em>V</em> University · Placements</span>
           <p className="disclaimer mono">
             Design concept for the RV University Placement Website Revamp Competition.
-            All statistics, programme names, benefit descriptions and eligibility rules
-            are taken verbatim from the placements page on rvu.edu.in. Recruiter names on
-            the wall are placeholder slots the office fills; ₹43.5 LPA is RVU's published
-            highest offer.
+            Statistics, programme names, benefit descriptions and eligibility rules are
+            taken from rvu.edu.in/placements. Company names, roles and channels are drawn
+            from the student-maintained RVU / RVCE 2023-batch placement sheets.
           </p>
         </div>
       </div>

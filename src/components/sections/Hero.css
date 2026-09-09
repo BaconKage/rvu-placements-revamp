@@ -107,3 +107,14 @@
   from { opacity: 0; transform: translateY(26px) scale(0.94); }
   to { opacity: 1; transform: none; }
 }
+
+@media (max-width: 640px) {
+  .wall { height: clamp(500px, 76svh, 760px); }
+  .hero-h1 { font-size: clamp(2rem, 8.5vw, 3rem); }
+  .hero-kicker { font-size: 9px; letter-spacing: 0.14em; }
+  .hero-actions { flex-direction: column; align-items: stretch; width: min(300px, 100%); margin-inline: auto; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .wall-hud { bottom: 16px; padding: 8px 12px; }
+  .wall-hud .mono { font-size: 8.5px; max-width: 46vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ticker-item { font-size: 10.5px; }
+}
