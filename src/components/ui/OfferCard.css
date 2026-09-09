@@ -1,47 +1,65 @@
 .ocard {
   position: absolute;
-  width: 244px;
-  background: var(--card);
+  width: 236px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--card) 100%, transparent), var(--card));
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 15px 16px 14px;
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.4s var(--ease), border-color 0.4s var(--ease),
-    opacity 0.4s var(--ease);
+  overflow: hidden;
+  transition: box-shadow .45s var(--ease), border-color .45s var(--ease),
+    opacity .45s var(--ease), scale .45s var(--ease);
   will-change: transform;
 }
-.ocard.far { opacity: 0.46; }
-.ocard.mid { opacity: 0.82; }
-.ocard:hover { border-color: var(--brass); box-shadow: var(--shadow-brass); opacity: 1; z-index: 5; }
+.ocard.far { opacity: .42; filter: saturate(.85); }
+.ocard.mid { opacity: .8; }
+.ocard:hover { border-color: var(--brass); box-shadow: var(--shadow-brass); opacity: 1; scale: 1.04; z-index: 6; filter: none; }
 
-.ocard-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.ocard-corner {
+  position: absolute; top: 0; right: 0; width: 34px; height: 34px;
+  background: linear-gradient(225deg, var(--brass) 0 50%, transparent 50%);
+  opacity: .0; transition: opacity .45s var(--ease);
+}
+.ocard:hover .ocard-corner { opacity: .9; }
+
+.ocard-top { display: flex; align-items: center; gap: 9px; margin-bottom: 13px; }
+.ocard-mono {
+  width: 26px; height: 26px; flex: none; display: grid; place-items: center;
+  border-radius: 7px; background: var(--sunk); color: var(--slate-2);
+  font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .04em;
+}
 .ocard-sector {
-  font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em;
+  font-family: var(--mono); font-size: 9px; letter-spacing: .18em;
   text-transform: uppercase; color: var(--slate-3);
 }
-.ocard-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--slate-4); flex: none; }
-
-.ocard-amt { font-size: 30px; color: var(--slate); }
+.ocard-amt { font-size: 31px; color: var(--slate); letter-spacing: -.03em; }
 .ocard-amt small {
-  font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.14em;
+  font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .14em;
   color: var(--slate-3); margin-left: 5px; vertical-align: middle;
 }
 .ocard-prog { font-size: 11.5px; color: var(--slate-2); margin-top: 8px; line-height: 1.4; }
 .ocard-slot {
+  display: flex; align-items: center; gap: 7px;
   margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--line);
-  font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--slate-3);
 }
-.ocard-slot span {
-  display: inline-block; padding: 3px 9px; border: 1px dashed var(--line-2);
-  border-radius: 4px; color: var(--slate-3);
-}
+.ocard-slot .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--slate-4); flex: none; }
 
-/* the one brass card */
-.ocard.peak { background: var(--slate); border-color: var(--slate); }
+/* the one brass card — the ₹43.5 peak */
+.ocard.peak {
+  background: linear-gradient(165deg, var(--slate), color-mix(in srgb, var(--slate) 82%, #000));
+  border-color: var(--brass);
+  box-shadow: var(--shadow-brass);
+}
+.ocard.peak .ocard-mono { background: rgba(208,168,99,.16); color: var(--brass); }
 .ocard.peak .ocard-sector { color: var(--brass); }
-.ocard.peak .ocard-dot { background: var(--brass); }
 .ocard.peak .ocard-amt { color: var(--brass-wash); }
 .ocard.peak .ocard-amt small { color: var(--brass); }
 .ocard.peak .ocard-prog { color: var(--slate-4); }
-.ocard.peak .ocard-slot { border-top-color: var(--on-slate); }
-.ocard.peak .ocard-slot span { border-style: solid; border-color: var(--brass); color: var(--brass-wash); }
+.ocard.peak .ocard-slot { border-top-color: var(--on-slate); color: var(--brass-wash); }
+.ocard.peak .ocard-slot .dot { background: var(--brass); box-shadow: 0 0 8px var(--brass); }
+.ocard.peak .ocard-corner { opacity: .9; }
+
+@media (max-width: 600px) { .ocard { width: 200px; } }

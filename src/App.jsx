@@ -1,3 +1,4 @@
+import Atmosphere from "./components/Atmosphere";
 import Preloader from "./components/Preloader";
 import Nav from "./components/Nav";
 import Hero from "./components/sections/Hero";
@@ -11,6 +12,7 @@ import Recruit from "./components/sections/Recruit";
 export default function App() {
   return (
     <>
+      <Atmosphere />
       <Preloader />
       <Nav />
       <main>

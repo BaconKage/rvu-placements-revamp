@@ -151,3 +151,22 @@ export function buildOfferWall(cols = 7, rows = 6, seed = 20250915) {
   }
   return { cards, planeW: cols * CELL_W, planeH: rows * CELL_H };
 }
+
+// One dot per offer, positioned by package value. Sampled to match the
+// published distribution: ~85 below ₹10, ~45 in ₹10–20, ~20 in ₹20–33, plus
+// the single ₹43.5 peak. Deterministic.
+export function buildSwarm(seed = 4242) {
+  const rnd = mulberry32(seed);
+  const dots = [];
+  const push = (lo, hi, count, band) => {
+    for (let i = 0; i < count; i++) {
+      const v = +(lo + rnd() * (hi - lo)).toFixed(1);
+      dots.push({ v, band });
+    }
+  };
+  push(4, 10, 85, "base");
+  push(10, 20, 45, "mid");
+  push(20, 33, 20, "top");
+  dots.push({ v: 43.5, band: "peak", who: "Aviatrix" });
+  return dots;
+}

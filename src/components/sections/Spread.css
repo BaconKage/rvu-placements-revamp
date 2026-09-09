@@ -1,28 +1,49 @@
-.spread-h { font-size: var(--step-3); color: var(--ink); max-width: 24ch; }
+.spread-h { font-size: var(--step-3); color: var(--ink); max-width: 22ch; }
 .spread-h em { font-style: italic; color: var(--brass-2); }
-.dist { display: flex; flex-direction: column; margin-top: 40px; }
-.drow {
-  display: grid; grid-template-columns: minmax(120px, 168px) 1fr auto auto;
-  align-items: center; gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--line);
+
+.swarm-wrap { margin-top: 40px; }
+.swarm { width: 100%; height: auto; display: block; overflow: visible; }
+
+.swarm .axis { stroke: var(--line-2); stroke-width: 1; }
+.swarm .tick line { stroke: var(--line-2); stroke-width: 1; }
+.swarm .tick text {
+  font-family: var(--mono); font-size: 13px; fill: var(--slate-3); letter-spacing: 0.04em;
 }
-.drow:first-child { border-top: 1px solid var(--line); }
-.drow-band { font-size: 12px; letter-spacing: 0.06em; color: var(--slate-2); }
-.track { height: 10px; background: var(--sunk); border-radius: 3px; overflow: hidden; }
-.fill {
-  display: block; height: 100%; width: 0; border-radius: 3px; background: var(--slate-2);
-  transition: width 1s var(--ease); transition-delay: var(--d, 0ms);
+.swarm .tick.peak line { stroke: var(--brass-2); }
+.swarm .tick.peak text { fill: var(--brass-2); font-weight: 500; }
+
+.swarm .dot {
+  opacity: 0; transform-box: fill-box; transform-origin: center;
+  transform: scale(0);
+  transition: opacity .5s var(--ease), transform .6s var(--ease);
 }
-.reveal.in .fill { width: var(--w); }
-.drow-hint { font-size: 12px; color: var(--slate-3); text-align: right; min-width: 92px; }
-.drow-n { font-size: 12.5px; color: var(--slate-3); min-width: 48px; text-align: right; }
-.drow:hover .fill { background: var(--brass); }
-.drow:hover .drow-n { color: var(--brass-dd); }
-.drow.peak .fill { background: var(--brass-d); width: var(--w); }
+.swarm.live .dot { opacity: 1; transform: scale(1); }
+
+.swarm .dot.base { fill: var(--slate-4); }
+.swarm .dot.mid  { fill: var(--slate-2); }
+.swarm .dot.top  { fill: var(--slate); }
+.swarm .dot.peak { fill: var(--brass); filter: drop-shadow(0 0 10px color-mix(in srgb, var(--brass) 70%, transparent)); }
+.swarm .dot:hover { fill: var(--brass-2); }
+.swarm .dot.peak:hover { fill: var(--brass); }
+
+.peak-label { opacity: 0; transition: opacity .5s var(--ease) 1s; }
+.swarm.live .peak-label { opacity: 1; }
+.peak-label .peak-name { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; fill: var(--brass-2); }
+.peak-label .peak-amt { font-family: var(--serif); font-size: 20px; fill: var(--slate); font-weight: 600; }
+:root[data-theme="dark"] .peak-label .peak-amt { fill: var(--brass-wash); }
+
+.swarm-legend {
+  display: flex; flex-wrap: wrap; gap: 22px; margin-top: 22px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--slate-3);
+}
+.swarm-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.swarm-legend .k { width: 10px; height: 10px; border-radius: 50%; }
+.swarm-legend .k.base { background: var(--slate-4); }
+.swarm-legend .k.mid { background: var(--slate-2); }
+.swarm-legend .k.top { background: var(--slate); }
+.swarm-legend .k.peak { background: var(--brass); box-shadow: 0 0 8px var(--brass); }
+
 .spread-foot {
-  margin-top: 22px; font-size: 9.5px; letter-spacing: 0.1em; line-height: 1.9;
-  color: var(--slate-3); max-width: 72ch; text-transform: none;
-}
-@media (max-width: 620px) {
-  .drow { grid-template-columns: minmax(96px, 1fr) 2fr auto; }
-  .drow-hint { display: none; }
+  margin-top: 22px; font-size: 10px; letter-spacing: 0.08em; line-height: 1.9;
+  color: var(--slate-3); text-transform: none; min-height: 1.5em;
 }
