@@ -23,7 +23,7 @@ export default function Cohort() {
 
         <div className="mosaic" role="list">
           {SCHOOLS.map((s) => (
-            <div className="col" key={s.name} style={{ flexGrow: total(s) }}>
+            <div className="col" key={s.name}>
               <span className="col-name">{s.name.replace("School of ", "")}</span>
               <div className="col-cells">
                 {s.programmes.map((p) => (

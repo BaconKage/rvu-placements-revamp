@@ -63,6 +63,16 @@
   --brass-l: var(--bronze-l);
   --brass-wash: var(--bronze-wash);
   --ease-nk: cubic-bezier(0.5, 0, 0.2, 1);
+
+  /* feature band — a deliberately dark block; identical in light & dark themes */
+  --band-bg:    #273139;
+  --band-bg2:   #1c242a;
+  --band-fg:    #f0e7d6;
+  --band-muted: #9aa6ad;
+  --band-line:  rgba(240, 231, 214, 0.14);
+  --band-cell:  rgba(240, 231, 214, 0.035);
+  --band-cell-hi: rgba(203, 168, 105, 0.18);
+  --band-accent: #cba869;
 }
 
 :root[data-theme="dark"] {

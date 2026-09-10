@@ -1,4 +1,5 @@
 import Words from "../ui/Words";
+import { useCountUp } from "../../hooks/useCountUp";
 import { STATS, COPY } from "../../data/placements";
 import "./Hero.css";
 
@@ -25,17 +26,23 @@ export default function Hero() {
           </div>
 
           <dl className="mh-figures">
-            {STATS.slice(0, 4).map((s) => (
-              <div className="mh-fig" key={s.k}>
-                <dt className="num mh-fig-v">{s.v}<em>{s.unit}</em></dt>
-                <dd className="mh-fig-k mono">{s.k}</dd>
-              </div>
-            ))}
+            {STATS.slice(0, 4).map((s) => <Figure key={s.k} s={s} />)}
           </dl>
         </div>
 
         <div className="mh-rule mh-rule-bottom" />
       </div>
     </header>
+  );
+}
+
+function Figure({ s }) {
+  const target = Number(String(s.v).replace(/[^0-9.]/g, "")) || 0;
+  const [ref, val] = useCountUp(target, { duration: 1500 });
+  return (
+    <div className="mh-fig">
+      <dt className="num mh-fig-v" ref={ref}>{val}<em>{s.unit}</em></dt>
+      <dd className="mh-fig-k mono">{s.k}</dd>
+    </div>
   );
 }
