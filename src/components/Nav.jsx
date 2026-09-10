@@ -16,7 +16,7 @@ export default function Nav() {
   return (
     <nav className={`nav ${stuck ? "stuck" : ""}`}>
       <a className="brandmark" href="#top">
-        <span className="rv serif">R<em>V</em> University</span>
+        <span className="rv serif glow-cycle">R<em>V</em> University</span>
         <span className="divider" />
         <span className="dept mono">Placements</span>
       </a>

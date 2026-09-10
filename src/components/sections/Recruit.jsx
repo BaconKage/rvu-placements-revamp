@@ -9,7 +9,6 @@ export default function Recruit() {
   const mag = useMagnetic(0.35);
   return (
     <footer className="recruit" id="recruit">
-      <span className="gold-glow rec-glow" aria-hidden="true" />
       <div className="wrap">
         <div className="recruit-cta reveal" ref={ref}>
           <div>
@@ -34,7 +33,7 @@ export default function Recruit() {
         </div>
 
         <div className="foot-bar">
-          <span className="brandmark-foot serif">R<em>V</em> University · Placements</span>
+          <span className="brandmark-foot serif glow-cycle">R<em>V</em> University · Placements</span>
           <p className="disclaimer mono">
             Design concept for the RV University Placement Website Revamp Competition.
             Statistics, programme names, benefit descriptions and eligibility rules are

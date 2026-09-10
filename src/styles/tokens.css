@@ -6,10 +6,10 @@
 :root {
   color-scheme: light;
 
-  --paper:    #f0e9da;   /* warm cream — not white */
-  --paper-2:  #e7dec9;   /* deeper cream, for section rhythm */
-  --card:     #fbf7ee;   /* warm near-white — floats on the cream */
-  --sunk:     #e2d7bf;
+  --paper:    #f4f1e9;   /* soft warm off-white — warmth without heavy beige */
+  --paper-2:  #ece7db;   /* gentle warm step for section rhythm */
+  --card:     #fdfbf6;   /* near-white card — floats & adds contrast */
+  --sunk:     #e6e0d3;
 
   --ink:      #241f18;   /* warm near-black */
   --slate:    #2c3a42;
