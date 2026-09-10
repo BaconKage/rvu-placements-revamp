@@ -193,3 +193,24 @@ button { font: inherit; color: inherit; }
 
 /* section rhythm: alternate warm grounds against the base cream */
 .outcomes, .why { background: var(--paper-2); }
+
+/* ---- gold glow: breathing ambient behind brand marks, static halo on words ---- */
+@keyframes glowBreathe {
+  0%, 100% { opacity: 0.45; transform: scale(0.92); }
+  50%      { opacity: 0.9;  transform: scale(1.12); }
+}
+.gold-glow {
+  position: absolute; pointer-events: none; z-index: 0; border-radius: 50%;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--bronze) 42%, transparent),
+    color-mix(in srgb, var(--bronze) 14%, transparent) 55%,
+    transparent 74%);
+  filter: blur(34px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gold-glow { animation: glowBreathe 6.5s ease-in-out infinite; }
+}
+.w-glow { text-shadow: 0 0 22px color-mix(in srgb, var(--bronze) 60%, transparent),
+                       0 0 44px color-mix(in srgb, var(--bronze) 32%, transparent); }
+:root[data-theme="dark"] .w-glow { text-shadow: 0 0 22px color-mix(in srgb, var(--bronze) 75%, transparent),
+                       0 0 50px color-mix(in srgb, var(--bronze) 45%, transparent); }

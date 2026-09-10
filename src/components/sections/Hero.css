@@ -1,5 +1,6 @@
-.masthead { padding-top: calc(var(--nav-h) + clamp(28px, 6vw, 72px)); padding-bottom: clamp(28px, 5vw, 56px); }
-.mh-wrap { position: relative; }
+.masthead { position: relative; padding-top: calc(var(--nav-h) + clamp(28px, 6vw, 72px)); padding-bottom: clamp(28px, 5vw, 56px); }
+.mh-glow { top: -60px; left: -140px; width: 560px; height: 420px; }
+.mh-wrap { position: relative; z-index: 1; }
 .mh-rule { height: 1px; background: var(--line-2); }
 .mh-rule-top { margin-bottom: 20px; }
 .mh-rule-bottom { margin-top: clamp(36px, 5vw, 60px); }

@@ -9,6 +9,7 @@ export default function Recruit() {
   const mag = useMagnetic(0.35);
   return (
     <footer className="recruit" id="recruit">
+      <span className="gold-glow rec-glow" aria-hidden="true" />
       <div className="wrap">
         <div className="recruit-cta reveal" ref={ref}>
           <div>

@@ -1,4 +1,6 @@
-.recruit { border-top: 1px solid var(--line); background: var(--paper-2); padding-top: clamp(56px, 8vw, 104px); }
+.recruit { position: relative; overflow: hidden; border-top: 1px solid var(--line); background: var(--paper-2); padding-top: clamp(56px, 8vw, 104px); }
+.rec-glow { bottom: -80px; left: -120px; width: 520px; height: 380px; animation-delay: -3s; }
+.recruit .wrap { position: relative; z-index: 1; }
 .recruit-cta { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(28px, 5vw, 72px); align-items: start; }
 .recruit-h { font-size: var(--step-3); color: var(--ink); margin: 14px 0 0; max-width: 12ch; }
 .recruit-sub { color: var(--slate-2); margin: 16px 0 22px; max-width: 44ch; }

@@ -6,6 +6,7 @@ import "./Hero.css";
 export default function Hero() {
   return (
     <header className="masthead" id="top">
+      <span className="gold-glow mh-glow" aria-hidden="true" />
       <div className="wrap mh-wrap">
         <div className="mh-rule mh-rule-top" />
         <p className="mono mh-kicker">

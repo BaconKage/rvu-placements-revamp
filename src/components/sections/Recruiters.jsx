@@ -67,7 +67,7 @@ export default function Recruiters() {
       <div className="wrap">
         <Eyebrow idx="01">Recruiters</Eyebrow>
         <h2 className="serif rec-h">
-          <Words text="Who recruits from RV University." />
+          <Words text="Who recruits from RV University." glow={new Set([3, 4])} />
         </h2>
         <p className="lede rec-lede">
           {all.length} organisations across six sectors engaged with our students this cycle.
