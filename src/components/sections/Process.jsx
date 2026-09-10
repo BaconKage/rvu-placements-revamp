@@ -43,7 +43,7 @@ export default function Process() {
   return (
     <section className="section process" id="process" ref={secRef}>
       <div className="wrap">
-        <Eyebrow idx="05">Student eligibility</Eyebrow>
+        <Eyebrow idx="04">Student eligibility</Eyebrow>
         <h2 className="serif process-h">
           <Words text="What it takes to sit a drive." hi={new Set([4])} />
         </h2>

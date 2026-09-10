@@ -7,7 +7,7 @@ export default function Nav() {
   const { toggle, resolved } = useTheme();
 
   useEffect(() => {
-    const onScroll = () => setStuck(window.scrollY > 24);
+    const onScroll = () => setStuck(window.scrollY > 20);
     onScroll();
     addEventListener("scroll", onScroll, { passive: true });
     return () => removeEventListener("scroll", onScroll);
@@ -16,19 +16,19 @@ export default function Nav() {
   return (
     <nav className={`nav ${stuck ? "stuck" : ""}`}>
       <a className="brandmark" href="#top">
-        <span className="rv alt">R<em>V</em> University</span>
+        <span className="rv serif">R<em>V</em> University</span>
         <span className="divider" />
-        <span className="dept mono">Corporate &amp; Alumni Relations</span>
+        <span className="dept mono">Placements</span>
       </a>
       <div className="nav-right">
-        <a className="nav-link mono" href="#record">Record</a>
-        <a className="nav-link mono" href="#companies">Recruiters</a>
+        <a className="nav-link mono" href="#recruiters">Recruiters</a>
+        <a className="nav-link mono" href="#outcomes">Outcomes</a>
         <a className="nav-link mono" href="#cohort">Cohort</a>
         <a className="nav-link mono" href="#process">Process</a>
         <button className="theme-btn" onClick={toggle} aria-label="Toggle colour theme" title="Toggle theme">
           {resolved === "dark" ? "☾" : "☀"}
         </button>
-        <a className="btn nav-cta" href="#recruit">Recruit now <span className="arrow">→</span></a>
+        <a className="nav-cta mono" href="#recruit">Recruit with us</a>
       </div>
     </nav>
   );

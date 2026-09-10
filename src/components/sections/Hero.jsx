@@ -1,68 +1,41 @@
-import { useMemo } from "react";
-import { buildOfferWall, COPY } from "../../data/placements";
-import { useDraggableWall } from "../../hooks/useDraggableWall";
-import { useMagnetic } from "../../hooks/useMagnetic";
-import OfferCard from "../ui/OfferCard";
 import Words from "../ui/Words";
+import { STATS, COPY } from "../../data/placements";
 import "./Hero.css";
 
 export default function Hero() {
-  const { cards, planeW, planeH } = useMemo(() => buildOfferWall(), []);
-  const { frameRef, planeRef, recentre } = useDraggableWall(planeW, planeH);
-  const magA = useMagnetic(0.5);
-  const magB = useMagnetic(0.4);
-
   return (
-    <header className="hero" id="top">
-      <div
-        className="wall"
-        ref={frameRef}
-        tabIndex={0}
-        role="region"
-        aria-label="A draggable wall of RV University placement offers. Use arrow keys to pan."
-        data-lenis-prevent
-      >
-        <div className="wall-atmos" aria-hidden="true" />
-        <div className="plane" ref={planeRef} style={{ width: planeW, height: planeH }}>
-          {cards.map((c, i) => (
-            <div className="ocard-in" style={{ "--i": i }} key={c.id}>
-              <OfferCard card={c} />
+    <header className="masthead" id="top">
+      <div className="wrap mh-wrap">
+        <div className="mh-rule mh-rule-top" />
+        <p className="mono mh-kicker">
+          <span>RV University · Bengaluru</span>
+          <span>Placement Record · 2024–25</span>
+        </p>
+
+        <div className="mh-body">
+          <div className="mh-lead">
+            <h1 className="serif mh-title">
+              <Words text="Career Development &amp; Corporate Relations" hi={new Set([])} />
+            </h1>
+            <p className="mh-intro">{COPY.carIntro}</p>
+            <div className="mh-actions">
+              <a className="mh-link" href="#recruiters">Read the record <span aria-hidden="true">↓</span></a>
+              <a className="mh-link muted" href="#recruit">Recruit with us <span aria-hidden="true">→</span></a>
             </div>
-          ))}
-        </div>
-
-        <div className="wall-copy">
-          <span className="mono hero-kicker">{COPY.eyebrow}</span>
-          <h1 className="serif hero-h1">
-            <Words text={COPY.heroLead} as="span" className="l1" />
-            <Words text={COPY.heroTrail} as="span" className="l2" delay={260} hi={new Set([1, 2])} />
-          </h1>
-          <p className="hero-lede rise">{COPY.heroSub}</p>
-          <div className="hero-actions">
-            <a className="btn magnetic" ref={magA} href="#recruit">Recruit now <span className="arrow">→</span></a>
-            <a className="btn ghost magnetic" ref={magB} href="#record">See the record</a>
           </div>
+
+          <dl className="mh-figures">
+            {STATS.slice(0, 4).map((s) => (
+              <div className="mh-fig" key={s.k}>
+                <dt className="num mh-fig-v">{s.v}<em>{s.unit}</em></dt>
+                <dd className="mh-fig-k mono">{s.k}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
-        <div className="wall-hud">
-          <span className="pulse" aria-hidden="true" />
-          <span className="mono">Drag the wall — every card is one real offer</span>
-          <button type="button" className="recentre mono" onClick={recentre}>Recentre</button>
-        </div>
-      </div>
-
-      <div className="ticker" aria-hidden="true">
-        <div className="ticker-row">
-          {Array(2).fill(TICKER).flat().map((t, i) => (
-            <span className="ticker-item" key={i}>{t}<span className="ticker-sep">✦</span></span>
-          ))}
-        </div>
+        <div className="mh-rule mh-rule-bottom" />
       </div>
     </header>
   );
 }
-
-const TICKER = [
-  "50+ RECRUITERS ON CAMPUS", "425 OFFERS FACILITATED", "1,600+ GRADUATES", "6 SCHOOLS",
-  "MNC · GCC · TECH", "CONSULTING · FINANCE · STARTUP", "GLOBAL CAPABILITY CENTRES",
-];

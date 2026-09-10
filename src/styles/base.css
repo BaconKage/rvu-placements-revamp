@@ -41,11 +41,10 @@ button { font: inherit; color: inherit; }
 
 .serif {
   font-family: var(--serif);
-  font-weight: 500;
+  font-weight: 600;
   font-optical-sizing: auto;
-  font-variation-settings: "SOFT" 40, "WONK" 0;
-  letter-spacing: -0.015em;
-  line-height: 1.04;
+  letter-spacing: -0.022em;
+  line-height: 1.05;
   margin: 0;
   text-wrap: balance;
 }
@@ -58,10 +57,10 @@ button { font: inherit; color: inherit; }
 
 .num {
   font-family: var(--serif);
-  font-weight: 500;
+  font-weight: 600;
   font-optical-sizing: auto;
-  letter-spacing: -0.025em;
-  line-height: 0.9;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
   font-variant-numeric: tabular-nums lining-nums;
 }
 
@@ -121,8 +120,8 @@ button { font: inherit; color: inherit; }
   overflow: hidden;
   transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
 }
-.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-.btn:active { transform: translateY(0); }
+.btn:hover { border-color: var(--ink); }
+.btn:active { transform: translateY(1px); }
 .btn .arrow { transition: transform 0.35s var(--ease); }
 .btn:hover .arrow { transform: translateX(4px); }
 .btn.ghost {
@@ -160,9 +159,9 @@ button { font: inherit; color: inherit; }
   .words .w { overflow: hidden; }
   .words .w > span {
     display: inline-block;
-    transform: translateY(110%);
-    transition: transform 0.9s var(--ease-nk);
-    transition-delay: calc(var(--i, 0) * 55ms + var(--d, 0ms));
+    transform: translateY(105%);
+    transition: transform 1s var(--ease);
+    transition-delay: calc(var(--i, 0) * 42ms + var(--d, 0ms));
   }
   .words.in .w > span { transform: translateY(0); }
 }
@@ -177,7 +176,7 @@ button { font: inherit; color: inherit; }
 .magnetic { transition: transform 0.35s var(--ease); will-change: transform; }
 .magnetic:hover { transform: translate(var(--mx, 0), var(--my, 0)); }
 
-.words .w-hi { font-style: italic; color: var(--brass-2); }
+.words .w-hi { font-style: italic; color: var(--bronze-2); }
 
 /* ==========================================================================
    Mobile polish
@@ -191,3 +190,6 @@ button { font: inherit; color: inherit; }
 @media (max-width: 400px) {
   :root { --gut: 16px; }
 }
+
+/* section rhythm: alternate warm grounds against the base cream */
+.outcomes, .why { background: var(--paper-2); }

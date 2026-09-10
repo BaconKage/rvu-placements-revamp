@@ -1,7 +1,7 @@
 .pre {
   position: fixed; inset: 0; z-index: 400;
-  background: var(--slate);
-  color: var(--brass-wash);
+  background: var(--paper);
+  color: var(--ink);
   display: flex; flex-direction: column; justify-content: center;
   padding: var(--gut);
   transition: transform 0.9s var(--ease-nk);
@@ -9,19 +9,19 @@
 .pre.exit { transform: translateY(-101%); }
 
 .pre-grid { display: flex; flex-direction: column; gap: 14px; max-width: var(--maxw); margin: auto auto; width: 100%; }
-.pre-kicker { color: var(--brass); opacity: 0; animation: preRise .7s var(--ease-nk) .1s forwards; }
-.pre-brand { font-size: clamp(1.4rem, 4vw, 2.4rem); font-weight: 700; letter-spacing: -.03em; color: var(--brass-wash); opacity: 0; animation: preRise .8s var(--ease-nk) .25s forwards; }
-.pre-brand em { font-style: normal; color: var(--brass); }
-.pre-word { font-size: clamp(3rem, 13vw, 10rem); color: var(--brass-wash); line-height: .9; opacity: 0; animation: preRise .9s var(--ease-nk) .4s forwards; }
+.pre-kicker { color: var(--bronze-2); opacity: 0; animation: preRise .7s var(--ease-nk) .1s forwards; }
+.pre-brand { font-size: clamp(1.4rem, 4vw, 2.4rem); font-weight: 500; letter-spacing: -.01em; color: var(--ink); opacity: 0; animation: preRise .8s var(--ease-nk) .25s forwards; }
+.pre-brand em { font-style: normal; color: var(--bronze-2); }
+.pre-word { font-size: clamp(3rem, 13vw, 10rem); color: var(--ink); line-height: .9; opacity: 0; animation: preRise .9s var(--ease-nk) .4s forwards; }
 
 .pre-bottom {
   position: absolute; left: var(--gut); right: var(--gut); bottom: clamp(24px, 5vw, 54px);
   display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
   max-width: var(--maxw); margin: 0 auto;
 }
-.pre-count { font-size: clamp(2rem, 6vw, 4rem); color: var(--brass); }
-.pre-bar { flex: 1; max-width: 340px; height: 2px; background: var(--on-slate); margin-bottom: 12px; overflow: hidden; }
-.pre-bar-fill { display: block; height: 100%; background: var(--brass); transform-origin: left; }
+.pre-count { font-size: clamp(2rem, 6vw, 4rem); color: var(--bronze-2); }
+.pre-bar { flex: 1; max-width: 340px; height: 2px; background: var(--line-2); margin-bottom: 12px; overflow: hidden; }
+.pre-bar-fill { display: block; height: 100%; background: var(--bronze); transform-origin: left; }
 
 @keyframes preRise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
 

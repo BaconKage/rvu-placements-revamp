@@ -171,3 +171,34 @@ export function buildOfferWall(cols = 7, rows = 6, seed = 20250915) {
   }
   return { cards, planeW: cols * CELL_W, planeH: rows * CELL_H };
 }
+
+// ---- "Where they landed": anonymised outcomes from the 2023-batch CSE sheet.
+// Programme → company · role. No names, no packages.
+export const OUTCOMES = [
+  { prog: "B.Tech CSE", co: "Société Générale", role: "Cybersecurity Analyst" },
+  { prog: "B.Tech CSE", co: "Acko", role: "SDE-1" },
+  { prog: "B.Tech CSE", co: "Commonwealth Bank", role: "Graduate Engineering" },
+  { prog: "B.Tech CSE", co: "Dell Technologies", role: "Software Engineer" },
+  { prog: "B.Tech CSE", co: "Fractal Analytics", role: "Imagineer" },
+  { prog: "B.Tech CSE", co: "EY", role: "Consultant — Technology" },
+  { prog: "B.Tech CSE", co: "State Street", role: "Technology Intern" },
+  { prog: "B.Tech CSE", co: "Presidio", role: "Associate Engineer" },
+  { prog: "B.Tech CSE", co: "Aviatrix", role: "Cloud / SDE" },
+  { prog: "B.Tech CSE", co: "Baker Hughes", role: "Data & AI" },
+  { prog: "B.Tech CSE", co: "Thomson Reuters", role: "Software Engineering Intern" },
+  { prog: "B.Tech CSE", co: "Hyperface", role: "SDE Intern" },
+  { prog: "B.Tech CSE", co: "Skyworks", role: "Firmware Engineer" },
+  { prog: "B.Tech CSE", co: "Northern Trust", role: "Analyst SW Engineer" },
+  { prog: "B.Tech CSE", co: "Infosys", role: "Specialist Programmer" },
+  { prog: "B.Tech CSE", co: "Crestron", role: "Full-Stack Developer" },
+];
+
+// ---- Recruiter directory, grouped by sector (real companies from the sheets) ----
+export const RECRUITER_SECTORS = [
+  { sector: "Technology & Software", cos: ["Dell", "Presidio", "Crestron", "Netgear", "Pega Systems", "Whatfix", "Sage", "Vymo", "Konovo", "Cognizant", "TCS", "Infosys", "Thomson Reuters", "Teamlease", "Photon"] },
+  { sector: "Finance & Fintech", cos: ["Société Générale", "Commonwealth Bank", "State Street", "Northern Trust", "Acko", "Hyperface"] },
+  { sector: "Consulting & Analytics", cos: ["EY", "Fractal Analytics", "Aon", "ZS Associates"] },
+  { sector: "Cybersecurity", cos: ["Arctic Wolf", "Ampcus Cyber", "Verint"] },
+  { sector: "Energy, Industrial & Health", cos: ["Baker Hughes", "Koch", "Haleon", "Siemens Healthineers"] },
+  { sector: "Deep-tech & Startups", cos: ["Aviatrix", "Inflection", "O9 Solutions", "Skyworks", "Kinaxis", "Bhatiyani Astute"] },
+];

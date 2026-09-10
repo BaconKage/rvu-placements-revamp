@@ -33,7 +33,7 @@ export default function Recruit() {
         </div>
 
         <div className="foot-bar">
-          <span className="brandmark-foot alt">R<em>V</em> University · Placements</span>
+          <span className="brandmark-foot serif">R<em>V</em> University · Placements</span>
           <p className="disclaimer mono">
             Design concept for the RV University Placement Website Revamp Competition.
             Statistics, programme names, benefit descriptions and eligibility rules are

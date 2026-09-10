@@ -26,7 +26,7 @@ export default function Preloader() {
     <div className={`pre ${phase === "exit" ? "exit" : ""}`} aria-hidden="true">
       <div className="pre-grid">
         <span className="pre-kicker mono">Corporate &amp; Alumni Relations</span>
-        <span className="pre-brand alt">R<em>V</em> University</span>
+        <span className="pre-brand serif">R<em>V</em> University</span>
         <span className="pre-word serif">Placements</span>
       </div>
       <div className="pre-bottom">

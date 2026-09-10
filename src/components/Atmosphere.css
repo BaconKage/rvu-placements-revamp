@@ -1,31 +1,6 @@
-/* film grain — one fixed veil, GPU-cheap */
 .grain {
   position: fixed; inset: 0; z-index: 300; pointer-events: none;
-  opacity: 0.5; mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.55; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
 }
-:root[data-theme="dark"] .grain { mix-blend-mode: screen; opacity: 0.06; }
-
-/* custom cursor — hidden until enabled */
-.cur-dot, .cur-ring { position: fixed; top: 0; left: 0; z-index: 320; pointer-events: none; border-radius: 50%; }
-.cur-dot {
-  width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px;
-  background: var(--brass-2);
-  transition: width .25s var(--ease), height .25s var(--ease), margin .25s var(--ease), background .25s;
-}
-.cur-dot.hot { width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; }
-.cur-ring {
-  width: 34px; height: 34px; margin: -17px 0 0 -17px;
-  border: 1px solid color-mix(in srgb, var(--brass-2) 55%, transparent);
-  transition: width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease),
-    border-color .3s, background .3s;
-}
-.cur-ring.hot {
-  width: 54px; height: 54px; margin: -27px 0 0 -27px;
-  background: color-mix(in srgb, var(--brass) 10%, transparent);
-  border-color: var(--brass);
-}
-@media (hover:hover) and (pointer:fine) {
-  .has-cursor, .has-cursor * { cursor: none !important; }
-  .has-cursor .wall { cursor: none !important; }
-}
+:root[data-theme="dark"] .grain { mix-blend-mode: screen; opacity: 0.05; }

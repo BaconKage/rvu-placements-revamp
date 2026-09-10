@@ -1,17 +1,17 @@
 .process-h { font-size: var(--step-3); color: var(--ink); margin-bottom: 52px; }
-.timeline { position: relative; padding-left: 4px; }
+.timeline { position: relative; }
 
 /* the spine that fills as you scroll */
-.tl-track { position: absolute; left: 15px; top: 8px; bottom: 8px; width: 2px; background: var(--line-2); border-radius: 2px; overflow: hidden; }
+.tl-track { position: absolute; left: 15px; top: 16px; bottom: 16px; width: 2px; background: var(--line-2); border-radius: 2px; overflow: hidden; }
 .tl-fill { position: absolute; inset: 0; background: linear-gradient(var(--brass), var(--brass-d)); transform: scaleY(0); transform-origin: top; }
 
 .tl-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .tl-row {
   position: relative; display: grid; grid-template-columns: 32px 54px 1fr; align-items: center; gap: 18px;
   padding: 20px 8px 20px 0; border-radius: 12px;
-  transition: background .4s var(--ease), padding-left .4s var(--ease);
+  transition: background .4s var(--ease);
 }
-.tl-row:hover { background: var(--paper-2); padding-left: 12px; }
+.tl-row:hover { background: var(--paper-2); }
 
 .tl-node { width: 32px; height: 32px; display: grid; place-items: center; }
 .tl-node-dot {

@@ -1,0 +1,21 @@
+.out-h { font-size: var(--step-3); color: var(--ink); }
+.out-lede { margin-top: 16px; }
+.out-list { list-style: none; margin: clamp(28px, 4vw, 44px) 0 0; padding: 0; border-top: 1px solid var(--line); }
+.out-row {
+  display: grid; grid-template-columns: 116px 24px 1.1fr 1.3fr; align-items: baseline; gap: 16px;
+  padding: 18px 6px; border-bottom: 1px solid var(--line);
+  transition: background .35s var(--ease), padding-left .35s var(--ease);
+}
+.out-row:hover { background: var(--paper-2); padding-left: 14px; }
+.out-prog { color: var(--slate-3); }
+.out-arrow { color: var(--bronze); }
+.out-co { font-size: clamp(1.05rem, 1.8vw, 1.4rem); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+.out-role { color: var(--slate-2); font-size: 14px; }
+
+@media (max-width: 620px) {
+  .out-row { grid-template-columns: 1fr; gap: 3px; padding: 16px 6px; }
+  .out-arrow { display: none; }
+  .out-prog { order: 1; }
+  .out-co { order: 2; margin-top: 2px; }
+  .out-role { order: 3; }
+}

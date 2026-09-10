@@ -8,9 +8,9 @@ export default function WhyRecruit() {
   return (
     <section className="section why" id="why">
       <div className="wrap">
-        <Eyebrow idx="02">Why recruit at RVU</Eyebrow>
+        <Eyebrow idx="05">Why recruit here</Eyebrow>
         <h2 className="serif why-h">
-          <Words text="Six reasons hiring managers keep coming back." hi={new Set([0])} />
+          <Words text="Why organisations recruit here." />
         </h2>
         <div className="why-grid">
           {WHY.map((b, i) => <WhyCell key={b.h} b={b} i={i} />)}
