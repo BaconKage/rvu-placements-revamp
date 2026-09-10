@@ -14,7 +14,7 @@ export default function Cohort() {
   return (
     <section className="cohort" id="cohort">
       <div className="band reveal" ref={ref}>
-        <Eyebrow idx="03">Schools eligible for recruitment</Eyebrow>
+        <Eyebrow idx="02">Schools eligible for recruitment</Eyebrow>
         <h2 className="serif band-h"><Words text="Every block is a programme." hi={new Set([1])} /></h2>
         <p className="lede band-lede">
           Width is a school, height a programme, area the headcount eligible for

@@ -22,7 +22,6 @@ export default function Nav() {
       </a>
       <div className="nav-right">
         <a className="nav-link mono" href="#recruiters">Recruiters</a>
-        <a className="nav-link mono" href="#outcomes">Outcomes</a>
         <a className="nav-link mono" href="#cohort">Cohort</a>
         <a className="nav-link mono" href="#process">Process</a>
         <button className="theme-btn" onClick={toggle} aria-label="Toggle colour theme" title="Toggle theme">

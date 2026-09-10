@@ -1,17 +1,19 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import Eyebrow from "../ui/Eyebrow";
 import Words from "../ui/Words";
-import { RECRUITER_SECTORS, UPCOMING } from "../../data/placements";
+import { RECRUITER_SECTORS, UPCOMING, REPUTATION } from "../../data/placements";
 import "./Recruiters.css";
 
 const FLIP_EASE = "cubic-bezier(0.33, 1, 0.68, 1)";
 
 export default function Recruiters() {
   // flatten to one list; keep sector for filtering
-  const all = useMemo(
-    () => RECRUITER_SECTORS.flatMap((g) => g.cos.map((co) => ({ co, sector: g.sector }))),
-    []
-  );
+  const all = useMemo(() => {
+    const rank = (co) => { const i = REPUTATION.indexOf(co); return i === -1 ? 999 : i; };
+    return RECRUITER_SECTORS
+      .flatMap((g) => g.cos.map((co) => ({ co, sector: g.sector })))
+      .sort((a, b) => rank(a.co) - rank(b.co));
+  }, []);
   const sectors = useMemo(() => RECRUITER_SECTORS.map((g) => g.sector), []);
   const [active, setActive] = useState("All");
 

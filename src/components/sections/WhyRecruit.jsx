@@ -8,7 +8,7 @@ export default function WhyRecruit() {
   return (
     <section className="section why" id="why">
       <div className="wrap">
-        <Eyebrow idx="05">Why recruit here</Eyebrow>
+        <Eyebrow idx="04">Why recruit here</Eyebrow>
         <h2 className="serif why-h">
           <Words text="Why organisations recruit here." />
         </h2>

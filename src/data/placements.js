@@ -202,3 +202,14 @@ export const RECRUITER_SECTORS = [
   { sector: "Energy, Industrial & Health", cos: ["Baker Hughes", "Koch", "Haleon", "Siemens Healthineers"] },
   { sector: "Deep-tech & Startups", cos: ["Aviatrix", "Inflection", "O9 Solutions", "Skyworks", "Kinaxis", "Bhatiyani Astute"] },
 ];
+
+// Rough prestige/recognition order for the recruiter grid (highest first).
+// Anything not listed sorts to the end. Names match RECRUITER_SECTORS exactly.
+export const REPUTATION = [
+  "Dell", "Société Générale", "Commonwealth Bank", "EY", "Cognizant", "TCS",
+  "Infosys", "State Street", "Northern Trust", "Baker Hughes", "Siemens Healthineers",
+  "Skyworks", "Thomson Reuters", "Acko", "Fractal Analytics", "Aon", "ZS Associates",
+  "Kinaxis", "Verint", "Presidio", "Whatfix", "Netgear", "Pega Systems", "Koch",
+  "Haleon", "Arctic Wolf", "Crestron", "Sage", "Aviatrix", "Hyperface", "Inflection",
+  "O9 Solutions", "Vymo", "Konovo", "Ampcus Cyber", "Teamlease", "Photon", "Bhatiyani Astute",
+];
