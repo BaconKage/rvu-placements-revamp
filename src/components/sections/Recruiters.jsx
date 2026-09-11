@@ -164,7 +164,7 @@ export default function Recruiters() {
         </span>
         <nav className="rw-paths" aria-label="Choose your path">
           <Link to="/students">For students</Link>
-          <Link to="/partners">For corporate partners</Link>
+          <Link to="/partners">For recruiters</Link>
           <Link to="/parents">For parents</Link>
           <Link className="rw-paths-cta" to="/forms">Register to recruit</Link>
         </nav>

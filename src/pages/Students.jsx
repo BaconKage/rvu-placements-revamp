@@ -19,7 +19,7 @@ export default function Students() {
         ]}
         actions={[
           { href: `mailto:${CONTACT.email}`, label: "Ask CAR a question", primary: true },
-          { to: "/", label: "Explore recruiters" },
+          { to: "/recruiters", label: "Explore recruiters" },
         ]}
         links={[
           ["#process", "Eligibility"],

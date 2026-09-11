@@ -1,0 +1,122 @@
+/* ==========================================================================
+   Home — the front door. RVU's own palette only: gold #d0a863, slate #233039,
+   ink #050a09 on white; Playfair Display + Cantarell as on rvu.edu.in.
+   One screen, no scroll.
+   ========================================================================== */
+html.home-lock, html.home-lock body { overflow: hidden; height: 100%; overscroll-behavior: none; }
+
+.hero {
+  --h-bg: #ffffff;
+  --h-ink: #050a09;
+  --h-slate: #233039;
+  --h-body: #45525b;
+  --h-gold: #d0a863;
+  --h-gold-text: #9c7837;   /* the gold, deepened for small text on white */
+  --h-card: #ffffff;
+  --h-on-slate: #ffffff;
+  position: relative; height: 100vh; min-height: 520px; overflow: hidden;
+  display: grid; place-items: center;
+  padding: calc(var(--nav-h) + 8px) var(--gut) 56px;
+  background: var(--h-bg); color: var(--h-ink);
+  font-family: "Cantarell", var(--sans);
+}
+@supports (height: 100svh) { .hero { height: 100svh; } }
+:root[data-theme="dark"] .hero {
+  --h-bg: #1a242b;
+  --h-ink: #f5f2ea;
+  --h-slate: #d0a863;
+  --h-body: #b9c2c7;
+  --h-gold-text: #d0a863;
+  --h-card: #233039;
+  --h-on-slate: #1a242b;
+}
+
+.hero-inner { position: relative; width: min(1100px, 100%); padding: clamp(18px, 4vh, 44px) clamp(18px, 4vw, 56px); text-align: center; }
+
+/* RVU's gold corner brackets */
+.hero-corner { position: absolute; width: clamp(40px, 6vw, 64px); height: clamp(40px, 6vw, 64px); border: 0 solid var(--h-gold); pointer-events: none; }
+.hero-corner.tl { top: 0; left: 0; border-top-width: 2px; border-left-width: 2px; }
+.hero-corner.br { right: 0; bottom: 0; border-right-width: 2px; border-bottom-width: 2px; }
+
+.hero-kicker { display: inline-block; font-weight: 700; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--h-gold-text); }
+.hero .hero-title {
+  margin: clamp(10px, 1.6vh, 16px) auto 0; max-width: 20ch;
+  font-family: "Playfair Display", Georgia, serif; font-weight: 600;
+  font-size: clamp(2rem, 1.1rem + 3.2vw, 3.7rem); line-height: 1.08; letter-spacing: -0.01em; color: var(--h-ink);
+  text-wrap: balance;
+}
+.hero .hero-sub { margin: clamp(10px, 1.6vh, 16px) 0 0; font-weight: 700; font-size: clamp(1rem, 0.92rem + 0.35vw, 1.2rem); color: var(--h-slate); }
+.hero .hero-para { margin: 10px auto 0; max-width: 60ch; font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem); line-height: 1.65; color: var(--h-body); }
+
+.hero .hero-ask {
+  display: flex; align-items: center; gap: 16px; justify-content: center;
+  margin: clamp(20px, 4vh, 40px) auto clamp(12px, 2vh, 18px); max-width: 460px;
+  font-weight: 700; font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--h-slate);
+}
+.hero-ask::before, .hero-ask::after { content: ""; flex: 1; height: 1px; background: var(--h-gold); }
+
+/* the three buttons — each a lockup in the RVU logo's manner:
+   crest mark · small line · bold word · rule · italic tagline */
+.hero-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
+.choice {
+  position: relative; display: flex; align-items: center; gap: 16px; text-align: left;
+  padding: clamp(14px, 2.4vh, 22px) 20px; border-radius: 8px;
+  background: var(--h-card); color: var(--h-slate); border: 1.5px solid var(--h-slate);
+  transition: background 0.35s var(--ease), color 0.35s var(--ease), transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+.choice::before { /* gold corner that appears on hover */
+  content: ""; position: absolute; top: -7px; left: -7px; width: 22px; height: 22px;
+  border-top: 2px solid var(--h-gold); border-left: 2px solid var(--h-gold);
+  opacity: 0; transform: translate(4px, 4px); transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.choice:hover, .choice:focus-visible {
+  background: var(--h-slate); color: var(--h-on-slate); transform: translateY(-4px);
+  box-shadow: 0 20px 36px -20px rgba(35, 48, 57, 0.6); outline: none;
+}
+.choice:hover::before, .choice:focus-visible::before { opacity: 1; transform: none; }
+.choice:focus-visible { box-shadow: 0 0 0 3px var(--h-gold); }
+
+.choice-mark { flex: none; width: clamp(40px, 4vw, 50px); height: auto; aspect-ratio: 48 / 56; transition: color 0.35s var(--ease); }
+.choice:hover .choice-mark, .choice:focus-visible .choice-mark { color: var(--h-gold); }
+
+.choice-lock { display: flex; flex-direction: column; min-width: 0; }
+.choice-top { font-weight: 700; font-size: 10.5px; line-height: 1; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.8; }
+.choice-word { margin-top: 4px; font-weight: 700; font-size: clamp(1.2rem, 0.9rem + 0.8vw, 1.6rem); line-height: 1; letter-spacing: 0.01em; text-transform: uppercase; white-space: nowrap; }
+.choice-rule { height: 2px; margin: 7px 0 6px; background: currentColor; transition: background 0.35s var(--ease); }
+.choice:hover .choice-rule, .choice:focus-visible .choice-rule { background: var(--h-gold); }
+.choice-tag { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-size: 13.5px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.choice-arrow { flex: none; margin-left: auto; padding-left: 10px; font-size: 20px; color: var(--h-gold); transition: transform 0.35s var(--ease); }
+.choice:hover .choice-arrow, .choice:focus-visible .choice-arrow { transform: translateX(4px); }
+
+.hero-foot {
+  position: absolute; left: var(--gut); right: var(--gut); bottom: clamp(12px, 2.4vh, 22px);
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 26px; font-size: 13px;
+}
+.hero-foot a { color: var(--h-body); border-bottom: 1px solid transparent; transition: color 0.25s var(--ease), border-color 0.25s var(--ease); }
+.hero-foot a:hover { color: var(--h-ink); border-bottom-color: var(--h-gold); }
+.hero-foot a:first-child { color: var(--h-gold-text); }
+
+/* entrance, timed to the loader curtain */
+@media (prefers-reduced-motion: no-preference) {
+  .hero .rise { opacity: 0; transform: translateY(16px); transition: opacity 0.7s var(--ease), transform 0.8s var(--ease-nk), background 0.35s var(--ease), color 0.35s var(--ease), box-shadow 0.35s var(--ease); transition-delay: var(--d, 0ms), var(--d, 0ms), 0ms, 0ms, 0ms; }
+  .hero.in .rise { opacity: 1; transform: none; }
+  .hero.in .choice.rise:hover, .hero.in .choice.rise:focus-visible { transform: translateY(-4px); transition-delay: 0ms; }
+}
+
+@media (max-width: 860px) {
+  .hero-choices { grid-template-columns: minmax(0, 1fr); max-width: 440px; margin: 0 auto; }
+  .choice { padding: 12px 16px; }
+  .choice-word { font-size: 1.3rem; }
+  .hero-corner { display: none; }
+  .hero-inner { padding-inline: 0; }
+}
+/* short screens: tighten so nothing needs scrolling */
+@media (max-height: 760px) {
+  .hero .hero-para { font-size: 0.92rem; line-height: 1.55; }
+  .hero .hero-ask { margin-top: 16px; }
+  .choice-tag { font-size: 12.5px; }
+}
+@media (max-width: 860px) and (max-height: 740px) {
+  .hero .hero-para { display: none; }
+  .hero-foot { display: none; }
+}

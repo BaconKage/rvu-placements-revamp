@@ -5,13 +5,15 @@ import "./Nav.css";
 
 const PATHS = [
   ["/students", "Students"],
-  ["/partners", "Corporate partners"],
+  ["/partners", "Recruiters"],
   ["/parents", "Parents"],
+  ["/recruiters", "Who recruits"],
 ];
 
 export default function Nav() {
   const { pathname } = useLocation();
-  const onDark = pathname === "/";
+  const onDark = pathname === "/recruiters";
+  const onHero = pathname === "/";
   const [stuck, setStuck] = useState(false);
   const [open, setOpen] = useState(false);
   const { toggle, resolved } = useTheme();
@@ -26,7 +28,7 @@ export default function Nav() {
   useEffect(() => { setOpen(false); }, [pathname]);
 
   return (
-    <nav className={`nav ${stuck ? "stuck" : ""} ${onDark ? "on-dark" : ""} ${open ? "open" : ""}`}>
+    <nav className={`nav ${stuck ? "stuck" : ""} ${onDark ? "on-dark" : ""} ${onHero ? "on-hero" : ""} ${open ? "open" : ""}`}>
       <Link className="brandmark" to="/">
         <span className="rv serif glow-cycle">R<em>V</em> University</span>
         <span className="divider" />
@@ -51,8 +53,11 @@ export default function Nav() {
         </button>
       </div>
       <div className="nav-sheet" id="nav-sheet" hidden={!open}>
-        <Link to="/">Recruiter wall</Link>
-        {PATHS.map(([to, label]) => <Link key={to} to={to}>For {label.toLowerCase()}</Link>)}
+        <Link to="/">Home</Link>
+        <Link to="/students">For students</Link>
+        <Link to="/partners">For recruiters</Link>
+        <Link to="/parents">For parents</Link>
+        <Link to="/recruiters">Who recruits</Link>
         <Link to="/forms">Register to recruit →</Link>
       </div>
     </nav>
