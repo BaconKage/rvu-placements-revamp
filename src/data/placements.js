@@ -222,7 +222,7 @@ export function buildRecruiterField(cols = 6, seed = 77) {
     .flatMap((g) => g.cos.map((co) => ({ co, sector: g.sector })))
     .sort((a, b) => rank(a.co) - rank(b.co));
   const rnd = mulberry32(seed);
-  const CELL_W = 326, CELL_H = 212;
+  const CELL_W = 288, CELL_H = 330;
   const cards = list.map((c, i) => {
     const col = i % cols, row = Math.floor(i / cols);
     const stagger = (col % 2) * 46;               // alternate columns ride lower
