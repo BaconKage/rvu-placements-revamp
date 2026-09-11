@@ -1,36 +1,32 @@
-/* Loader — the same night-teal as the recruiter wall, so it can dissolve
-   straight into it while the cards fly in. */
+/* Loader — an RVU slate curtain (gold accents, Playfair wordmark) that lifts
+   to reveal the page; the home's content rises in as it goes. */
 .pre {
   position: fixed; inset: 0; z-index: 400;
-  background:
-    radial-gradient(110% 70% at 50% 108%, rgba(38, 122, 124, 0.6) 0%, rgba(14, 48, 52, 0.35) 45%, transparent 78%),
-    linear-gradient(180deg, #061012 0%, #0a1a1c 60%, #0e2629 100%);
-  color: #f1ede3;
+  background: #233039;
+  color: #ffffff;
   display: flex; flex-direction: column; justify-content: center;
   padding: var(--gut);
-  transition: opacity 0.8s var(--ease), visibility 0.8s;
+  transition: transform 0.9s var(--ease-nk);
 }
-.pre.exit { opacity: 0; visibility: hidden; }
+.pre.exit { transform: translateY(-101%); }
 
-.pre-grid { display: flex; flex-direction: column; gap: 14px; max-width: var(--maxw); margin: auto auto; width: 100%; transition: transform 0.9s var(--ease-nk), opacity 0.5s var(--ease); }
-.pre.exit .pre-grid { transform: translateY(-28px) scale(0.98); opacity: 0; }
-.pre .pre-kicker { color: #cba869; opacity: 0; animation: preRise .7s var(--ease-nk) .1s forwards; }
-.pre-brand { font-size: clamp(1.4rem, 4vw, 2.4rem); font-weight: 500; letter-spacing: -.01em; color: #f1ede3; opacity: 0; animation: preRise .8s var(--ease-nk) .25s forwards; }
-.pre-brand em { font-style: normal; color: #cba869; }
+.pre-grid { display: flex; flex-direction: column; gap: 14px; max-width: var(--maxw); margin: auto auto; width: 100%; }
+.pre .pre-kicker { color: #d0a863; opacity: 0; animation: preRise .7s var(--ease-nk) .1s forwards; }
+.pre-brand { font-size: clamp(1.4rem, 4vw, 2.4rem); font-weight: 500; letter-spacing: -.01em; color: #ffffff; opacity: 0; animation: preRise .8s var(--ease-nk) .25s forwards; }
+.pre-brand em { font-style: normal; color: #d0a863; }
 .pre .pre-word {
-  font-family: var(--display); font-weight: 400; letter-spacing: -0.02em;
-  font-size: clamp(3rem, 13vw, 10rem); color: #f1ede3; line-height: .9; opacity: 0; animation: preRise .9s var(--ease-nk) .4s forwards;
+  font-family: "Playfair Display", Georgia, serif; font-weight: 600; letter-spacing: -0.01em;
+  font-size: clamp(3rem, 13vw, 10rem); color: #ffffff; line-height: .95; opacity: 0; animation: preRise .9s var(--ease-nk) .4s forwards;
 }
 
 .pre-bottom {
   position: absolute; left: var(--gut); right: var(--gut); bottom: clamp(24px, 5vw, 54px);
   display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
-  max-width: var(--maxw); margin: 0 auto; transition: opacity 0.4s var(--ease);
+  max-width: var(--maxw); margin: 0 auto;
 }
-.pre.exit .pre-bottom { opacity: 0; }
-.pre-count { font-size: clamp(2rem, 6vw, 4rem); color: #cba869; }
-.pre-bar { flex: 1; max-width: 340px; height: 2px; background: rgba(160, 210, 205, 0.18); margin-bottom: 12px; overflow: hidden; }
-.pre-bar-fill { display: block; height: 100%; background: #cba869; transform-origin: left; }
+.pre-count { font-size: clamp(2rem, 6vw, 4rem); color: #d0a863; }
+.pre-bar { flex: 1; max-width: 340px; height: 2px; background: rgba(255, 255, 255, 0.18); margin-bottom: 12px; overflow: hidden; }
+.pre-bar-fill { display: block; height: 100%; background: #d0a863; transform-origin: left; }
 
 @keyframes preRise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
 

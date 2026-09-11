@@ -5,6 +5,7 @@ import Preloader from "./components/Preloader";
 import Nav from "./components/Nav";
 import ScrollManager from "./components/ScrollManager";
 import Home from "./pages/Home";
+import RecruiterWall from "./pages/RecruiterWall";
 import Students from "./pages/Students";
 import Partners from "./pages/Partners";
 import Parents from "./pages/Parents";
@@ -20,6 +21,7 @@ export default function App() {
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/recruiters" element={<RecruiterWall />} />
         <Route path="/students" element={<Students />} />
         <Route path="/partners" element={<Partners />} />
         <Route path="/parents" element={<Parents />} />

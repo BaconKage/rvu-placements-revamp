@@ -18,7 +18,7 @@ export default function Parents() {
           ["25%", "of students held more than one offer"],
           [COHORT_TOTAL.toLocaleString("en-IN"), "students eligible across 6 schools"],
         ]}
-        actions={[{ to: "/", label: "See who recruits", primary: true }]}
+        actions={[{ to: "/recruiters", label: "See who recruits", primary: true }]}
         links={[
           ["#record", "The numbers"],
           ["#sectors", "Recruiters"],

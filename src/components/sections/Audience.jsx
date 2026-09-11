@@ -125,7 +125,7 @@ export function SectorsSection({ idx, title = "Who recruits, by sector.", hi = [
           <p className="sec-pipe">
             <b>{total} organisations</b> recruited through RV drives in the published sheets, with <b>{UPCOMING.length} more</b> in the pipeline.
           </p>
-          <Link className="btn ghost" to="/">Explore the recruiter wall <span className="arrow">→</span></Link>
+          <Link className="btn ghost" to="/recruiters">Explore the recruiter wall <span className="arrow">→</span></Link>
         </div>
       </div>
     </section>
@@ -219,9 +219,10 @@ export function SiteFooter({ contact = true }) {
           </div>
         )}
         <nav className="sf-links" aria-label="Site">
-          <Link to="/">Recruiter wall</Link>
+          <Link to="/">Home</Link>
+          <Link to="/recruiters">Who recruits</Link>
           <Link to="/students">For students</Link>
-          <Link to="/partners">For corporate partners</Link>
+          <Link to="/partners">For recruiters</Link>
           <Link to="/parents">For parents</Link>
           <Link to="/forms">Register to recruit</Link>
         </nav>
