@@ -14,43 +14,47 @@
 .band-h .w-hi { color: var(--band-accent); }
 .band-lede { color: var(--band-muted); margin-top: 16px; max-width: 52ch; }
 
-.mosaic {
-  display: flex; gap: 10px; margin-top: 40px;
-  height: clamp(340px, 46vw, 470px);
+/* ranked bars: one row per school, bar length = eligible students */
+.rank { list-style: none; margin: 40px 0 0; padding: 0; display: flex; flex-direction: column; }
+.rank-row {
+  display: grid; grid-template-columns: minmax(200px, 270px) 1fr; column-gap: clamp(20px, 3vw, 40px); row-gap: 10px;
+  padding: 18px 0; border-top: 1px solid var(--band-line);
 }
-.col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
-.col-name {
-  font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--band-accent); margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.col-cells { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; }
+.rank-row:last-child { border-bottom: 1px solid var(--band-line); }
 
-.cell {
-  flex-basis: 0; min-height: 42px; position: relative; overflow: hidden;
-  border-radius: 10px; padding: 11px 12px;
-  background: var(--band-cell);
-  border: 1px solid var(--band-line);
-  display: flex; flex-direction: column; justify-content: flex-end;
-  transition: background .35s var(--ease), border-color .35s var(--ease), transform .35s var(--ease);
+.rank-label { grid-row: span 2; display: flex; flex-direction: column; gap: 6px; }
+.rank-name {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--band-accent);
 }
-.cell:hover, .cell.active { background: var(--band-cell-hi); border-color: var(--band-accent); transform: translateY(-2px); }
-.cell.giant { background: rgba(203,168,105,0.1); }
-.cell.giant:hover { background: var(--band-accent); }
-.cell.giant:hover .cell-n, .cell.giant:hover .cell-p { color: var(--band-bg); }
-.cell-n { font-size: clamp(15px, 2.1vw, 28px); color: var(--band-fg); line-height: .9; }
-.cell.giant .cell-n { color: var(--band-accent); }
-.cell-p {
-  font-family: var(--mono); font-size: 9px; letter-spacing: 0.03em; color: var(--band-muted);
-  margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+.rank-v { display: flex; align-items: baseline; gap: 10px; }
+.rank-v .num { font-size: clamp(24px, 2.6vw, 34px); line-height: 1; color: var(--band-fg); }
+.rank-share { font-family: var(--mono); font-size: 10.5px; color: var(--band-muted); }
+
+.rank-bar { display: flex; gap: 2px; height: 22px; min-width: 4px; align-self: center; }
+.rank-seg {
+  min-width: 2px; background: rgba(203, 168, 105, var(--o));
+  transition: opacity 0.25s var(--ease), box-shadow 0.25s var(--ease);
 }
+.rank-seg:last-child { border-radius: 0 4px 4px 0; }
+.rank-seg.on { box-shadow: 0 0 0 1.5px var(--band-fg); }
+.rank-seg.dim { opacity: 0.4; }
+
+.rank-progs {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; color: var(--band-muted);
+}
+.rank-progs li { display: inline-flex; align-items: center; gap: 7px; transition: color 0.25s var(--ease); }
+.rank-progs li.on { color: var(--band-fg); }
+.rank-progs i { flex: none; width: 9px; height: 9px; border-radius: 2px; background: rgba(203, 168, 105, var(--o)); }
+.rank-progs b { font-weight: 500; color: var(--band-fg); }
 
 .band-legend { margin-top: 26px; }
 .band-legend .mono { color: var(--band-accent); font-size: 10px; text-transform: none; }
 
 @media (max-width: 720px) {
-  .mosaic { flex-direction: column; height: auto; gap: 8px; }
-  .col { flex-direction: row; align-items: stretch; gap: 8px; }
-  .col-name { writing-mode: vertical-rl; transform: rotate(180deg); margin: 0; flex: none; }
-  .col-cells { flex-direction: row; height: 82px; flex: 1; }
-  .cell { min-width: 56px; min-height: 0; }
+  .rank-row { grid-template-columns: 1fr; }
+  .rank-label { grid-row: auto; flex-direction: row; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .rank-name { white-space: normal; }
+  .rank-v .num { font-size: 22px; }
+  .rank-progs { font-size: 12px; }
 }
