@@ -18,6 +18,24 @@ function mulberry32(a) {
   };
 }
 
+// a small teaser wall: just the named hired companies, two rows offset by half
+// so a column never shows the same company twice
+export function buildPeek(cos, rows = 2) {
+  const cols = cos.length;
+  const cards = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const o = OFFERS.find((x) => x.co === cos[(c + r * Math.ceil(cols / 2)) % cols]);
+      if (!o) continue;
+      cards.push({
+        kind: "hired", co: o.co, title: o.role, sector: o.sector, type: o.type, via: o.via,
+        id: `peek-${r}-${c}`, col: c, row: r,
+      });
+    }
+  }
+  return { cards, cols, rows };
+}
+
 export function buildWall(cols = 14, rows = 4, seed = 2026) {
   const rnd = mulberry32(seed);
   const hired = OFFERS.map((o) => ({
@@ -59,10 +77,6 @@ export function buildWall(cols = 14, rows = 4, seed = 2026) {
     id: `${c.kind}-${c.co}-${i}`,
     col: i % cols,
     row: Math.floor(i / cols),
-    image: c.kind === "hired" && !!domainOf(c.co) && rnd() < 0.45,
-    jx: (rnd() - 0.5) * 18,
-    jy: (rnd() - 0.5) * 22,
-    rz: (rnd() - 0.5) * 3,
   }));
   return { cards, cols, rows };
 }
