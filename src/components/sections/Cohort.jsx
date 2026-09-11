@@ -7,14 +7,14 @@ import "./Cohort.css";
 
 const total = (s) => s.programmes.reduce((a, p) => a + p.n, 0);
 
-export default function Cohort() {
+export default function Cohort({ idx = "02" }) {
   const ref = useReveal({ threshold: 0.12 });
   const [active, setActive] = useState(null);
 
   return (
     <section className="cohort" id="cohort">
       <div className="band reveal" ref={ref}>
-        <Eyebrow idx="02">Schools eligible for recruitment</Eyebrow>
+        <Eyebrow idx={idx}>Schools eligible for recruitment</Eyebrow>
         <h2 className="serif band-h"><Words text="The 2024 cohort." hi={new Set([1])} /></h2>
         <p className="lede band-lede">
           Students eligible for recruitment, by school and programme.

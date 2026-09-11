@@ -22,12 +22,12 @@ function StatTile({ s }) {
   );
 }
 
-export default function Record() {
+export default function Record({ idx = "01" }) {
   const ref = useReveal();
   return (
     <section className="section record" id="record">
       <div className="wrap">
-        <Eyebrow idx="01">The record</Eyebrow>
+        <Eyebrow idx={idx}>The record</Eyebrow>
         <h2 className="serif record-h"><Words text="The year, in the numbers CAR reported." hi={new Set([5])} /></h2>
       </div>
       <div className="wrap record-grid-wrap">

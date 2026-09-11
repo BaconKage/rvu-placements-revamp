@@ -127,9 +127,32 @@ export const ELIGIBILITY = [
 ];
 
 export const INTERNSHIPS = [
-  "Summer Internship", "Winter Internship", "Live Projects",
-  "Industry Mentoring", "Capstone Projects", "International Placements",
+  "Summer Internship", "Winter Internship", "Live Projects", "Industry Mentoring",
+  "Capstone Projects", "International Internship Opportunities", "Industry Collaboration",
 ];
+
+// Rules & Regulations — from rvu.edu.in/placements
+export const GOVERNANCE = [
+  "Corporate & Alumni Relations (CAR) coordinates all placement and internship activities across Schools.",
+  "CAR facilitates processes but does not adjudicate disciplinary matters.",
+  "All placement-related violations are formally referred to the Student Disciplinary Committee (STDC) under the University’s Student Code of Conduct.",
+];
+export const TRAINING = [
+  "Domain / Technical Training (School-specific)",
+  "Soft Skills Training",
+  "Emotional, Behaviour & Networking Intelligence",
+];
+export const TRAINING_NOTES = [
+  "Minimum 80% attendance across all components is compulsory.",
+  "Any restriction due to non-compliance is decided by the Dean of the School, in consultation with CAR.",
+];
+export const RESPONSIBILITIES = [
+  "Apply only to roles and organisations the student is genuinely willing to join.",
+  "Maintain professional conduct at all stages.",
+  "Honour offers once selected, in line with institutional ethics and industry expectations.",
+  "Report any exceptional concerns promptly to CAR.",
+];
+export const RECRUITER_CATEGORIES = ["MNCs", "GCCs", "Tech", "Consulting", "Financial", "Startups"];
 
 export const CONTACT = {
   office: "Corporate & Alumni Relations",
