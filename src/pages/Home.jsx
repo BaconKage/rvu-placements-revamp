@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CONTACT } from "../data/placements";
+import logoBlue from "../assets/rvu-logo-blue.png";
+import logoGold from "../assets/rvu-logo-gold.avif";
 import "./Home.css";
 
 // Line-art marks inside a crest-like shield, echoing the RVU emblem.
@@ -74,7 +76,12 @@ export default function Home() {
         <span className="hero-corner tl" aria-hidden="true" />
         <span className="hero-corner br" aria-hidden="true" />
 
-        <span className="hero-kicker rise" style={{ "--d": "0ms" }}>RV University · Placements</span>
+        {/* blue in light mode, gold in dark — only one is ever displayed */}
+        <span className="hero-logo rise" style={{ "--d": "0ms" }}>
+          <img className="logo-light" src={logoBlue} alt="RV University" width="783" height="391" />
+          <img className="logo-dark" src={logoGold} alt="RV University" width="512" height="258" />
+        </span>
+        <span className="hero-kicker rise" style={{ "--d": "40ms" }}>RV University · Placements</span>
         <h1 className="hero-title rise" style={{ "--d": "80ms" }}>Career Development and Corporate Relations</h1>
         <p className="hero-sub rise" style={{ "--d": "160ms" }}>Empowering Industry Innovators with Top-Tier Talent</p>
         <p className="hero-para rise" style={{ "--d": "220ms" }}>
