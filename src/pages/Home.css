@@ -38,6 +38,13 @@ html.home-lock, html.home-lock body { overflow: hidden; height: 100%; overscroll
 .hero-corner.tl { top: 0; left: 0; border-top-width: 2px; border-left-width: 2px; }
 .hero-corner.br { right: 0; bottom: 0; border-right-width: 2px; border-bottom-width: 2px; }
 
+/* RVU logo above the kicker: height-led so the lockup keeps its own proportions */
+.hero-logo { display: flex; justify-content: center; margin: 0 auto clamp(14px, 2.4vh, 24px); }
+.hero-logo img { display: block; height: clamp(72px, 13vh, 124px); width: auto; max-width: 100%; }
+.hero-logo .logo-dark { display: none; }
+:root[data-theme="dark"] .hero-logo .logo-light { display: none; }
+:root[data-theme="dark"] .hero-logo .logo-dark { display: block; }
+
 .hero-kicker { display: inline-block; font-weight: 700; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--h-gold-text); }
 .hero .hero-title {
   margin: clamp(10px, 1.6vh, 16px) auto 0; max-width: 20ch;
@@ -112,6 +119,7 @@ html.home-lock, html.home-lock body { overflow: hidden; height: 100%; overscroll
 }
 /* short screens: tighten so nothing needs scrolling */
 @media (max-height: 760px) {
+  .hero-logo img { height: clamp(56px, 10vh, 76px); }
   .hero .hero-para { font-size: 0.92rem; line-height: 1.55; }
   .hero .hero-ask { margin-top: 16px; }
   .choice-tag { font-size: 12.5px; }

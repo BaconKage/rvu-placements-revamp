@@ -1,59 +1,58 @@
 import { forwardRef, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { STATS } from "../../data/placements";
-import { buildWall, domainOf, rolesFor } from "../../data/recruiterWall";
+import { buildPeek, buildWall, rolesFor } from "../../data/recruiterWall";
 import { useCurvedWall } from "../../hooks/useCurvedWall";
+import Logo from "../ui/Logo";
 import "./Recruiters.css";
 
-// logo: unavatar -> favicon -> monogram. onTiny fires when all we got is a
-// favicon too small to fill a picture panel.
-function Logo({ co, onTiny }) {
-  const domain = domainOf(co);
-  const sources = domain
-    ? [`https://unavatar.io/${domain}?fallback=false`, `https://www.google.com/s2/favicons?domain=${domain}&sz=128`]
-    : [];
-  const [idx, setIdx] = useState(0);
-  useEffect(() => { if (onTiny && idx >= sources.length) onTiny(); }, [idx, sources.length, onTiny]);
-  if (idx >= sources.length) {
-    return <span className="rw-mono">{co.replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase()}</span>;
-  }
-  return (
-    <img src={sources[idx]} alt="" draggable="false" loading="lazy"
-      onLoad={(e) => { if (onTiny && e.currentTarget.naturalWidth < 64) onTiny(); }}
-      onError={() => setIdx((i) => i + 1)} />
-  );
-}
-
-// company first, big; the role sits alone at the bottom
+// logo panel on top, then the company, the role alone at the bottom
 const WallCard = memo(
-  forwardRef(function WallCard({ c, i, onOpenCard, onFocusCard }, ref) {
-    const [pic, setPic] = useState(c.image);
-    const dropPic = useCallback(() => setPic(false), []);
+  forwardRef(function WallCard({ c, i, onOpenCard, onFocusCard, peek }, ref) {
     const pipeline = c.kind === "pipeline";
+    // in the peek the whole window is one link, so cards are plain, hidden spans
+    const Tag = peek ? "span" : "button";
+    const props = peek
+      ? { "aria-hidden": true }
+      : {
+          type: "button",
+          onClick: () => onOpenCard(i),
+          onFocus: (e) => onFocusCard(i, e),
+          "aria-label": pipeline ? `${c.co}: upcoming campus drive` : `${c.co}: ${c.title}`,
+        };
     return (
-      <button
-        ref={ref}
-        type="button"
-        data-card={i}
-        className={`rw-card ${c.kind}${pic ? " img" : ""}`}
-        onClick={() => onOpenCard(i)}
-        onFocus={(e) => onFocusCard(i, e)}
-        aria-label={pipeline ? `${c.co}: upcoming campus drive` : `${c.co}: ${c.title}`}
-      >
-        {pic ? (
-          <span className="rw-pic" aria-hidden="true"><Logo co={c.co} onTiny={dropPic} /></span>
-        ) : (
-          <span className="rw-card-top" aria-hidden="true">
-            <span className="rw-avatar"><Logo co={c.co} /></span>
-            {pipeline && <span className="rw-tag"><i /> Upcoming</span>}
-          </span>
-        )}
+      <Tag ref={ref} data-card={i} className={`rw-card ${c.kind}`} {...props}>
+        <span className="rw-pic" aria-hidden="true"><Logo co={c.co} /></span>
+        {pipeline && <span className="rw-tag" aria-hidden="true"><i /> Upcoming</span>}
         <span className="rw-co">{c.co}</span>
         <span className="rw-role">{pipeline ? "Upcoming campus drive" : c.title}</span>
-      </button>
+      </Tag>
     );
   })
 );
+
+// a small window onto the wall: a few companies drifting past, one link to the full page
+export function WallPeek({ cos, onClick }) {
+  const layout = useMemo(() => buildPeek(cos), [cos]);
+  const stageRef = useRef(null);
+  const cardRefs = useRef([]);
+  useCurvedWall({ stageRef, cardRefs, layout, interactive: false, centreRow: true });
+
+  return (
+    <Link ref={stageRef} to="/recruiters" onClick={onClick} className="rw-stage rw-peek" aria-label="See the full list of companies">
+      <span className="rw-sky" aria-hidden="true" />
+      <span className="rw-world" aria-hidden="true">
+        {layout.cards.map((c, i) => (
+          <WallCard key={c.id} c={c} i={i} peek ref={(el) => (cardRefs.current[i] = el)} />
+        ))}
+      </span>
+      <span className="rw-edge l" aria-hidden="true" />
+      <span className="rw-edge r" aria-hidden="true" />
+      <span className="rw-shade" aria-hidden="true" />
+      <span className="rw-peek-cta">Full list of companies <span className="arrow">→</span></span>
+    </Link>
+  );
+}
 
 function Detail({ c, onClose }) {
   const closeRef = useRef(null);
@@ -95,23 +94,29 @@ function Detail({ c, onClose }) {
 export default function Recruiters() {
   const layout = useMemo(() => buildWall(), []);
   const stageRef = useRef(null);
-  const cursorRef = useRef(null);
   const cardRefs = useRef([]);
   const [open, setOpen] = useState(null);
   const [seen, setSeen] = useState(0);
 
   const onSeen = useCallback(() => setSeen((x) => x + 1), []);
-  const { focusCard, wasDrag, markSeen } = useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen });
+  const { focusCard, wasDrag, markSeen, zoomTo, zoomOut } = useCurvedWall({ stageRef, cardRefs, layout, onSeen });
 
-  const onOpenCard = useCallback((i) => { if (wasDrag()) return; markSeen(i); setOpen(i); }, [wasDrag, markSeen]);
+  // the camera zooms into the card, then its details fade in over it
+  const onOpenCard = useCallback((i) => {
+    if (wasDrag()) return;
+    markSeen(i);
+    zoomTo(i);
+    setOpen(i);
+  }, [wasDrag, markSeen, zoomTo]);
+  const close = useCallback(() => { setOpen(null); zoomOut(); }, [zoomOut]);
   const onFocusCard = useCallback((i, e) => { if (e.target.matches(":focus-visible")) focusCard(i); }, [focusCard]);
 
   useEffect(() => {
     if (open == null) return;
-    const onKey = (e) => e.key === "Escape" && setOpen(null);
+    const onKey = (e) => e.key === "Escape" && close();
     addEventListener("keydown", onKey);
     return () => removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [open, close]);
 
   const total = layout.cards.length;
 
@@ -149,29 +154,15 @@ export default function Recruiters() {
       <div className="rw-edge r" aria-hidden="true" />
       <div className="rw-shade" aria-hidden="true" />
 
-      <div className="rw-cursor" ref={cursorRef} aria-hidden="true">
-        <span className="rw-cursor-ring"><i /></span>
-        <span className="rw-cursor-label">
-          <span className="rw-cl-idle">Drag / scroll to explore</span>
-          <span className="rw-cl-card">View</span>
-        </span>
-      </div>
-
       <footer className="rw-foot">
         <span className="rw-legend">
           <span><i className="hired" /> Hired through RV</span>
           <span><i className="pipeline" /> In the pipeline</span>
         </span>
-        <nav className="rw-paths" aria-label="Choose your path">
-          <Link to="/students">For students</Link>
-          <Link to="/partners">For recruiters</Link>
-          <Link to="/parents">For parents</Link>
-          <Link className="rw-paths-cta" to="/forms">Register to recruit</Link>
-        </nav>
         <span className="rw-count"><i /> Explored <b>{Math.min(seen, total)}/{total}</b></span>
       </footer>
 
-      {open != null && <Detail c={layout.cards[open]} onClose={() => setOpen(null)} />}
+      {open != null && <Detail c={layout.cards[open]} onClose={close} />}
     </section>
   );
 }

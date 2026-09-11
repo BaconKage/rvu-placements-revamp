@@ -22,6 +22,7 @@ const wrap = (v, m) => ((((v + m / 2) % m) + m) % m) - m / 2;
 // slow start so the scattered cloud reads before the cards rush into place
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const INTRO_MS = 2300;
+const ZOOM_Z = 480; // how far the camera dollies in on an opened card
 
 function seeded(a) {
   return () => {
@@ -32,14 +33,17 @@ function seeded(a) {
   };
 }
 
-export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen }) {
+// interactive=false: no drag / wheel / keys (a teaser that lets the page scroll past)
+// centreRow: start with a row centred instead of the gap between two
+export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive = true, centreRow = false }) {
   const cb = useRef({ onSeen });
   cb.current = { onSeen };
   const st = useRef(null);
 
   useEffect(() => {
-    const stage = stageRef.current, cursor = cursorRef.current;
+    const stage = stageRef.current;
     if (!stage) return;
+    const world = stage.querySelector(".rw-world");
     const { cards, cols, rows } = layout;
     const n = cards.length;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -57,7 +61,7 @@ export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen })
       bx: new Float32Array(n), by: new Float32Array(n),
       dx: 0, dy: 0, x: 0, y: 0, swing: 0, fling: 0, flingY: 0,
       dragging: false, moved: false, dist: 0, lx: 0, ly: 0, lastDx: 0, lastDy: 0,
-      px: 0, py: 0, cx: 0, cy: 0, cursorOn: false, hot: -1,
+      hot: -1, hold: false, zoom: 0, zoomT: 0, zoomW: 0, zy: 0,
       introAt: reduce ? -1e9 : null, visible: false, raf: 0, last: 0,
       hoverT: new Float32Array(n), hover: new Float32Array(n), seen: new Uint8Array(n),
       op: new Float32Array(n).fill(-1), vis: new Uint8Array(n).fill(2),
@@ -67,16 +71,25 @@ export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen })
       s.W = stage.clientWidth; s.H = stage.clientHeight;
       const narrow = s.W < 700;
       const w = narrow ? 170 : 212, h = narrow ? 226 : 272;
-      s.cw = w + (narrow ? 24 : 40);
-      s.ch = h + (narrow ? 24 : 34);
+      // one even gap in both directions
+      const gap = narrow ? 24 : 36;
+      s.cw = w + gap;
+      s.ch = h + gap;
       stage.style.setProperty("--card-w", `${w}px`);
       stage.style.setProperty("--card-h", `${h}px`);
+      // the world sits a little below the perspective origin (52%); the zoom
+      // lifts it onto that axis so the opened card stays put as it grows
+      s.zy = world ? world.offsetTop - s.H * 0.52 : 0;
       for (let i = 0; i < n; i++) {
-        s.bx[i] = (cards[i].col - (cols - 1) / 2) * s.cw + cards[i].jx;
-        s.by[i] = (cards[i].row - (rows - 1) / 2) * s.ch + cards[i].jy;
+        s.bx[i] = (cards[i].col - (cols - 1) / 2) * s.cw;
+        s.by[i] = (cards[i].row - (rows - 1) / 2) * s.ch;
       }
       // phones: start centred on a column rather than on the gap between two
-      if (!s.sized) { s.sized = true; s.dx = s.x = narrow ? s.cw / 2 : 0; }
+      if (!s.sized) {
+        s.sized = true;
+        s.dx = s.x = narrow ? s.cw / 2 : 0;
+        if (centreRow) s.dy = s.y = s.ch / 2;
+      }
     };
     size();
     const ro = new ResizeObserver(size);
@@ -91,12 +104,12 @@ export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen })
       const worldW = cols * s.cw, worldH = rows * s.ch;
 
       if (!reduce && !s.dragging) {
-        s.dx += (-0.2 + s.fling) * f;
+        s.dx += ((s.hold ? 0 : -0.2) + s.fling) * f;
         s.dy += s.flingY * f;
         const decay = Math.pow(0.92, f);
         s.fling *= decay; s.flingY *= decay;
       }
-      const k = 1 - Math.pow(1 - (s.dragging ? 0.3 : 0.075), f);
+      const k = 1 - Math.pow(1 - (s.dragging ? 0.3 : s.hold ? 0.12 : 0.075), f);
       const vx = (s.dx - s.x) * k;
       s.x += vx;
       s.y += (s.dy - s.y) * k;
@@ -126,7 +139,7 @@ export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen })
         let z = nx * nx * 210 + ny * ny * 70 + h * 80;
         let rx = ny * 9 * (1 - h * 0.6);
         let ry = -nx * 26 + s.swing;
-        let rz = -nx * 4 + cards[i].rz * (1 - h);
+        let rz = 0; // upright: no per-card tilt
         let sc = 1;
         let op = (1 - clamp((ax - 1.1) * 2.4, 0, 1)) * (1 - clamp((ay - 0.95) * 1.6, 0, 0.55));
 
@@ -145,14 +158,15 @@ export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen })
         if (o !== s.op[i]) { el.style.opacity = o; s.op[i] = o; }
       }
 
-      if (cursor && s.cursorOn) {
-        const ddx = s.px - s.cx, ddy = s.py - s.cy;
-        if (ddx * ddx + ddy * ddy > 0.04) {
-          const ck = 1 - Math.pow(0.76, f);
-          s.cx += ddx * ck; s.cy += ddy * ck;
-          cursor.style.transform = `translate3d(${s.cx.toFixed(1)}px,${s.cy.toFixed(1)}px,0)`;
-        }
+      // camera dolly into the opened card
+      s.zoom += (s.zoomT - s.zoom) * (1 - Math.pow(1 - 0.085, f));
+      if (world && Math.abs(s.zoom - s.zoomW) > 0.0004) {
+        s.zoomW = s.zoom;
+        world.style.transform = s.zoom < 0.001
+          ? ""
+          : `translate3d(0,${(-s.zy * s.zoom).toFixed(1)}px,${(s.zoom * ZOOM_Z).toFixed(1)}px)`;
       }
+
       s.raf = requestAnimationFrame(frame);
     };
     const kick = () => {
@@ -173,7 +187,7 @@ export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen })
     });
     io.observe(stage);
 
-    const isUi = (target) => !!target.closest?.(".rw-detail, .rw-paths");
+    const isUi = (target) => !!target.closest?.(".rw-detail");
 
     // ---- drag / swipe ----
     const dragMove = (e) => {
@@ -206,7 +220,7 @@ export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen })
       addEventListener("pointercancel", up);
     };
 
-    // ---- hover + custom cursor ----
+    // ---- hover ----
     const setHot = (i) => {
       if (i === s.hot) return;
       if (s.hot >= 0) s.hoverT[s.hot] = 0;
@@ -215,25 +229,13 @@ export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen })
         s.hoverT[i] = 1;
         if (!s.seen[i]) { s.seen[i] = 1; cb.current.onSeen?.(i); }
       }
-      cursor?.classList.toggle("on-card", i >= 0);
     };
-    let rect = stage.getBoundingClientRect();
-    const onResize = () => { rect = stage.getBoundingClientRect(); };
-    addEventListener("resize", onResize, { passive: true });
     const hoverMove = (e) => {
-      s.px = e.clientX - rect.left; s.py = e.clientY - rect.top;
-      const ui = isUi(e.target);
-      if (!s.cursorOn && !ui) { s.cursorOn = true; s.cx = s.px; s.cy = s.py; cursor?.classList.add("on"); }
-      if (ui && s.cursorOn) { s.cursorOn = false; cursor?.classList.remove("on"); }
       if (s.dragging && s.moved) return setHot(-1);
       const card = e.target.closest?.("[data-card]");
       setHot(card ? +card.dataset.card : -1);
     };
-    const leave = () => {
-      s.cursorOn = false;
-      cursor?.classList.remove("on", "on-card");
-      setHot(-1);
-    };
+    const leave = () => setHot(-1);
 
     // scroll to explore: the wheel travels along the wall
     const wheel = (e) => {
@@ -250,27 +252,28 @@ export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen })
       s.dx += m[0] * s.cw; s.dy += m[1] * s.ch;
     };
 
-    stage.addEventListener("pointerdown", down);
+    if (interactive) {
+      stage.addEventListener("pointerdown", down);
+      stage.addEventListener("wheel", wheel, { passive: false });
+      stage.addEventListener("keydown", key);
+    }
     if (fine) {
       stage.addEventListener("pointermove", hoverMove);
       stage.addEventListener("pointerleave", leave);
     }
-    stage.addEventListener("wheel", wheel, { passive: false });
-    stage.addEventListener("keydown", key);
 
     return () => {
       s.visible = false;
       if (s.raf) cancelAnimationFrame(s.raf);
       io.disconnect(); ro.disconnect(); up();
       removeEventListener("rvu:preloaded", onPreloaded);
-      removeEventListener("resize", onResize);
       stage.removeEventListener("pointerdown", down);
       stage.removeEventListener("pointermove", hoverMove);
       stage.removeEventListener("pointerleave", leave);
       stage.removeEventListener("wheel", wheel);
       stage.removeEventListener("keydown", key);
     };
-  }, [stageRef, cursorRef, cardRefs, layout]);
+  }, [stageRef, cardRefs, layout, interactive, centreRow]);
 
   // bring a keyboard-focused card to the centre
   const focusCard = useCallback((i) => {
@@ -288,5 +291,22 @@ export function useCurvedWall({ stageRef, cursorRef, cardRefs, layout, onSeen })
     if (s && !s.seen[i]) { s.seen[i] = 1; cb.current.onSeen?.(i); }
   }, []);
 
-  return { focusCard, wasDrag, markSeen };
+  // open: centre the card, stop the drift and dolly the camera in; close: back out
+  const zoomTo = useCallback((i) => {
+    const s = st.current;
+    if (!s) return;
+    focusCard(i);
+    s.fling = s.flingY = 0;
+    s.hold = true;
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) s.zoomT = 1;
+  }, [focusCard]);
+
+  const zoomOut = useCallback(() => {
+    const s = st.current;
+    if (!s) return;
+    s.hold = false;
+    s.zoomT = 0;
+  }, []);
+
+  return { focusCard, wasDrag, markSeen, zoomTo, zoomOut };
 }
