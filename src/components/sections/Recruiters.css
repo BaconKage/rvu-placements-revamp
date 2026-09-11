@@ -9,7 +9,7 @@
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
-.lm { overflow: hidden; }
+.lm { overflow: hidden; padding-block: 34px; }
 .lm-track {
   display: flex; gap: 16px; width: max-content; will-change: transform;
   cursor: grab; touch-action: pan-y;         /* vertical scroll passes through; horizontal drags */
@@ -18,25 +18,21 @@
 .lm-track.grabbing { cursor: grabbing; }
 
 .lm-card {
-  flex: none; width: 252px;
-  display: flex; align-items: center; gap: 16px;
+  flex: none; width: 250px;
+  display: flex; align-items: center; gap: 15px;
   padding: 12px; border-radius: 14px;
-  transition: transform .3s var(--ease);
+  will-change: transform;              /* arc transform driven per-frame in JS */
 }
-.lm-card:hover { transform: translateY(-3px); }
-
-/* circular logo badge — no box, image fills the circle */
 .lm-logo {
-  width: 74px; height: 74px; flex: none; border-radius: 50%;
+  width: 66px; height: 66px; flex: none; border-radius: 15px;
   overflow: hidden; display: grid; place-items: center;
   border: 1px solid var(--line);
-  transition: border-color .3s var(--ease), transform .3s var(--ease);
+  transition: border-color .3s var(--ease);
 }
-.lm-card:hover .lm-logo { border-color: var(--bronze); transform: scale(1.04); }
+.lm-card:hover .lm-logo { border-color: var(--bronze); }
 .lm-logo img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-/* monogram fallback keeps a faint fill so the letters read */
 .lm-logo.mono { background: var(--sunk); }
-.lm-mono { font-family: var(--mono); font-size: 20px; color: var(--slate-2); letter-spacing: .02em; }
+.lm-mono { font-family: var(--mono); font-size: 18px; color: var(--slate-2); letter-spacing: .02em; }
 
 .lm-meta { min-width: 0; }
 .lm-co { font-size: 18px; color: var(--ink); letter-spacing: -.02em; line-height: 1.1; white-space: nowrap; }

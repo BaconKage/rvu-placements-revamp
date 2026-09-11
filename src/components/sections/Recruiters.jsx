@@ -57,6 +57,9 @@ function LogoMarquee({ items, dir = -1, speed = 0.28 }) {
     const measure = () => {
       s.half = track.scrollWidth / 2;
       if (!s.init) { s.pos = dir > 0 ? -s.half : 0; s.init = true; }
+      s.kids = Array.from(track.children);
+      s.cxs = s.kids.map((k) => k.offsetLeft + k.offsetWidth / 2);
+      s.cw = (track.parentElement && track.parentElement.clientWidth) || window.innerWidth;
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -86,6 +89,20 @@ function LogoMarquee({ items, dir = -1, speed = 0.28 }) {
         else if (s.pos > 0) s.pos -= s.half;
       }
       track.style.transform = `translate3d(${s.pos.toFixed(2)}px,0,0)`;
+
+      // lay the cards along a gentle circular arc — dome up at centre,
+      // dipping and tilting toward the edges (nk-style curved field)
+      if (s.kids && s.cw) {
+        const halfW = s.cw / 2;
+        for (let i = 0; i < s.kids.length; i++) {
+          let n = (s.pos + s.cxs[i] - halfW) / halfW;   // -1 left edge .. +1 right edge
+          n = Math.max(-1.5, Math.min(1.5, n));
+          const y = 30 * n * n;                          // edges sink
+          const rot = -n * 5;                            // follow the tangent
+          const sc = 1 - Math.min(0.14, Math.abs(n) * 0.1);
+          s.kids[i].style.transform = `translateY(${y.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+        }
+      }
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
