@@ -10,20 +10,25 @@ function shortSector(s) {
 }
 
 function LogoCard({ c }) {
-  const [failed, setFailed] = useState(false);
   const mono = c.co.replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase() || "RV";
   const domain = DOMAINS[c.co];
-  const showLogo = domain && !failed;
+  // higher-res brand image first, then favicon, then monogram
+  const sources = domain
+    ? [`https://unavatar.io/${domain}?fallback=false`,
+       `https://www.google.com/s2/favicons?domain=${domain}&sz=256`]
+    : [];
+  const [idx, setIdx] = useState(0);
+  const showLogo = idx < sources.length;
   return (
     <article className="lm-card" data-hot>
       <div className="lm-logo">
         {showLogo ? (
           <img
-            src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`}
+            src={sources[idx]}
             alt={c.co}
             loading="lazy"
             draggable="false"
-            onError={() => setFailed(true)}
+            onError={() => setIdx((i) => i + 1)}
           />
         ) : (
           <span className="lm-mono">{mono}</span>

@@ -18,24 +18,23 @@
 .lm-track.grabbing { cursor: grabbing; }
 
 .lm-card {
-  flex: none; width: 244px;
-  display: flex; align-items: center; gap: 14px;
-  padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px;
-  background: var(--card); box-shadow: var(--shadow-sm);
-  transition: border-color .35s var(--ease), box-shadow .35s var(--ease);
+  flex: none; width: 236px;
+  display: flex; align-items: center; gap: 15px;
+  padding: 10px 12px; border-radius: 12px;
+  transition: background .3s var(--ease);
 }
-.lm-card:hover { border-color: var(--bronze); box-shadow: var(--shadow); }
+.lm-card:hover { background: color-mix(in srgb, var(--bronze) 8%, transparent); }
 
 .lm-logo {
-  width: 46px; height: 46px; flex: none; border-radius: 10px;
-  background: #fff; border: 1px solid var(--line);
+  width: 58px; height: 58px; flex: none; border-radius: 13px;
+  background: #fff; box-shadow: 0 1px 2px rgba(35,48,57,.08), 0 6px 16px -10px rgba(35,48,57,.25);
   display: grid; place-items: center; overflow: hidden;
 }
-.lm-logo img { width: 34px; height: 34px; object-fit: contain; display: block; pointer-events: none; }
-.lm-mono { font-family: var(--mono); font-size: 13px; color: var(--slate-2); letter-spacing: .02em; }
+.lm-logo img { max-width: 46px; max-height: 46px; width: auto; height: auto; object-fit: contain; display: block; pointer-events: none; }
+.lm-mono { font-family: var(--mono); font-size: 15px; color: var(--slate-2); letter-spacing: .02em; }
 
 .lm-meta { min-width: 0; }
-.lm-co { font-size: 17px; color: var(--ink); letter-spacing: -.02em; line-height: 1.1; white-space: nowrap; }
+.lm-co { font-size: 18px; color: var(--ink); letter-spacing: -.02em; line-height: 1.1; white-space: nowrap; }
 .lm-sector { font-size: 8.5px; color: var(--slate-3); letter-spacing: .14em; margin-top: 4px; }
 
 /* pipeline line */
