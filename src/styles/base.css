@@ -212,3 +212,11 @@ button { font: inherit; color: inherit; }
   text-shadow: 0 0 18px color-mix(in srgb, var(--bronze) 55%, transparent),
                0 0 38px color-mix(in srgb, var(--bronze) 30%, transparent);
 }
+
+/* selection-style highlight baked behind words */
+.w-mark {
+  background: var(--bronze-wash);
+  padding: 0.06em 0;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
