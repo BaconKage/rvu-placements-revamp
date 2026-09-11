@@ -76,35 +76,38 @@ export default function Home() {
         <span className="hero-corner tl" aria-hidden="true" />
         <span className="hero-corner br" aria-hidden="true" />
 
-        {/* blue in light mode, gold in dark — only one is ever displayed */}
-        <span className="hero-logo rise" style={{ "--d": "0ms" }}>
-          <img className="logo-light" src={logoBlue} alt="RV University" width="783" height="391" />
-          <img className="logo-dark" src={logoGold} alt="RV University" width="512" height="258" />
-        </span>
-        <span className="hero-kicker rise" style={{ "--d": "40ms" }}>RV University · Placements</span>
-        <h1 className="hero-title rise" style={{ "--d": "80ms" }}>Career Development and Corporate Relations</h1>
-        <p className="hero-sub rise" style={{ "--d": "160ms" }}>Empowering Industry Innovators with Top-Tier Talent</p>
-        <p className="hero-para rise" style={{ "--d": "220ms" }}>
-          Access a multidisciplinary talent pool of 1,600+ industry-ready graduates trained in cutting-edge
-          technologies, design, business, filmmaking, psychology and law.
-        </p>
+        {/* the frame opens (corners slide out) and unveils everything in here */}
+        <div className="hero-content">
+          {/* blue in light mode, gold in dark — only one is ever displayed */}
+          <span className="hero-logo rise" style={{ "--d": "0ms" }}>
+            <img className="logo-light" src={logoBlue} alt="RV University" width="783" height="391" />
+            <img className="logo-dark" src={logoGold} alt="RV University" width="512" height="258" />
+          </span>
+          <span className="hero-kicker rise" style={{ "--d": "40ms" }}>RV University · Placements</span>
+          <h1 className="hero-title rise" style={{ "--d": "80ms" }}>Career Development and Corporate Relations</h1>
+          <p className="hero-sub rise" style={{ "--d": "160ms" }}>Empowering Industry Innovators with Top-Tier Talent</p>
+          <p className="hero-para rise" style={{ "--d": "220ms" }}>
+            Access a multidisciplinary talent pool of 1,600+ industry-ready graduates trained in cutting-edge
+            technologies, design, business, filmmaking, psychology and law.
+          </p>
 
-        <p className="hero-ask rise" style={{ "--d": "300ms" }}><span>Tell us who you are</span></p>
+          <p className="hero-ask rise" style={{ "--d": "300ms" }}><span>Tell us who you are</span></p>
 
-        <nav className="hero-choices" aria-label="Choose your path">
-          {CHOICES.map((c, i) => (
-            <Link key={c.to} to={c.to} className="choice rise" style={{ "--d": `${380 + i * 90}ms` }}>
-              <Mark>{c.mark}</Mark>
-              <span className="choice-lock">
-                <span className="choice-top">I’m a</span>
-                <span className="choice-word">{c.word}</span>
-                <span className="choice-rule" aria-hidden="true" />
-                <span className="choice-tag">{c.tag}</span>
-              </span>
-              <span className="choice-arrow" aria-hidden="true">→</span>
-            </Link>
-          ))}
-        </nav>
+          <nav className="hero-choices" aria-label="Choose your path">
+            {CHOICES.map((c, i) => (
+              <Link key={c.to} to={c.to} className="choice rise" style={{ "--d": `${380 + i * 90}ms` }}>
+                <Mark>{c.mark}</Mark>
+                <span className="choice-lock">
+                  <span className="choice-top">I’m a</span>
+                  <span className="choice-word">{c.word}</span>
+                  <span className="choice-rule" aria-hidden="true" />
+                  <span className="choice-tag">{c.tag}</span>
+                </span>
+                <span className="choice-arrow" aria-hidden="true">→</span>
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
 
       <footer className="hero-foot rise" style={{ "--d": "700ms" }}>
