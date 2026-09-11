@@ -18,20 +18,25 @@
 .lm-track.grabbing { cursor: grabbing; }
 
 .lm-card {
-  flex: none; width: 236px;
-  display: flex; align-items: center; gap: 15px;
-  padding: 10px 12px; border-radius: 12px;
-  transition: background .3s var(--ease);
+  flex: none; width: 252px;
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px; border-radius: 14px;
+  transition: transform .3s var(--ease);
 }
-.lm-card:hover { background: color-mix(in srgb, var(--bronze) 8%, transparent); }
+.lm-card:hover { transform: translateY(-3px); }
 
+/* circular logo badge — no box, image fills the circle */
 .lm-logo {
-  width: 58px; height: 58px; flex: none; border-radius: 13px;
-  background: #fff; box-shadow: 0 1px 2px rgba(35,48,57,.08), 0 6px 16px -10px rgba(35,48,57,.25);
-  display: grid; place-items: center; overflow: hidden;
+  width: 74px; height: 74px; flex: none; border-radius: 50%;
+  overflow: hidden; display: grid; place-items: center;
+  border: 1px solid var(--line);
+  transition: border-color .3s var(--ease), transform .3s var(--ease);
 }
-.lm-logo img { max-width: 46px; max-height: 46px; width: auto; height: auto; object-fit: contain; display: block; pointer-events: none; }
-.lm-mono { font-family: var(--mono); font-size: 15px; color: var(--slate-2); letter-spacing: .02em; }
+.lm-card:hover .lm-logo { border-color: var(--bronze); transform: scale(1.04); }
+.lm-logo img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+/* monogram fallback keeps a faint fill so the letters read */
+.lm-logo.mono { background: var(--sunk); }
+.lm-mono { font-family: var(--mono); font-size: 20px; color: var(--slate-2); letter-spacing: .02em; }
 
 .lm-meta { min-width: 0; }
 .lm-co { font-size: 18px; color: var(--ink); letter-spacing: -.02em; line-height: 1.1; white-space: nowrap; }

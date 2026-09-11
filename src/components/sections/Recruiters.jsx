@@ -21,7 +21,7 @@ function LogoCard({ c }) {
   const showLogo = idx < sources.length;
   return (
     <article className="lm-card" data-hot>
-      <div className="lm-logo">
+      <div className={`lm-logo ${showLogo ? "" : "mono"}`}>
         {showLogo ? (
           <img
             src={sources[idx]}
