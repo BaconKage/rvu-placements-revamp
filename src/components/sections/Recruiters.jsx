@@ -1,123 +1,165 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import Eyebrow from "../ui/Eyebrow";
-import Words from "../ui/Words";
-import { buildRecruiterField, UPCOMING, DOMAINS } from "../../data/placements";
+import { forwardRef, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { UPCOMING } from "../../data/placements";
+import { buildWall, domainOf, rolesFor } from "../../data/recruiterWall";
+import { useCurvedWall } from "../../hooks/useCurvedWall";
 import "./Recruiters.css";
 
-function shortSector(s) {
-  return s.replace(" & Software", "").replace(" & Fintech", "").replace(" & Analytics", "")
-    .replace("Energy, Industrial & Health", "Industrial").replace(" & Startups", "");
-}
-
-// nk-style card: logo (contained, not zoomed) -> company -> sector
-function RecruiterCard({ c }) {
-  const mono = c.co.replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase() || "RV";
-  const domain = DOMAINS[c.co];
+// logo: unavatar -> favicon -> monogram. onTiny fires when all we got is a
+// favicon too small to fill a picture panel.
+function Logo({ co, onTiny }) {
+  const domain = domainOf(co);
   const sources = domain
-    ? [`https://unavatar.io/${domain}?fallback=false`,
-       `https://www.google.com/s2/favicons?domain=${domain}&sz=256`]
+    ? [`https://unavatar.io/${domain}?fallback=false`, `https://www.google.com/s2/favicons?domain=${domain}&sz=128`]
     : [];
   const [idx, setIdx] = useState(0);
-  const showLogo = idx < sources.length;
+  useEffect(() => { if (onTiny && idx >= sources.length) onTiny(); }, [idx, sources.length, onTiny]);
+  if (idx >= sources.length) {
+    return <span className="rw-mono">{co.replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase()}</span>;
+  }
   return (
-    <article className="rf-card" data-hot>
-      <div className={`rf-pic ${showLogo ? "" : "mono"}`}>
-        {showLogo ? (
-          <img src={sources[idx]} alt={c.co} loading="lazy" draggable="false"
-               onError={() => setIdx((i) => i + 1)} />
-        ) : (
-          <span className="rf-picmono">{mono}</span>
-        )}
-      </div>
-      <div className="rf-body">
-        <div className="rf-name serif">{c.co}</div>
-        <div className="rf-sector mono">{shortSector(c.sector)}</div>
-      </div>
-    </article>
+    <img src={sources[idx]} alt="" draggable="false" loading="lazy"
+      onLoad={(e) => { if (onTiny && e.currentTarget.naturalWidth < 64) onTiny(); }}
+      onError={() => setIdx((i) => i + 1)} />
   );
 }
 
-// scroll-driven marquee: page scroll pushes it, gentle drift at rest, grab to swipe
-function LogoMarquee({ items, dir = -1, speed = 0.28 }) {
-  const trackRef = useRef(null);
-  const st = useRef({ pos: 0, vel: 0, dragging: false, lastX: 0, half: 0, init: false });
+// nk archive card: (picture) → headline → avatar · name · company
+const WallCard = memo(
+  forwardRef(function WallCard({ c, i, onOpenCard, onFocusCard }, ref) {
+    const [pic, setPic] = useState(c.image);
+    const dropPic = useCallback(() => setPic(false), []);
+    return (
+      <button
+        ref={ref}
+        type="button"
+        data-card={i}
+        className={`rw-card ${c.kind}${pic ? " img" : ""}`}
+        onClick={() => onOpenCard(i)}
+        onFocus={(e) => onFocusCard(i, e)}
+        aria-label={c.kind === "pipeline" ? `${c.co}: upcoming campus drive` : `${c.co}: ${c.title}`}
+      >
+        {c.kind === "pipeline" && <span className="rw-tag"><i /> Upcoming drive</span>}
+        {pic && <span className="rw-pic" aria-hidden="true"><Logo co={c.co} onTiny={dropPic} /></span>}
+        <span className="rw-card-title">{c.title}</span>
+        <span className="rw-card-by">
+          <span className="rw-avatar" aria-hidden="true"><Logo co={c.co} /></span>
+          <span className="rw-by">
+            <span className="rw-by-name">{c.kind === "pipeline" ? "Campus drive" : c.co}</span>
+            <span className="rw-by-sub">{c.kind === "pipeline" ? "In the pipeline · CAR" : `${c.sector} · via ${c.via}`}</span>
+          </span>
+        </span>
+      </button>
+    );
+  })
+);
 
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const s = st.current;
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const measure = () => {
-      s.half = track.scrollWidth / 2;
-      if (!s.init) { s.pos = dir > 0 ? -s.half : 0; s.init = true; }
-    };
-    measure();
-    const ro = new ResizeObserver(measure); ro.observe(track);
-
-    let lastY = window.scrollY;
-    const onScroll = () => {
-      const y = window.scrollY, dy = y - lastY; lastY = y;
-      if (reduce || s.dragging) return;
-      s.vel += dy * 0.3 * dir;
-      s.vel = Math.max(-46, Math.min(46, s.vel));
-    };
-    addEventListener("scroll", onScroll, { passive: true });
-
-    let raf;
-    const base = speed * dir;
-    const loop = () => {
-      if (!s.dragging) {
-        if (reduce) s.vel = 0;
-        else s.vel += (base - s.vel) * 0.06;
-        s.pos += s.vel;
-      }
-      if (s.half > 0) {
-        if (s.pos <= -s.half) s.pos += s.half;
-        else if (s.pos > 0) s.pos -= s.half;
-      }
-      track.style.transform = `translate3d(${s.pos.toFixed(2)}px,0,0)`;
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); removeEventListener("scroll", onScroll); };
-  }, [dir, speed]);
-
-  const onDown = (e) => { const s = st.current; s.dragging = true; s.lastX = e.clientX; s.vel = 0; trackRef.current.classList.add("grabbing"); trackRef.current.setPointerCapture?.(e.pointerId); };
-  const onMove = (e) => { const s = st.current; if (!s.dragging) return; const dx = e.clientX - s.lastX; s.lastX = e.clientX; s.pos += dx; s.vel = dx; };
-  const onUp = () => { const s = st.current; s.dragging = false; trackRef.current?.classList.remove("grabbing"); };
-
+function Detail({ c, onClose }) {
+  const closeRef = useRef(null);
+  useEffect(() => { closeRef.current?.focus({ preventScroll: true }); }, []);
+  const roles = c.kind === "hired" ? rolesFor(c.co) : [];
   return (
-    <div className="lm">
-      <div className="lm-track" ref={trackRef}
-        onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
-        {items.concat(items).map((c, i) => <RecruiterCard key={i} c={c} />)}
+    <div className="rw-detail" onClick={onClose}>
+      <div className="rw-detail-card" role="dialog" aria-modal="true" aria-label={c.co} onClick={(e) => e.stopPropagation()}>
+        <button ref={closeRef} type="button" className="rw-close" onClick={onClose} aria-label="Close">×</button>
+        <div className="rw-detail-top">
+          <span className="rw-detail-logo"><Logo co={c.co} /></span>
+          <div>
+            <span className="rw-by-sub">{c.kind === "pipeline" ? "In the pipeline" : c.sector}</span>
+            <h3>{c.co}</h3>
+          </div>
+        </div>
+        {c.kind === "hired" ? (
+          <dl className="rw-dl">
+            <div><dt>Role</dt><dd>{c.title}</dd></div>
+            <div><dt>Offer</dt><dd>{c.type}</dd></div>
+            <div><dt>Channel</dt><dd>{c.via === "RVU" ? "RV University campus drive" : "RV group drive (RVCE)"}</dd></div>
+            {roles.length > 1 && <div><dt>Also hired for</dt><dd>{roles.filter((r) => r !== c.title).join(", ")}</dd></div>}
+          </dl>
+        ) : (
+          <p className="rw-detail-p">
+            {c.co} is lined up with the Corporate &amp; Alumni Relations office for an upcoming campus drive this cycle.
+          </p>
+        )}
+        <div className="rw-detail-actions">
+          {c.kind === "hired"
+            ? <Link className="rw-btn" to="/fit">Check your fit for roles like this →</Link>
+            : <Link className="rw-btn" to="/forms">Register your organisation →</Link>}
+        </div>
       </div>
     </div>
   );
 }
 
 export default function Recruiters() {
-  const { cards } = useMemo(() => buildRecruiterField(), []);
-  const rowA = useMemo(() => cards.filter((_, i) => i % 2 === 0), [cards]);
-  const rowB = useMemo(() => cards.filter((_, i) => i % 2 === 1), [cards]);
+  const layout = useMemo(() => buildWall(), []);
+  const stageRef = useRef(null);
+  const trackRef = useRef(null);
+  const cursorRef = useRef(null);
+  const cardRefs = useRef([]);
+  const [open, setOpen] = useState(null);
+  const [seen, setSeen] = useState(0);
+
+  const onSeen = useCallback(() => setSeen((x) => x + 1), []);
+  const { focusCard, wasDrag, markSeen } = useCurvedWall({ stageRef, trackRef, cursorRef, cardRefs, layout, onSeen });
+
+  const onOpenCard = useCallback((i) => { if (wasDrag()) return; markSeen(i); setOpen(i); }, [wasDrag, markSeen]);
+  const onFocusCard = useCallback((i, e) => { if (e.target.matches(":focus-visible")) focusCard(i); }, [focusCard]);
+
+  useEffect(() => {
+    if (open == null) return;
+    const onKey = (e) => e.key === "Escape" && setOpen(null);
+    addEventListener("keydown", onKey);
+    return () => removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const total = layout.cards.length;
+  const orgs = new Set(layout.cards.map((c) => c.co)).size;
+  const offers = layout.cards.filter((c) => c.kind === "hired").length;
 
   return (
-    <section className="section recruiters" id="recruiters">
-      <div className="wrap">
-        <Eyebrow idx="01">Recruiters</Eyebrow>
-        <h2 className="serif rec-h">
-          <Words text="Who recruits from RV University." mark />
-        </h2>
-        <p className="lede rec-lede">
-          {cards.length} organisations across six sectors engaged with our students this cycle.
-          Scroll to swipe, or grab a row to browse.
-        </p>
-      </div>
+    <section className="recruiters" id="recruiters">
+      <div className="rw-track" ref={trackRef}>
+        <div className="rw-stage" ref={stageRef} tabIndex={-1} role="region" aria-label="Recruiter wall. Drag, swipe or scroll to explore.">
+          <div className="rw-sky" aria-hidden="true" />
 
-      <div className="lm-band" role="region" aria-label="Recruiting companies">
-        <LogoMarquee items={rowA} dir={-1} speed={0.28} />
-        <LogoMarquee items={rowB} dir={1} speed={0.24} />
+          <header className="rw-head">
+            <div>
+              <span className="rw-kicker"><em>01</em> Recruiters</span>
+              <h2 className="rw-title">Who recruits from <em>RV University.</em></h2>
+            </div>
+            <p className="rw-sub">
+              {offers} offers through RV drives and {total - offers} recruiters in the pipeline — {orgs} organisations. Drag, swipe or scroll to explore.
+            </p>
+          </header>
+
+          <div className="rw-world">
+            {layout.cards.map((c, i) => (
+              <WallCard key={c.id} c={c} i={i} ref={(el) => (cardRefs.current[i] = el)}
+                onOpenCard={onOpenCard} onFocusCard={onFocusCard} />
+            ))}
+          </div>
+
+          <div className="rw-shade" aria-hidden="true" />
+
+          <div className="rw-cursor" ref={cursorRef} aria-hidden="true">
+            <span className="rw-cursor-ring"><i /></span>
+            <span className="rw-cursor-label">
+              <span className="rw-cl-idle">Drag / scroll to explore</span>
+              <span className="rw-cl-card">View</span>
+            </span>
+          </div>
+
+          <footer className="rw-foot">
+            <span className="rw-legend">
+              <span><i className="hired" /> Hired through RV</span>
+              <span><i className="pipeline" /> In the pipeline</span>
+            </span>
+            <span className="rw-count"><i /> Recruiters explored <b>{Math.min(seen, total)}/{total}</b></span>
+          </footer>
+
+          {open != null && <Detail c={layout.cards[open]} onClose={() => setOpen(null)} />}
+        </div>
       </div>
 
       <div className="wrap">

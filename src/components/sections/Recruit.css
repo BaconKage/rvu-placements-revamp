@@ -17,6 +17,7 @@
 .recruit-card-k { color: var(--brass-2); }
 .recruit-addr { display: flex; flex-direction: column; gap: 2px; font-style: normal; margin: 14px 0 20px; color: var(--slate-2); font-size: 13.5px; line-height: 1.6; }
 .recruit-mail { width: 100%; justify-content: space-between; }
+.recruit-form { width: 100%; justify-content: space-between; margin-top: 10px; }
 
 .foot-bar {
   margin-top: clamp(48px, 7vw, 88px); padding: 28px 0 40px;
