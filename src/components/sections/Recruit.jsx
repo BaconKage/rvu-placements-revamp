@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Words from "../ui/Words";
 import { useReveal } from "../../hooks/useReveal";
 import { useMagnetic } from "../../hooks/useMagnetic";
@@ -29,6 +30,9 @@ export default function Recruit() {
             <a className="btn recruit-mail magnetic" ref={mag} href={`mailto:${CONTACT.email}`}>
               {CONTACT.email} <span className="arrow">→</span>
             </a>
+            <Link className="btn ghost recruit-form" to="/forms">
+              Register to recruit <span className="arrow">→</span>
+            </Link>
           </div>
         </div>
 

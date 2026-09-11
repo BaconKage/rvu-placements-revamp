@@ -1,29 +1,27 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useSmoothScroll } from "./hooks/useSmoothScroll";
 import Atmosphere from "./components/Atmosphere";
 import Preloader from "./components/Preloader";
 import Nav from "./components/Nav";
-import Hero from "./components/sections/Hero";
-import Recruiters from "./components/sections/Recruiters";
-import Cohort from "./components/sections/Cohort";
-import Process from "./components/sections/Process";
-import WhyRecruit from "./components/sections/WhyRecruit";
-import Recruit from "./components/sections/Recruit";
+import ScrollManager from "./components/ScrollManager";
+import Home from "./pages/Home";
+import FitSpace from "./pages/FitSpace";
+import Forms from "./pages/Forms";
 
 export default function App() {
   useSmoothScroll();
   return (
-    <>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <ScrollManager />
       <Atmosphere />
       <Preloader />
       <Nav />
-      <main>
-        <Hero />
-        <Recruiters />
-        <Cohort />
-        <Process />
-        <WhyRecruit />
-        <Recruit />
-      </main>
-    </>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/fit" element={<FitSpace />} />
+        <Route path="/forms" element={<Forms />} />
+        <Route path="*" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
