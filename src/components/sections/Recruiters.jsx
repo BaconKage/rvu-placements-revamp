@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Eyebrow from "../ui/Eyebrow";
 import Words from "../ui/Words";
-import { buildRecruiterField, UPCOMING } from "../../data/placements";
+import { buildRecruiterField, UPCOMING, DOMAINS } from "../../data/placements";
 import "./Recruiters.css";
 
 function shortSector(s) {
@@ -9,16 +9,116 @@ function shortSector(s) {
     .replace("Energy, Industrial & Health", "Industrial").replace(" & Startups", "");
 }
 
-function Card({ c }) {
+function LogoCard({ c }) {
+  const [failed, setFailed] = useState(false);
   const mono = c.co.replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase() || "RV";
+  const domain = DOMAINS[c.co];
+  const showLogo = domain && !failed;
   return (
-    <article className="rf-card" data-hot>
-      <div className="rf-top">
-        <span className="rf-mono">{mono}</span>
-        <span className="rf-sector mono">{shortSector(c.sector)}</span>
+    <article className="lm-card" data-hot>
+      <div className="lm-logo">
+        {showLogo ? (
+          <img
+            src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`}
+            alt={c.co}
+            loading="lazy"
+            draggable="false"
+            onError={() => setFailed(true)}
+          />
+        ) : (
+          <span className="lm-mono">{mono}</span>
+        )}
       </div>
-      <div className="rf-co serif">{c.co}</div>
+      <div className="lm-meta">
+        <div className="lm-co serif">{c.co}</div>
+        <div className="lm-sector mono">{shortSector(c.sector)}</div>
+      </div>
     </article>
+  );
+}
+
+// Infinite auto-scrolling marquee that you can grab and swipe; releases back to
+// constant motion with a little momentum.
+function LogoMarquee({ items, dir = -1, speed = 0.28 }) {
+  const trackRef = useRef(null);
+  const st = useRef({ pos: 0, vel: 0, dragging: false, lastX: 0, half: 0, init: false });
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const s = st.current;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const measure = () => {
+      s.half = track.scrollWidth / 2;
+      if (!s.init) { s.pos = dir > 0 ? -s.half : 0; s.init = true; }
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(track);
+
+    // scrolling the page pushes the marquee (scroll-oriented); it decays back
+    // to a gentle drift when you stop, and drag overrides it entirely.
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY, dy = y - lastY; lastY = y;
+      if (reduce || s.dragging) return;
+      s.vel += dy * 0.32 * dir;
+      s.vel = Math.max(-48, Math.min(48, s.vel));
+    };
+    addEventListener("scroll", onScroll, { passive: true });
+
+    let raf;
+    const base = speed * dir;
+    const loop = () => {
+      if (!s.dragging) {
+        if (reduce) s.vel = 0;
+        else s.vel += (base - s.vel) * 0.06;   // ease back to the gentle drift
+        s.pos += s.vel;
+      }
+      if (s.half > 0) {
+        if (s.pos <= -s.half) s.pos += s.half;
+        else if (s.pos > 0) s.pos -= s.half;
+      }
+      track.style.transform = `translate3d(${s.pos.toFixed(2)}px,0,0)`;
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); removeEventListener("scroll", onScroll); };
+  }, [dir, speed]);
+
+  const onDown = (e) => {
+    const s = st.current;
+    s.dragging = true; s.lastX = e.clientX; s.vel = 0;
+    trackRef.current.classList.add("grabbing");
+    trackRef.current.setPointerCapture?.(e.pointerId);
+  };
+  const onMove = (e) => {
+    const s = st.current;
+    if (!s.dragging) return;
+    const dx = e.clientX - s.lastX;
+    s.lastX = e.clientX;
+    s.pos += dx; s.vel = dx;               // carry drag velocity into the release
+  };
+  const onUp = () => {
+    const s = st.current;
+    s.dragging = false;
+    trackRef.current?.classList.remove("grabbing");
+  };
+
+  return (
+    <div className="lm">
+      <div
+        className="lm-track"
+        ref={trackRef}
+        onPointerDown={onDown}
+        onPointerMove={onMove}
+        onPointerUp={onUp}
+        onPointerCancel={onUp}
+      >
+        {items.concat(items).map((c, i) => <LogoCard key={i} c={c} />)}
+      </div>
+    </div>
   );
 }
 
@@ -27,46 +127,8 @@ export default function Recruiters() {
   const rowA = useMemo(() => cards.filter((_, i) => i % 2 === 0), [cards]);
   const rowB = useMemo(() => cards.filter((_, i) => i % 2 === 1), [cards]);
 
-  const secRef = useRef(null);
-  const aRef = useRef(null);
-  const bRef = useRef(null);
-
-  // scroll-velocity → horizontal swipe (nk.studio behaviour, DOM-side)
-  useEffect(() => {
-    const sec = secRef.current, a = aRef.current, b = bRef.current;
-    if (!sec || !a || !b) return;
-    let raf, lastNorm = 0, skew = 0;
-
-    const frame = () => {
-      const off = !matchMedia("(min-width: 761px)").matches ||
-        matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (off) {
-        a.style.transform = ""; b.style.transform = "";
-      } else {
-        const rect = sec.getBoundingClientRect();
-        const mid = rect.top + rect.height / 2;
-        // norm: -1 entering from below, 0 centred, +1 leaving past the top
-        const norm = Math.max(-1, Math.min(1, (innerHeight / 2 - mid) / (innerHeight * 0.62)));
-        const travelA = Math.max(0, a.scrollWidth - sec.clientWidth);
-        const travelB = Math.max(0, b.scrollWidth - sec.clientWidth);
-        const t = (norm + 1) / 2;                       // 0 at entry, 1 at exit
-
-        const vel = norm - lastNorm;
-        lastNorm = norm;
-        const target = Math.max(-7, Math.min(7, vel * 560));
-        skew += (target - skew) * 0.15;                 // eased skew, decays at rest
-
-        a.style.transform = `translate3d(${(-t * travelA * 0.92).toFixed(1)}px,0,0) skewX(${skew.toFixed(2)}deg)`;
-        b.style.transform = `translate3d(${(-(1 - t) * travelB * 0.92).toFixed(1)}px,0,0) skewX(${(-skew).toFixed(2)}deg)`;
-      }
-      raf = requestAnimationFrame(frame);
-    };
-    raf = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
   return (
-    <section className="section recruiters" id="recruiters" ref={secRef}>
+    <section className="section recruiters" id="recruiters">
       <div className="wrap">
         <Eyebrow idx="01">Recruiters</Eyebrow>
         <h2 className="serif rec-h">
@@ -74,17 +136,13 @@ export default function Recruiters() {
         </h2>
         <p className="lede rec-lede">
           {cards.length} organisations across six sectors engaged with our students this cycle.
-          Scroll — the board swipes as you go.
+          Let it run, or grab and swipe to browse.
         </p>
       </div>
 
-      <div className="rf-band" role="region" aria-label="Recruiting companies">
-        <div className="rf-row" ref={aRef}>
-          {rowA.map((c, i) => <Card key={"a" + i} c={c} />)}
-        </div>
-        <div className="rf-row" ref={bRef}>
-          {rowB.map((c, i) => <Card key={"b" + i} c={c} />)}
-        </div>
+      <div className="lm-band" role="region" aria-label="Recruiting companies">
+        <LogoMarquee items={rowA} dir={-1} speed={0.28} />
+        <LogoMarquee items={rowB} dir={1} speed={0.24} />
       </div>
 
       <div className="wrap">

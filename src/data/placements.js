@@ -239,3 +239,17 @@ export function buildRecruiterField(cols = 6, seed = 77) {
   return { cards, planeW: cols * CELL_W + 40, planeH: rows * CELL_H + staggerPad() };
   function staggerPad() { return 46 + 120; }
 }
+
+// Domains for logo lookup (Clearbit logo API); unknown → monogram fallback.
+export const DOMAINS = {
+  "Dell": "dell.com", "Société Générale": "societegenerale.com", "Commonwealth Bank": "commbank.com.au",
+  "EY": "ey.com", "Cognizant": "cognizant.com", "TCS": "tcs.com", "Infosys": "infosys.com",
+  "State Street": "statestreet.com", "Northern Trust": "northerntrust.com", "Baker Hughes": "bakerhughes.com",
+  "Siemens Healthineers": "siemens-healthineers.com", "Skyworks": "skyworksinc.com",
+  "Thomson Reuters": "thomsonreuters.com", "Acko": "acko.com", "Fractal Analytics": "fractal.ai",
+  "Aon": "aon.com", "ZS Associates": "zs.com", "Kinaxis": "kinaxis.com", "Verint": "verint.com",
+  "Presidio": "presidio.com", "Whatfix": "whatfix.com", "Netgear": "netgear.com", "Pega Systems": "pega.com",
+  "Koch": "kochind.com", "Haleon": "haleon.com", "Arctic Wolf": "arcticwolf.com", "Crestron": "crestron.com",
+  "Sage": "sage.com", "Aviatrix": "aviatrix.com", "Hyperface": "hyperface.co", "Inflection": "inflection.io",
+  "O9 Solutions": "o9solutions.com", "Vymo": "vymo.com", "Teamlease": "teamlease.com",
+};
