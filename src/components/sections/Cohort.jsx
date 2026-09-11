@@ -15,10 +15,9 @@ export default function Cohort() {
     <section className="cohort" id="cohort">
       <div className="band reveal" ref={ref}>
         <Eyebrow idx="02">Schools eligible for recruitment</Eyebrow>
-        <h2 className="serif band-h"><Words text="Every block is a programme." hi={new Set([1])} /></h2>
+        <h2 className="serif band-h"><Words text="The 2024 cohort." hi={new Set([1])} /></h2>
         <p className="lede band-lede">
-          Width is a school, height a programme, area the headcount eligible for
-          recruitment. B.Tech carries the year.
+          Students eligible for recruitment, by school and programme.
         </p>
 
         <div className="mosaic" role="list">
