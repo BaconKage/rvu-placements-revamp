@@ -213,3 +213,29 @@ export const REPUTATION = [
   "Haleon", "Arctic Wolf", "Crestron", "Sage", "Aviatrix", "Hyperface", "Inflection",
   "O9 Solutions", "Vymo", "Konovo", "Ampcus Cyber", "Teamlease", "Photon", "Bhatiyani Astute",
 ];
+
+// Lay the (reputation-sorted) recruiters out on a pannable plane — nk.studio
+// style: upright cards in a loose, staggered grid you drag to explore.
+export function buildRecruiterField(cols = 6, seed = 77) {
+  const rank = (co) => { const i = REPUTATION.indexOf(co); return i === -1 ? 999 : i; };
+  const list = RECRUITER_SECTORS
+    .flatMap((g) => g.cos.map((co) => ({ co, sector: g.sector })))
+    .sort((a, b) => rank(a.co) - rank(b.co));
+  const rnd = mulberry32(seed);
+  const CELL_W = 326, CELL_H = 212;
+  const cards = list.map((c, i) => {
+    const col = i % cols, row = Math.floor(i / cols);
+    const stagger = (col % 2) * 46;               // alternate columns ride lower
+    const depth = rnd();
+    return {
+      ...c,
+      id: c.co,
+      x: Math.round(col * CELL_W + 24 + rnd() * 34),
+      y: Math.round(row * CELL_H + stagger + 24 + rnd() * 24),
+      tier: depth < 0.3 ? "far" : depth < 0.62 ? "mid" : "near",
+    };
+  });
+  const rows = Math.ceil(list.length / cols);
+  return { cards, planeW: cols * CELL_W + 40, planeH: rows * CELL_H + staggerPad() };
+  function staggerPad() { return 46 + 120; }
+}

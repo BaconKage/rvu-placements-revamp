@@ -1,45 +1,101 @@
+.recruiters { padding-bottom: clamp(40px, 6vw, 72px); }
 .rec-h { font-size: var(--step-3); color: var(--ink); max-width: 20ch; }
 .rec-lede { margin-top: 16px; }
 
-.rec-filters {
-  display: flex; flex-wrap: wrap; gap: 8px; margin: clamp(28px, 4vw, 44px) 0 26px;
+/* ---- pannable spatial field (nk.studio style) ---- */
+.rf-frame {
+  position: relative;
+  margin-top: clamp(28px, 4vw, 48px);
+  height: clamp(460px, 62vh, 660px);
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(70% 60% at 50% 40%, color-mix(in srgb, var(--bronze) 6%, transparent), transparent 70%),
+    var(--paper-2);
+  cursor: grab;
+  touch-action: none;
 }
-.rec-chip {
-  display: inline-flex; align-items: center; gap: 9px;
-  font-family: var(--sans); font-size: 13px; font-weight: 500;
-  padding: 9px 15px; border: 1px solid var(--line-2); border-radius: 999px;
-  background: transparent; color: var(--slate-2); cursor: pointer;
-  transition: color .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease);
-}
-.rec-chip:hover { color: var(--ink); border-color: var(--slate); }
-.rec-chip.on { color: var(--card); background: var(--ink); border-color: var(--ink); }
-.rec-chip-n {
-  font-family: var(--mono); font-size: 10px; color: var(--bronze-2);
-}
-.rec-chip.on .rec-chip-n { color: var(--bronze-l); }
+.rf-frame.dragging { cursor: grabbing; }
+.rf-frame:focus-visible { outline: 2px solid var(--bronze-2); outline-offset: -4px; }
 
-.rec-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px;
+/* fade cards into the top/bottom edges */
+.rf-frame::after {
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background:
+    linear-gradient(var(--paper-2), transparent 90px),
+    linear-gradient(0deg, var(--paper-2), transparent 90px);
 }
-.co-cell {
-  display: flex; flex-direction: column; gap: 6px;
-  padding: 16px 16px 14px; border: 1px solid var(--line); border-radius: 12px;
-  background: var(--card); box-shadow: var(--shadow-sm); will-change: transform;
-  transition: border-color .3s var(--ease), transform .3s var(--ease);
-}
-.co-cell:hover { border-color: var(--bronze); transform: translateY(-3px); }
-.co-name { font-family: var(--serif); font-weight: 600; font-size: 18px; letter-spacing: -.02em; color: var(--ink); }
-.co-sector { font-size: 8.5px; color: var(--slate-3); letter-spacing: .14em; }
 
-.rec-upcoming { margin-top: clamp(34px, 4vw, 48px); padding-top: 26px; border-top: 1px solid var(--line); }
+.rf-plane { position: absolute; top: 0; left: 0; z-index: 1; will-change: transform; }
+
+.rf-card {
+  position: absolute;
+  width: 264px;
+  padding: 20px 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  transition: border-color .4s var(--ease), box-shadow .4s var(--ease),
+    opacity .4s var(--ease), transform .4s var(--ease), filter .4s var(--ease);
+  will-change: transform;
+}
+.rf-card.far { opacity: .5; filter: blur(1.2px) saturate(.9); }
+.rf-card.mid { opacity: .82; }
+.rf-card:hover {
+  border-color: var(--bronze); box-shadow: var(--shadow); opacity: 1; filter: none;
+  transform: translateY(-4px); z-index: 6;
+}
+
+.rf-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 30px; }
+.rf-mono {
+  width: 34px; height: 34px; flex: none; display: grid; place-items: center;
+  border-radius: 9px; background: var(--sunk); color: var(--slate-2);
+  font-family: var(--mono); font-size: 12px; letter-spacing: .02em;
+}
+.rf-sector { font-size: 8.5px; color: var(--slate-3); letter-spacing: .14em; }
+.rf-co { font-size: clamp(20px, 2vw, 26px); color: var(--ink); letter-spacing: -.02em; line-height: 1.04; }
+
+/* HUD + drag puck */
+.rf-hud {
+  position: absolute; z-index: 4; left: 50%; bottom: 22px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 11px; white-space: nowrap;
+  padding: 9px 15px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--card); box-shadow: var(--shadow-sm);
+}
+.rf-hud .mono { font-size: 9.5px; letter-spacing: .16em; color: var(--slate-2); }
+.rf-hud .pulse { width: 5px; height: 5px; border-radius: 50%; background: var(--bronze); flex: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .rf-hud .pulse { animation: hudPulse 2.6s ease-out infinite; }
+}
+@keyframes hudPulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--bronze) 70%, transparent); }
+  70% { box-shadow: 0 0 0 8px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.rf-recentre { border: 0; background: none; color: var(--bronze-d); cursor: pointer; padding-left: 11px; border-left: 1px solid var(--line); font-size: 9.5px; letter-spacing: .16em; }
+.rf-recentre:hover { color: var(--ink); }
+
+.rf-puck {
+  position: absolute; z-index: 5; top: 0; left: 0; margin: -26px 0 0 -26px;
+  width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--bronze); color: var(--card);
+  font-family: var(--mono); font-size: 8px; letter-spacing: .14em;
+  opacity: 0; transform: scale(.5); pointer-events: none;
+  transition: opacity .3s var(--ease), transform .3s var(--ease);
+}
+.rf-puck.on { opacity: 1; }
+.rf-frame.dragging .rf-puck { transform: scale(.85) !important; }
+@media (hover: none), (max-width: 900px) { .rf-puck { display: none; } }
+@media (hover: hover) and (pointer: fine) { .rf-frame, .rf-frame * { cursor: none; } }
+
+/* pipeline line */
+.rec-upcoming { margin-top: clamp(30px, 4vw, 44px); padding-top: 26px; border-top: 1px solid var(--line); }
 .rec-up-label { display: inline-flex; align-items: center; gap: 9px; color: var(--slate-3); }
 .rec-up-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--bronze); }
 .rec-up-list { margin: 14px 0 0; line-height: 2; color: var(--slate-3); font-size: 14px; max-width: 82ch; }
 .rec-up-co { color: var(--slate-2); }
 .rec-up-list .sep { color: var(--line-2); margin: 0 10px; }
 
-@media (max-width: 560px) {
-  .rec-grid { grid-template-columns: 1fr 1fr; }
-  .co-name { font-size: 16px; }
-  .rec-chip { font-size: 12px; padding: 8px 12px; }
-}
+@media (max-width: 600px) { .rf-card { width: 220px; } .rf-co { font-size: 19px; } }
