@@ -75,7 +75,7 @@
   --band-cell-hi: rgba(203, 168, 105, 0.18);
   --band-accent: #cba869;
 
-  /* fit space — canvas ramps + threshold/pass colours */
+  /* status colours (forms) */
   --field-lo: #ece6d9;
   --field-hi: #2c3a42;
   --thresh:   #b4532a;

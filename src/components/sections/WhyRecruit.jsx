@@ -4,11 +4,11 @@ import { useReveal } from "../../hooks/useReveal";
 import { WHY } from "../../data/placements";
 import "./WhyRecruit.css";
 
-export default function WhyRecruit() {
+export default function WhyRecruit({ idx = "04" }) {
   return (
     <section className="section why" id="why">
       <div className="wrap">
-        <Eyebrow idx="04">Why recruit here</Eyebrow>
+        <Eyebrow idx={idx}>Why recruit here</Eyebrow>
         <h2 className="serif why-h">
           <Words text="Why organisations recruit here." />
         </h2>

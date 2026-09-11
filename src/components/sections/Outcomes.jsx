@@ -4,11 +4,11 @@ import { useReveal } from "../../hooks/useReveal";
 import { OUTCOMES } from "../../data/placements";
 import "./Outcomes.css";
 
-export default function Outcomes() {
+export default function Outcomes({ idx = "03" }) {
   return (
     <section className="section outcomes" id="outcomes">
       <div className="wrap">
-        <Eyebrow idx="03">Where they landed</Eyebrow>
+        <Eyebrow idx={idx}>Where they landed</Eyebrow>
         <h2 className="serif out-h">
           <Words text="A sample of the class of 2024." />
         </h2>

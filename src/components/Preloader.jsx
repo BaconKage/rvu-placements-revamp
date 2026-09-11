@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import "./Preloader.css";
 
+// Lets the home wall start its fly-in exactly as the loader dissolves.
+function markPreloaded() {
+  window.__rvuPreloaded = true;
+  window.dispatchEvent(new Event("rvu:preloaded"));
+}
+
 export default function Preloader() {
   const [count, setCount] = useState(0);
   const [phase, setPhase] = useState("run"); // run -> exit -> gone
 
   useEffect(() => {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setPhase("gone"); return; }
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setPhase("gone"); markPreloaded(); return; }
     document.documentElement.classList.add("loading");
     const dur = 1300, t0 = performance.now();
     let raf;
@@ -16,7 +22,7 @@ export default function Preloader() {
       if (p < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    const t1 = setTimeout(() => setPhase("exit"), 1550);
+    const t1 = setTimeout(() => { setPhase("exit"); markPreloaded(); }, 1550);
     const t2 = setTimeout(() => { setPhase("gone"); document.documentElement.classList.remove("loading"); }, 2350);
     return () => { cancelAnimationFrame(raf); clearTimeout(t1); clearTimeout(t2); document.documentElement.classList.remove("loading"); };
   }, []);

@@ -1,44 +1,59 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
 import "./Nav.css";
 
+const PATHS = [
+  ["/students", "Students"],
+  ["/partners", "Corporate partners"],
+  ["/parents", "Parents"],
+];
+
 export default function Nav() {
+  const { pathname } = useLocation();
+  const onDark = pathname === "/";
   const [stuck, setStuck] = useState(false);
-  const [onDark, setOnDark] = useState(false);
+  const [open, setOpen] = useState(false);
   const { toggle, resolved } = useTheme();
 
   useEffect(() => {
-    const onScroll = () => {
-      setStuck(window.scrollY > 20);
-      // go dark while the pinned recruiter wall sits under the bar
-      const wall = document.querySelector(".rw-stage");
-      const r = wall?.getBoundingClientRect();
-      setOnDark(!!r && r.top <= 1 && r.bottom > 60);
-    };
+    const onScroll = () => setStuck(window.scrollY > 20);
     onScroll();
     addEventListener("scroll", onScroll, { passive: true });
     return () => removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => { setOpen(false); }, [pathname]);
+
   return (
-    <nav className={`nav ${stuck ? "stuck" : ""} ${onDark ? "on-dark" : ""}`}>
+    <nav className={`nav ${stuck ? "stuck" : ""} ${onDark ? "on-dark" : ""} ${open ? "open" : ""}`}>
       <Link className="brandmark" to="/">
         <span className="rv serif glow-cycle">R<em>V</em> University</span>
         <span className="divider" />
         <span className="dept mono">Placements</span>
       </Link>
       <div className="nav-right">
-        <Link className="nav-link mono" to="/#recruiters">Recruiters</Link>
-        <Link className="nav-link mono" to="/#cohort">Cohort</Link>
-        <Link className="nav-link mono" to="/#process">Process</Link>
-        <span className="nav-sep" aria-hidden="true" />
-        <NavLink className="nav-link nav-page mono" to="/fit">Fit Space</NavLink>
-        <NavLink className="nav-link nav-page mono" to="/forms">Forms</NavLink>
+        {PATHS.map(([to, label]) => (
+          <NavLink key={to} className="nav-link mono" to={to}>{label}</NavLink>
+        ))}
         <button className="theme-btn" onClick={toggle} aria-label="Toggle colour theme" title="Toggle theme">
           {resolved === "dark" ? "☾" : "☀"}
         </button>
         <Link className="nav-cta mono" to="/forms">Recruit with us</Link>
+        <button
+          type="button"
+          className="nav-menu mono"
+          aria-expanded={open}
+          aria-controls="nav-sheet"
+          onClick={() => setOpen((o) => !o)}
+        >
+          {open ? "Close" : "Menu"}
+        </button>
+      </div>
+      <div className="nav-sheet" id="nav-sheet" hidden={!open}>
+        <Link to="/">Recruiter wall</Link>
+        {PATHS.map(([to, label]) => <Link key={to} to={to}>For {label.toLowerCase()}</Link>)}
+        <Link to="/forms">Register to recruit →</Link>
       </div>
     </nav>
   );

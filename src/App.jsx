@@ -5,7 +5,9 @@ import Preloader from "./components/Preloader";
 import Nav from "./components/Nav";
 import ScrollManager from "./components/ScrollManager";
 import Home from "./pages/Home";
-import FitSpace from "./pages/FitSpace";
+import Students from "./pages/Students";
+import Partners from "./pages/Partners";
+import Parents from "./pages/Parents";
 import Forms from "./pages/Forms";
 
 export default function App() {
@@ -18,7 +20,9 @@ export default function App() {
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/fit" element={<FitSpace />} />
+        <Route path="/students" element={<Students />} />
+        <Route path="/partners" element={<Partners />} />
+        <Route path="/parents" element={<Parents />} />
         <Route path="/forms" element={<Forms />} />
         <Route path="*" element={<Home />} />
       </Routes>
