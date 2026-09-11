@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import Eyebrow from "../ui/Eyebrow";
 import Words from "../ui/Words";
-import { useDraggableWall } from "../../hooks/useDraggableWall";
 import { buildRecruiterField, UPCOMING } from "../../data/placements";
 import "./Recruiters.css";
 
@@ -10,47 +9,64 @@ function shortSector(s) {
     .replace("Energy, Industrial & Health", "Industrial").replace(" & Startups", "");
 }
 
-function RecruiterCard({ card }) {
-  const mono = card.co.replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase() || "RV";
+function Card({ c }) {
+  const mono = c.co.replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase() || "RV";
   return (
-    <article className={`rf-card ${card.tier}`} style={{ left: card.x, top: card.y }} data-hot>
+    <article className="rf-card" data-hot>
       <div className="rf-top">
         <span className="rf-mono">{mono}</span>
-        <span className="rf-sector mono">{shortSector(card.sector)}</span>
+        <span className="rf-sector mono">{shortSector(c.sector)}</span>
       </div>
-      <div className="rf-co serif">{card.co}</div>
+      <div className="rf-co serif">{c.co}</div>
     </article>
   );
 }
 
 export default function Recruiters() {
-  const { cards, planeW, planeH } = useMemo(() => buildRecruiterField(), []);
-  const { frameRef, planeRef, recentre } = useDraggableWall(planeW, planeH);
-  const puckRef = useRef(null);
+  const { cards } = useMemo(() => buildRecruiterField(), []);
+  const rowA = useMemo(() => cards.filter((_, i) => i % 2 === 0), [cards]);
+  const rowB = useMemo(() => cards.filter((_, i) => i % 2 === 1), [cards]);
 
-  // nk-style "drag to explore" cursor puck, local to the field
+  const secRef = useRef(null);
+  const aRef = useRef(null);
+  const bRef = useRef(null);
+
+  // scroll-velocity → horizontal swipe (nk.studio behaviour, DOM-side)
   useEffect(() => {
-    const frame = frameRef.current, puck = puckRef.current;
-    if (!frame || !puck) return;
-    if (!matchMedia("(hover:hover) and (pointer:fine)").matches) return;
-    const move = (e) => {
-      const r = frame.getBoundingClientRect();
-      puck.style.transform = `translate(${e.clientX - r.left}px, ${e.clientY - r.top}px)`;
+    const sec = secRef.current, a = aRef.current, b = bRef.current;
+    if (!sec || !a || !b) return;
+    let raf, lastNorm = 0, skew = 0;
+
+    const frame = () => {
+      const off = !matchMedia("(min-width: 761px)").matches ||
+        matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (off) {
+        a.style.transform = ""; b.style.transform = "";
+      } else {
+        const rect = sec.getBoundingClientRect();
+        const mid = rect.top + rect.height / 2;
+        // norm: -1 entering from below, 0 centred, +1 leaving past the top
+        const norm = Math.max(-1, Math.min(1, (innerHeight / 2 - mid) / (innerHeight * 0.62)));
+        const travelA = Math.max(0, a.scrollWidth - sec.clientWidth);
+        const travelB = Math.max(0, b.scrollWidth - sec.clientWidth);
+        const t = (norm + 1) / 2;                       // 0 at entry, 1 at exit
+
+        const vel = norm - lastNorm;
+        lastNorm = norm;
+        const target = Math.max(-7, Math.min(7, vel * 560));
+        skew += (target - skew) * 0.15;                 // eased skew, decays at rest
+
+        a.style.transform = `translate3d(${(-t * travelA * 0.92).toFixed(1)}px,0,0) skewX(${skew.toFixed(2)}deg)`;
+        b.style.transform = `translate3d(${(-(1 - t) * travelB * 0.92).toFixed(1)}px,0,0) skewX(${(-skew).toFixed(2)}deg)`;
+      }
+      raf = requestAnimationFrame(frame);
     };
-    const on = () => puck.classList.add("on");
-    const off = () => puck.classList.remove("on");
-    frame.addEventListener("pointermove", move);
-    frame.addEventListener("pointerenter", on);
-    frame.addEventListener("pointerleave", off);
-    return () => {
-      frame.removeEventListener("pointermove", move);
-      frame.removeEventListener("pointerenter", on);
-      frame.removeEventListener("pointerleave", off);
-    };
-  }, [frameRef]);
+    raf = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   return (
-    <section className="section recruiters" id="recruiters">
+    <section className="section recruiters" id="recruiters" ref={secRef}>
       <div className="wrap">
         <Eyebrow idx="01">Recruiters</Eyebrow>
         <h2 className="serif rec-h">
@@ -58,28 +74,17 @@ export default function Recruiters() {
         </h2>
         <p className="lede rec-lede">
           {cards.length} organisations across six sectors engaged with our students this cycle.
-          Grab the board and drag to explore.
+          Scroll — the board swipes as you go.
         </p>
       </div>
 
-      <div
-        className="rf-frame"
-        ref={frameRef}
-        tabIndex={0}
-        role="region"
-        aria-label="A draggable board of recruiting companies. Use arrow keys to pan."
-        data-lenis-prevent
-      >
-        <div className="rf-plane" ref={planeRef} style={{ width: planeW, height: planeH }}>
-          {cards.map((c) => <RecruiterCard key={c.id} card={c} />)}
+      <div className="rf-band" role="region" aria-label="Recruiting companies">
+        <div className="rf-row" ref={aRef}>
+          {rowA.map((c, i) => <Card key={"a" + i} c={c} />)}
         </div>
-
-        <div className="rf-hud">
-          <span className="pulse" aria-hidden="true" />
-          <span className="mono">Drag to explore</span>
-          <button type="button" className="rf-recentre mono" onClick={recentre}>Recentre</button>
+        <div className="rf-row" ref={bRef}>
+          {rowB.map((c, i) => <Card key={"b" + i} c={c} />)}
         </div>
-        <span className="rf-puck" ref={puckRef} aria-hidden="true">DRAG</span>
       </div>
 
       <div className="wrap">
