@@ -1,8 +1,4 @@
-.outcomes { overflow: hidden; }
-.out-h { font-size: var(--step-3); color: var(--ink); }
-.out-lede { margin-top: 16px; max-width: 68ch; }
-
-/* the teaser window itself is .rw-peek in Recruiters.css */
+/* the peek window itself is .rw-peek in Recruiters.css */
 
 /* → the wall, revealed as a circle growing from the click */
 html.vt-wall::view-transition-old(root) { animation: none; }

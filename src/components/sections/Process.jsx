@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import Eyebrow from "../ui/Eyebrow";
 import Words from "../ui/Words";
 import { ELIGIBILITY } from "../../data/placements";
+import boardroom from "../../assets/students-boardroom.webp";
 import "./Process.css";
 
 export default function Process({ idx = "03" }) {
@@ -59,6 +60,9 @@ export default function Process({ idx = "03" }) {
 
   return (
     <section className="section process" id="process" ref={secRef}>
+      <div className="process-photo" aria-hidden="true">
+        <img src={boardroom} alt="" width="1018" height="911" loading="lazy" decoding="async" />
+      </div>
       <div className="wrap">
         <Eyebrow idx={idx}>Student eligibility</Eyebrow>
         <h2 className="serif process-h">

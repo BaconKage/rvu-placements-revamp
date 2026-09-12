@@ -7,14 +7,65 @@
 
 /* ---- page head ---- */
 .ph { padding: clamp(40px, 7vw, 88px) 0 clamp(36px, 5vw, 60px); border-bottom: 1px solid var(--line); }
+
+/* optional illustrated backdrop (recruiters page): the building fills the header,
+   washed with paper from the left and faded at the bottom so the copy stays crisp */
+.ph-has-bg { position: relative; overflow: hidden; isolation: isolate; }
+.ph-bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.ph-bg img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 68% 62%; opacity: 0.6; } /* kept quiet behind the copy */
+:root[data-theme="dark"] .ph-bg.has-dark img { opacity: 0.5; } /* the night art's lit windows read brighter */
+.ph-bg::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 94%, transparent) 28%,
+      color-mix(in srgb, var(--paper) 55%, transparent) 52%, color-mix(in srgb, var(--paper) 12%, transparent) 100%),
+    linear-gradient(0deg, var(--paper) 0%, transparent 24%);
+}
+/* dark theme: pages with night artwork swap images in PageHead; others dim the day artwork */
+:root[data-theme="dark"] .ph-bg:not(.has-dark) img { filter: brightness(0.5) saturate(0.75); }
+/* wider screens: a smaller building pushed right and anchored to the bottom, so the
+   main entrance sits below the stats box; the right side may crop, the left edge fades */
+@media (min-width: 901px) {
+  .ph-bg img {
+    position: absolute; bottom: 0; left: 50%; width: auto; max-width: none; height: 75%; object-fit: fill;
+    /* soft on both sides and across the top, so the art dissolves into the paper; the right
+       fade only shows on very wide screens, where the image ends before the header does */
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, #000 22%, #000 86%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.35) 12%, #000 32%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(90deg, transparent 0%, #000 22%, #000 86%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.35) 12%, #000 32%);
+    mask-composite: intersect;
+  }
+  .ph-bg::after {
+    background:
+      linear-gradient(90deg, var(--paper) 0%, var(--paper) 46%, color-mix(in srgb, var(--paper) 40%, transparent) 60%, transparent 76%),
+      linear-gradient(0deg, var(--paper) 0%, transparent 6%);
+  }
+}
+@media (max-width: 900px) {
+  .ph-bg::after {
+    background: linear-gradient(0deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 86%, transparent) 55%,
+      color-mix(in srgb, var(--paper) 62%, transparent) 100%);
+  }
+}
 .ph-body { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: end; }
 .ph-title { font-size: var(--step-4); color: var(--ink); line-height: 1.02; max-width: 14ch; }
 .ph-title .words .w { padding-bottom: 0.12em; margin-bottom: -0.12em; }
 .ph-body .ph-lede { margin-top: clamp(18px, 2.4vw, 28px); max-width: 52ch; }
 .ph-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
-.ph-facts { margin: 0; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.ph-facts { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
 /* fixed number column so wide figures (1,600+) never run into their label */
-.ph-fact { background: var(--paper); padding: 18px 20px; display: grid; grid-template-columns: clamp(6.5rem, 11vw, 9.5rem) 1fr; align-items: baseline; gap: 14px; }
+/* every row shares one number column (as wide as the widest figure) via subgrid, so the
+   labels start on one line with room to breathe; each label is centred on its number.
+   Browsers without subgrid keep the fixed column. */
+.ph-fact {
+  grid-column: 1 / -1; background: var(--paper); padding: 18px 20px;
+  display: grid; grid-template-columns: clamp(6.5rem, 11vw, 9.5rem) 1fr; grid-template-columns: subgrid;
+  align-items: center; column-gap: clamp(16px, 2vw, 26px);
+}
 .ph-fact dt { font-size: clamp(2rem, 3.4vw, 2.8rem); color: var(--slate); white-space: nowrap; }
 .ph-fact dd { margin: 0; color: var(--slate-3); line-height: 1.45; }
 .ph-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: clamp(28px, 4vw, 44px); }
@@ -55,11 +106,80 @@
 
 /* internships */
 /* flex so a short last row stretches instead of leaving an empty block */
-.int-grid { display: flex; flex-wrap: wrap; gap: 1px; background: var(--line); border: 1px solid var(--line); }
-.int-cell { flex: 1 1 200px; background: var(--paper); padding: 24px 22px; display: flex; flex-direction: column; gap: 24px; min-height: 150px; transition: background 0.3s var(--ease); }
+/* a rounded 4 + 3 grid of cards; opening one inserts its photo panel under that card's row */
+.int-grid {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1px;
+  background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+}
+.int-cell {
+  grid-column: span 3; position: relative;
+  display: flex; flex-direction: column; gap: 28px; min-height: 160px; padding: 22px 22px 20px;
+  background: var(--paper); border: 0; border-radius: 0; font: inherit; text-align: left; color: inherit; cursor: pointer;
+  transition: background 0.3s var(--ease);
+}
+.int-cell.wide { grid-column: span 4; }
+.int-cell::after {
+  content: ""; position: absolute; left: 22px; right: 22px; bottom: 0; height: 2px; background: var(--bronze);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.4s var(--ease);
+}
 .int-cell:hover { background: var(--paper-2); }
+.int-cell:hover::after, .int-cell.on::after { transform: scaleX(1); }
+.int-cell.on { background: var(--card); }
+.int-cell:focus-visible { outline: 2px solid var(--bronze); outline-offset: -3px; }
+.int-cell-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .int-cell .num { font-size: 22px; color: var(--bronze-2); }
+.int-plus {
+  position: relative; flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line-2);
+  transition: transform 0.35s var(--ease), background 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.int-plus::before, .int-plus::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 1.5px; background: var(--bronze-2);
+  transform: translate(-50%, -50%);
+}
+.int-plus::after { transform: translate(-50%, -50%) rotate(90deg); }
+.int-cell:hover .int-plus { border-color: var(--bronze); }
+.int-cell.on .int-plus { transform: rotate(45deg); background: var(--bronze); border-color: var(--bronze); }
+.int-cell.on .int-plus::before, .int-cell.on .int-plus::after { background: var(--paper); }
 .int-name { margin-top: auto; font-family: var(--serif); font-weight: 600; font-size: 1.15rem; line-height: 1.2; letter-spacing: -0.02em; color: var(--ink); }
+
+/* the photo panel: a full-width row right under the clicked card's row, so the grid
+   grows to fit it and no card is covered; it shares the open card's surface colour */
+.int-pop {
+  grid-column: 1 / -1; position: relative;
+  display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: clamp(18px, 3vw, 40px); align-items: center;
+  padding: clamp(14px, 1.8vw, 22px); background: var(--card);
+}
+.int-pop-img { display: block; width: 100%; height: auto; aspect-ratio: 400 / 380; object-fit: cover; border-radius: 12px; }
+.int-pop-body { padding-right: 48px; }
+.int-pop-body .num { font-size: 22px; color: var(--bronze-2); }
+.int-pop-name { margin: 8px 0 0; font-family: var(--serif); font-weight: 600; font-size: clamp(1.3rem, 1rem + 1vw, 1.8rem); line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); }
+.int-pop-text { margin: 10px 0 0; max-width: 56ch; font-size: clamp(0.95rem, 0.9rem + 0.25vw, 1.08rem); line-height: 1.6; color: var(--slate-2); }
+.int-pop-close {
+  position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center; font-size: 18px; line-height: 1; color: var(--ink);
+  background: var(--card); border: 1px solid var(--line-2); transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+}
+.int-pop-close:hover { border-color: var(--bronze); background: var(--paper-2); }
+.int-pop-close:focus-visible { outline: 2px solid var(--bronze); outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  .int-pop { animation: intOpen 0.45s var(--ease) both; }
+}
+/* negative top inset keeps the notch visible while the panel unrolls downward */
+@keyframes intOpen {
+  from { opacity: 0.3; clip-path: inset(-10px 0 100% 0); }
+  to   { opacity: 1; clip-path: inset(-10px 0 0 0); }
+}
+@media (max-width: 900px) {
+  .int-cell, .int-cell.wide { grid-column: span 6; }
+  .int-cell.last { grid-column: span 12; }
+}
+@media (max-width: 700px) {
+  .int-pop { grid-template-columns: minmax(0, 1fr); }
+  .int-pop-body { padding-right: 0; }
+}
+@media (max-width: 560px) {
+  .int-cell, .int-cell.wide, .int-cell.last { grid-column: 1 / -1; min-height: 0; }
+}
 
 /* sectors */
 .sec-cats { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 24px; }
@@ -107,9 +227,14 @@
 .sf-links { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-top: clamp(36px, 5vw, 56px); padding-top: 22px; border-top: 1px solid var(--line); }
 .sf-links a { font-size: 14px; color: var(--slate-2); transition: color 0.2s var(--ease); }
 .sf-links a:hover { color: var(--ink); }
-.sf-bar { display: flex; flex-wrap: wrap; gap: 20px; align-items: baseline; justify-content: space-between; padding: 24px 0 40px; margin-top: 22px; border-top: 1px solid var(--line); }
-.sf-bar .sf-brand { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; }
-.sf-brand em { font-style: normal; color: var(--brass-2); }
+.sf-bar { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: space-between; padding: 16px 0 40px; margin-top: 22px; border-top: 1px solid var(--line); }
+.sf-bar .sf-brand { display: flex; align-items: center; gap: 12px; flex: none; }
+.sf-logo { display: block; height: 52px; width: auto; }
+.sf-logo.logo-dark { display: none; }
+:root[data-theme="dark"] .sf-logo.logo-light { display: none; }
+:root[data-theme="dark"] .sf-logo.logo-dark { display: block; }
+.sf-divider { width: 1px; height: 15px; background: var(--line-2); }
+.sf-dept { font-size: 9.5px; color: var(--slate-3); white-space: nowrap; }
 .sf-bar .sf-disclaimer { font-size: 9px; letter-spacing: 0.08em; line-height: 2; color: var(--slate-3); max-width: 72ch; text-transform: none; margin: 0; }
 
 @media (max-width: 900px) {

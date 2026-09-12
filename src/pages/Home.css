@@ -13,6 +13,7 @@
   --h-gold-text: #9c7837;   /* the gold, deepened for small text on white */
   --h-card: #ffffff;
   --h-on-slate: #ffffff;
+  --h-gate: #233039;        /* line colour of the campus-gate backdrop */
   position: relative; min-height: max(520px, 100vh); overflow: hidden;
   display: grid; place-items: center;
   padding: calc(var(--nav-h) + 8px) var(--gut) 56px;
@@ -28,7 +29,31 @@
   --h-gold-text: #d0a863;
   --h-card: #233039;
   --h-on-slate: #1a242b;
+  --h-gate: #f5f2ea;
 }
+
+/* RVU's campus gate in line art: a faint backdrop along the bottom of the front
+   door. The drawing is used as a mask, so its lines take the theme's ink, and a
+   gradient fades it out before the heading. Static: no per-frame work. */
+.hero-gate {
+  --gate-o: 0.14;
+  position: absolute; left: 50%; bottom: 0; z-index: 0; pointer-events: none;
+  width: clamp(875px, 115%, 1425px); aspect-ratio: 1893 / 831;
+  transform: translateX(-50%); opacity: var(--gate-o);
+  background: var(--h-gate);
+  /* fades: out toward the heading, and softly at both side edges */
+  -webkit-mask-image:
+    linear-gradient(to top, #000 32%, transparent 72%),
+    linear-gradient(to right, transparent, #000 14%, #000 86%, transparent),
+    url("../assets/rvu-gate.webp");
+  -webkit-mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to top, #000 32%, transparent 72%),
+    linear-gradient(to right, transparent, #000 14%, #000 86%, transparent),
+    url("../assets/rvu-gate.webp");
+  mask-size: 100% 100%; mask-repeat: no-repeat; mask-composite: intersect;
+}
+:root[data-theme="dark"] .hero-gate { --gate-o: 0.1; }
 
 .hero-inner { position: relative; width: min(1100px, 100%); padding: clamp(18px, 4vh, 44px) clamp(18px, 4vw, 56px); text-align: center; }
 
@@ -63,7 +88,7 @@
 
 /* the three buttons — each a lockup in the RVU logo's manner:
    crest mark · small line · bold word · rule · italic tagline */
-.hero-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
+.hero-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
 .choice {
   position: relative; display: flex; align-items: center; gap: 16px; text-align: left;
   padding: clamp(14px, 2.4vh, 22px) 20px; border-radius: 8px;
@@ -117,6 +142,9 @@
   .hero.in .hero-corner.tl { animation: heroCornerTl 1.1s var(--ease-io) backwards; }
   .hero.in .hero-corner.br { animation: heroCornerBr 1.1s var(--ease-io) backwards; }
   .hero.in .hero-content { animation: heroOpen 1.1s var(--ease-io) backwards; }
+  /* the gate drifts up into place as the frame opens */
+  .hero .hero-gate { opacity: 0; transform: translate(-50%, 18px); transition: opacity 1.4s var(--ease) 450ms, transform 1.6s var(--ease-nk) 450ms; }
+  .hero.in .hero-gate { opacity: var(--gate-o); transform: translateX(-50%); }
 
   .hero .rise { opacity: 0; transform: translateY(16px); transition: opacity 0.7s var(--ease), transform 0.8s var(--ease-nk), background 0.35s var(--ease), color 0.35s var(--ease), box-shadow 0.35s var(--ease); transition-delay: calc(var(--d, 0ms) + 380ms), calc(var(--d, 0ms) + 380ms), 0ms, 0ms, 0ms; }
   .hero.in .rise { opacity: 1; transform: none; }

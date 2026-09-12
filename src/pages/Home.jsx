@@ -19,7 +19,7 @@ function Mark({ children }) {
 
 const CHOICES = [
   {
-    to: "/students", word: "Student", tag: "Go, find your placement.",
+    to: "/students", word: "Student / Parent", tag: "Go, find your placement.",
     mark: (
       <>
         <path d="M1 8.5 12 3l11 5.5L12 14Z" />
@@ -39,17 +39,6 @@ const CHOICES = [
       </>
     ),
   },
-  {
-    to: "/parents", word: "Parent", tag: "Go, see the full picture.",
-    mark: (
-      <>
-        <circle cx="8" cy="6" r="3" />
-        <circle cx="17" cy="9" r="2.3" />
-        <path d="M2 21c0-4 2.7-7 6-7s6 3 6 7" />
-        <path d="M13.2 21c.3-2.8 1.8-4.8 3.8-4.8s3.5 2 3.8 4.8" />
-      </>
-    ),
-  },
 ];
 
 // The front door: RVU's own words, then one question — who are you?
@@ -66,6 +55,8 @@ export default function Home() {
 
   return (
     <main className={`hero ${ready ? "in" : ""}`}>
+      {/* RVU's campus gate in line art, a faint backdrop behind the front door */}
+      <div className="hero-gate" aria-hidden="true" />
       <div className="hero-inner">
         <span className="hero-corner tl" aria-hidden="true" />
         <span className="hero-corner br" aria-hidden="true" />

@@ -1,21 +1,24 @@
-import { PageHead, TrainingSection, InternshipsSection, SiteFooter } from "../components/sections/Audience";
+import { PageHead, TrainingSection, InternshipsSection, SectorsSection, GovernanceSection, SiteFooter } from "../components/sections/Audience";
 import Process from "../components/sections/Process";
-import Outcomes from "../components/sections/Outcomes";
+import Record from "../components/sections/Record";
+import Cohort from "../components/sections/Cohort";
+import { RecruiterPeek } from "../components/sections/Outcomes";
 import { CONTACT, ELIGIBILITY } from "../data/placements";
 
-// Students — easy access to the placement process, information and resources.
+// Students & parents — one path: the placement process and resources students
+// need, followed by the numbers, recruiters and governance parents look for.
 export default function Students() {
   return (
     <main className="aud">
       <PageHead
-        kicker="For students"
+        kicker="For students & parents"
         title="Your route to a placement."
         hi={[4]}
-        lede="Everything you need to take part in campus placements at RV University — who can sit a drive, the training you complete first, how you’re expected to conduct yourself, and where RV students have been hired."
+        lede="RV University brings the RV Group’s legacy to six schools in Bengaluru, from engineering and business to design, law and film. Its placement office connects 1,600+ graduates with 50+ recruiters on campus. Here’s how students get there, and what parents should know."
         facts={[
           [String(ELIGIBILITY.length), "conditions to sit a placement drive"],
           ["80%", "minimum attendance in pre-placement training"],
-          ["425", "offers facilitated by CAR"],
+          ["425+", "offers facilitated by CAR"],
         ]}
         actions={[
           { href: `mailto:${CONTACT.email}`, label: "Ask CAR a question", primary: true },
@@ -25,14 +28,20 @@ export default function Students() {
           ["#process", "Eligibility"],
           ["#training", "Training & conduct"],
           ["#internships", "Internships"],
-          ["#outcomes", "Where students landed"],
+          ["#record", "The numbers"],
+          ["#sectors", "Recruiters"],
+          ["#cohort", "Who is eligible"],
+          ["#governance", "Governance & support"],
           ["#contact", "Contact CAR"],
         ]}
       />
       <Process idx="01" />
       <TrainingSection idx="02" />
       <InternshipsSection idx="03" />
-      <Outcomes idx="04" />
+      <Record idx="04" />
+      <SectorsSection idx="05" title="Who recruits from RV University." hi={[3, 4]} peek={<RecruiterPeek />} />
+      <Cohort idx="06" />
+      <GovernanceSection idx="07" />
       <SiteFooter />
     </main>
   );
