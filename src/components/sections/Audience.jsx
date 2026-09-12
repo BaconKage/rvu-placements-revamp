@@ -1,4 +1,14 @@
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import logoBlue from "../../assets/rvu-logo-blue-nav.webp";
+import logoGold from "../../assets/rvu-logo-gold.avif";
+import imgSummer from "../../assets/internships/summer.webp";
+import imgWinter from "../../assets/internships/winter.webp";
+import imgLive from "../../assets/internships/live-projects.webp";
+import imgMentoring from "../../assets/internships/mentoring.webp";
+import imgCapstone from "../../assets/internships/capstone.webp";
+import imgInternational from "../../assets/internships/international.webp";
+import imgCollaboration from "../../assets/internships/collaboration.webp";
 import Eyebrow from "../ui/Eyebrow";
 import Words from "../ui/Words";
 import { useReveal } from "../../hooks/useReveal";
@@ -18,10 +28,33 @@ function Action({ a }) {
 }
 
 // ---- page header: who this page is for, the three facts that matter, jump links ----
-export function PageHead({ kicker, title, hi = [], lede, facts = [], links = [], actions = [] }) {
+// True while the site's dark theme is on (the toggle sets data-theme on <html>).
+// Only watches when asked, so pages without dark artwork add no observer.
+function useDarkTheme(watch) {
+  const read = () => document.documentElement.getAttribute("data-theme") === "dark";
+  const [dark, setDark] = useState(read);
+  useEffect(() => {
+    if (!watch) return;
+    const mo = new MutationObserver(() => setDark(read()));
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    setDark(read());
+    return () => mo.disconnect();
+  }, [watch]);
+  return dark;
+}
+
+export function PageHead({ kicker, title, hi = [], lede, facts = [], links = [], actions = [], bg, bgDark }) {
   const ref = useReveal();
+  const dark = useDarkTheme(!!bgDark);
+  // only the current theme's artwork is in the page, so the other one is never downloaded early
+  const art = bgDark && dark ? bgDark : bg;
   return (
-    <header className="ph">
+    <header className={`ph${bg ? " ph-has-bg" : ""}`}>
+      {bg && (
+        <div className={`ph-bg${bgDark ? " has-dark" : ""}`} aria-hidden="true">
+          <img key={art} src={art} alt="" width="1600" height="845" decoding="async" />
+        </div>
+      )}
       <div className="wrap">
         <Eyebrow>{kicker}</Eyebrow>
         <div className="ph-body">
@@ -81,7 +114,62 @@ export function TrainingSection({ idx }) {
 }
 
 // ---- internships & industry exposure ----
+// Photos and wording from rvu.edu.in/placements (Industry Collaboration has no
+// photo there, so it uses the placements page's industry-session photo).
+const INTERNSHIP_DETAILS = {
+  "Summer Internship": { img: imgSummer, text: "Gain hands-on industry experience through structured summer internships that help students apply classroom learning to real-world business and technology challenges." },
+  "Winter Internship": { img: imgWinter, text: "Utilize the winter break to work on short-term industry assignments, develop practical skills, and strengthen professional exposure." },
+  "Live Projects": { img: imgLive, text: "Collaborate with industry partners on real business problems, delivering innovative solutions while gaining practical experience throughout the academic year." },
+  "Industry Mentoring": { img: imgMentoring, text: "Learn directly from experienced industry professionals who provide career guidance, technical insights, and mentorship to prepare students for the workplace." },
+  "Capstone Projects": { img: imgCapstone, text: "Work on multidisciplinary, industry-relevant capstone projects that integrate academic knowledge with practical problem-solving and innovation." },
+  "International Internship Opportunities": { img: imgInternational, text: "Explore global internship opportunities that provide cross-cultural exposure, international work experience, and a broader perspective on industry practices." },
+  "Industry Collaboration": { img: imgCollaboration, text: "Through the Corporate & Alumni Relations office, students work alongside industry, alumni and startups on sessions, projects and hiring." },
+};
+
 export function InternshipsSection({ idx, title = "Experience that counts before placement.", hi = [3], lede }) {
+  const cellRefs = useRef([]);
+  const closeRef = useRef(null);
+  const [pop, setPop] = useState(null); // { i, rowEnd }: open card and the last card of its row
+
+  // open the card's panel directly under its row (the grid grows, nothing is covered);
+  // clicking the open card closes it
+  const toggle = (i) => {
+    if (pop?.i === i) { setPop(null); return; }
+    const cells = cellRefs.current;
+    const top = (el) => Math.round(el.getBoundingClientRect().top);
+    let rowEnd = i;
+    while (rowEnd + 1 < cells.length && top(cells[rowEnd + 1]) === top(cells[i])) rowEnd++;
+    setPop({ i, rowEnd });
+  };
+  const closeAndRefocus = () => {
+    if (pop) cellRefs.current[pop.i]?.focus({ preventScroll: true });
+    setPop(null);
+  };
+
+  // while open: Escape / outside click / resize close it; listeners exist only then
+  useEffect(() => {
+    if (!pop) return;
+    closeRef.current?.focus({ preventScroll: true });
+    const onKey = (e) => {
+      if (e.key !== "Escape") return;
+      cellRefs.current[pop.i]?.focus({ preventScroll: true });
+      setPop(null);
+    };
+    const onDown = (e) => { if (!e.target.closest?.(".int-pop, .int-cell")) setPop(null); };
+    const onResize = () => setPop(null);
+    addEventListener("keydown", onKey);
+    addEventListener("pointerdown", onDown);
+    addEventListener("resize", onResize);
+    return () => {
+      removeEventListener("keydown", onKey);
+      removeEventListener("pointerdown", onDown);
+      removeEventListener("resize", onResize);
+    };
+  }, [pop]);
+
+  const name = pop ? INTERNSHIPS[pop.i] : null;
+  const detail = name ? INTERNSHIP_DETAILS[name] : null;
+
   return (
     <section className="section aud-sec" id="internships">
       <div className="wrap">
@@ -90,7 +178,33 @@ export function InternshipsSection({ idx, title = "Experience that counts before
         {lede && <p className="lede aud-lede">{lede}</p>}
         <div className="int-grid">
           {INTERNSHIPS.map((t, i) => (
-            <div className="int-cell" key={t}><span className="num">{pad(i)}</span><span className="int-name">{t}</span></div>
+            <Fragment key={t}>
+              <button
+                type="button"
+                ref={(el) => (cellRefs.current[i] = el)}
+                className={`int-cell${i >= 4 ? " wide" : ""}${i === INTERNSHIPS.length - 1 ? " last" : ""}${pop?.i === i ? " on" : ""}`}
+                aria-expanded={pop?.i === i}
+                aria-controls="int-pop"
+                onClick={() => toggle(i)}
+              >
+                <span className="int-cell-top">
+                  <span className="num">{pad(i)}</span>
+                  <span className="int-plus" aria-hidden="true" />
+                </span>
+                <span className="int-name">{t}</span>
+              </button>
+              {detail && pop.rowEnd === i && (
+                <div key={`pop-${pop.i}`} id="int-pop" className="int-pop" role="region" aria-label={name}>
+                  <img className="int-pop-img" src={detail.img} alt={name} width="400" height="380" decoding="async" />
+                  <div className="int-pop-body">
+                    <span className="num">{pad(pop.i)}</span>
+                    <h3 className="int-pop-name">{name}</h3>
+                    <p className="int-pop-text">{detail.text}</p>
+                  </div>
+                  <button ref={closeRef} type="button" className="int-pop-close" aria-label="Close" onClick={closeAndRefocus}>×</button>
+                </div>
+              )}
+            </Fragment>
           ))}
         </div>
       </div>
@@ -98,8 +212,10 @@ export function InternshipsSection({ idx, title = "Experience that counts before
   );
 }
 
-// ---- recruiters by sector (parents, partners) ----
-export function SectorsSection({ idx, title = "Who recruits, by sector.", hi = [2] }) {
+// ---- recruiters by sector (students & parents, partners) ----
+// `peek`, when given, takes the place of the sector cards (and the wall button,
+// since the peek links to the wall itself).
+export function SectorsSection({ idx, title = "Who recruits, by sector.", hi = [2], peek }) {
   const total = RECRUITER_SECTORS.reduce((a, s) => a + s.cos.length, 0);
   return (
     <section className="section aud-sec" id="sectors">
@@ -110,22 +226,24 @@ export function SectorsSection({ idx, title = "Who recruits, by sector.", hi = [
           <span className="mono aud-sub inline">Recruiter categories</span>
           {RECRUITER_CATEGORIES.map((c) => <span key={c} className="aud-chip">{c}</span>)}
         </div>
-        <div className="sec-grid">
-          {RECRUITER_SECTORS.map((s) => (
-            <article className="sec-card" key={s.sector}>
-              <div className="sec-card-head">
-                <span className="sec-name">{s.sector}</span>
-                <span className="sec-count">{s.cos.length}</span>
-              </div>
-              <p className="sec-cos">{s.cos.join(" · ")}</p>
-            </article>
-          ))}
-        </div>
+        {peek ?? (
+          <div className="sec-grid">
+            {RECRUITER_SECTORS.map((s) => (
+              <article className="sec-card" key={s.sector}>
+                <div className="sec-card-head">
+                  <span className="sec-name">{s.sector}</span>
+                  <span className="sec-count">{s.cos.length}</span>
+                </div>
+                <p className="sec-cos">{s.cos.join(" · ")}</p>
+              </article>
+            ))}
+          </div>
+        )}
         <div className="sec-foot">
           <p className="sec-pipe">
             <b>{total} organisations</b> recruited through RV drives in the published sheets, with <b>{UPCOMING.length} more</b> in the pipeline.
           </p>
-          <Link className="btn ghost" to="/recruiters">Explore the recruiter wall <span className="arrow">→</span></Link>
+          {!peek && <Link className="btn ghost" to="/recruiters">Explore the recruiter wall <span className="arrow">→</span></Link>}
         </div>
       </div>
     </section>
@@ -209,7 +327,7 @@ export function SiteFooter({ contact = true }) {
             <div>
               <span className="mono sf-k">{CONTACT.office}</span>
               <h2 className="serif sf-h">Questions about placements?</h2>
-              <p className="sf-p">Write to or visit the Corporate &amp; Alumni Relations office — the university’s single point of contact for students, parents and recruiters.</p>
+              <p className="sf-p">Write to or visit the Corporate &amp; Alumni Relations office, the university’s single point of contact for students, parents and recruiters.</p>
             </div>
             <div className="sf-card">
               <span className="mono sf-k">Visit</span>
@@ -221,13 +339,18 @@ export function SiteFooter({ contact = true }) {
         <nav className="sf-links" aria-label="Site">
           <Link to="/">Home</Link>
           <Link to="/recruiters">Who recruits</Link>
-          <Link to="/students">For students</Link>
+          <Link to="/students">For students &amp; parents</Link>
           <Link to="/partners">For recruiters</Link>
-          <Link to="/parents">For parents</Link>
           <Link to="/forms">Register to recruit</Link>
         </nav>
         <div className="sf-bar">
-          <span className="sf-brand serif">R<em>V</em> University · Placements</span>
+          {/* same lockup as the nav: blue logo on light, gold in dark mode */}
+          <span className="sf-brand">
+            <img className="sf-logo logo-light" src={logoBlue} alt="RV University" width="336" height="168" />
+            <img className="sf-logo logo-dark" src={logoGold} alt="RV University" width="512" height="258" />
+            <span className="sf-divider" />
+            <span className="sf-dept mono">Placements</span>
+          </span>
           <p className="sf-disclaimer mono">
             Design concept for the RV University Placement Website Revamp Competition. Statistics, programme names,
             benefit descriptions, eligibility rules and governance text are taken from rvu.edu.in/placements. Company

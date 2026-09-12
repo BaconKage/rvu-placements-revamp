@@ -14,7 +14,7 @@ export const COPY = {
     "Access a multidisciplinary talent pool of 1,600+ industry-ready graduates trained in cutting-edge technologies.",
   tagline: "Empowering Industry Innovators with Top-Tier Talent",
   carIntro:
-    "The Corporate & Alumni Relations office is the university's primary interface between students, industry, alumni, startups and academic schools — managing the recruitment ecosystem and student employability.",
+    "The Corporate & Alumni Relations office is the university's primary interface between students, industry, alumni, startups and academic schools, managing the recruitment ecosystem and student employability.",
 };
 
 // ---- Real offers (company-forward; package is secondary) ----
@@ -75,7 +75,7 @@ export const UPCOMING = [
 // ---- Headline stats — breadth first, no salary ceiling ----
 export const STATS = [
   { v: "50", unit: "+", k: "Recruiters on campus", note: "MNCs, GCCs, consulting, finance, startups.", hero: true },
-  { v: "425", unit: "", k: "Offers facilitated", note: "CAR facilitated over 400 placement offers." },
+  { v: "425", unit: "+", k: "Offers facilitated", note: "CAR facilitated over 400 placement offers." },
   { v: "1,600", unit: "+", k: "Industry-ready graduates", note: "A multidisciplinary talent pool." },
   { v: "6", unit: "", k: "Schools eligible", note: "Engineering to Liberal Arts." },
   { v: "25", unit: "%", k: "Held more than one offer", note: "A quarter chose between offers." },
