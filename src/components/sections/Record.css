@@ -1,9 +1,9 @@
 .record { padding-bottom: clamp(40px, 6vw, 72px); }
 .record-h { font-size: var(--step-3); color: var(--ink); max-width: 18ch; margin-bottom: 40px; }
-.record-grid-wrap { padding-inline: 0; }
 .stat-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1px; background: var(--line); border-block: 1px solid var(--line);
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+  border-radius: 16px; overflow: hidden; /* matches the other ruled grids */
 }
 .stat { background: var(--paper); padding: 30px clamp(20px, 3vw, 30px) 26px; }
 .stat-hero { background: var(--brass-wash); }
