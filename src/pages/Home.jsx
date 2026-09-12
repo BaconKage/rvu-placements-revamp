@@ -56,12 +56,6 @@ const CHOICES = [
 export default function Home() {
   const [ready, setReady] = useState(() => !!window.__rvuPreloaded);
 
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.add("home-lock");
-    return () => root.classList.remove("home-lock");
-  }, []);
-
   // rise in as the loader curtain lifts
   useEffect(() => {
     if (ready) return;

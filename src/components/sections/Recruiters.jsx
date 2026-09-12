@@ -95,6 +95,11 @@ export default function Recruiters() {
   const layout = useMemo(() => buildWall(), []);
   const stageRef = useRef(null);
   const cardRefs = useRef([]);
+  // Stable refs let memoized cards skip renders when the explored count or
+  // detail changes. Inline ref callbacks invalidate React.memo on every card.
+  const cardSetters = useMemo(() => layout.cards.map((_, i) => (el) => {
+    cardRefs.current[i] = el;
+  }), [layout]);
   const [open, setOpen] = useState(null);
   const [seen, setSeen] = useState(0);
 
@@ -145,7 +150,7 @@ export default function Recruiters() {
 
       <div className="rw-world">
         {layout.cards.map((c, i) => (
-          <WallCard key={c.id} c={c} i={i} ref={(el) => (cardRefs.current[i] = el)}
+          <WallCard key={c.id} c={c} i={i} ref={cardSetters[i]}
             onOpenCard={onOpenCard} onFocusCard={onFocusCard} />
         ))}
       </div>
