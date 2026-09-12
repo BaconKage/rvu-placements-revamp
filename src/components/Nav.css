@@ -9,10 +9,13 @@
   transition: border-color 0.4s var(--ease), background 0.4s var(--ease);
 }
 .nav.stuck { border-bottom-color: var(--line); background: color-mix(in srgb, var(--paper) 90%, transparent); }
-.brandmark { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
-.brandmark .rv { font-size: 19px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
-.brandmark .rv em { font-style: normal; color: var(--brass-2); }
-.brandmark .divider { width: 1px; height: 15px; background: var(--line-2); transform: translateY(2px); }
+.brandmark { display: flex; align-items: center; gap: 12px; min-width: 0; }
+/* RVU logo lockup: blue on light, gold in dark mode and over the dark wall */
+.brand-logo { display: block; height: 42px; width: auto; }
+.brand-logo.logo-dark { display: none; }
+:root[data-theme="dark"] .brand-logo.logo-light, .nav.on-dark .brand-logo.logo-light { display: none; }
+:root[data-theme="dark"] .brand-logo.logo-dark, .nav.on-dark .brand-logo.logo-dark { display: block; }
+.brandmark .divider { width: 1px; height: 15px; background: var(--line-2); }
 .brandmark .dept { font-size: 9.5px; color: var(--slate-3); white-space: nowrap; }
 
 .nav-right { display: flex; align-items: center; gap: 22px; }
@@ -59,8 +62,6 @@
 
 /* over the dark recruiter wall */
 .nav.on-dark { background: rgba(18, 26, 31, 0.55); border-bottom-color: rgba(245, 242, 234, 0.08); backdrop-filter: none; -webkit-backdrop-filter: none; }
-.nav.on-dark .glow-cycle { animation: none; color: #f5f2ea; }
-.nav.on-dark .brandmark .rv em { color: #d0a863; }
 .nav.on-dark .brandmark .dept, .nav.on-dark .nav-link { color: #b9c2c7; }
 .nav.on-dark .nav-link:hover, .nav.on-dark .nav-link.active, .nav.on-dark .nav-cta { color: #f5f2ea; }
 .nav.on-dark .theme-btn, .nav.on-dark .nav-menu { border-color: rgba(245, 242, 234, 0.25); color: #d9dee1; }

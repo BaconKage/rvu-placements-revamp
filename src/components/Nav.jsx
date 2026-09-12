@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
+import logoBlue from "../assets/rvu-logo-blue-nav.webp";
+import logoGold from "../assets/rvu-logo-gold.avif";
 import "./Nav.css";
 
 const PATHS = [
-  ["/students", "Students"],
+  ["/students", "Students & Parents"],
   ["/partners", "Recruiters"],
-  ["/parents", "Parents"],
   ["/recruiters", "Who recruits"],
 ];
 
@@ -30,7 +31,9 @@ export default function Nav() {
   return (
     <nav className={`nav ${stuck ? "stuck" : ""} ${onDark ? "on-dark" : ""} ${onHero ? "on-hero" : ""} ${open ? "open" : ""}`}>
       <Link className="brandmark" to="/">
-        <span className="rv serif glow-cycle">R<em>V</em> University</span>
+        {/* RVU logo, as in the rvu.edu.in header: blue on light, gold on dark */}
+        <img className="brand-logo logo-light" src={logoBlue} alt="RV University" width="336" height="168" />
+        <img className="brand-logo logo-dark" src={logoGold} alt="RV University" width="512" height="258" />
         <span className="divider" />
         <span className="dept mono">Placements</span>
       </Link>
@@ -54,9 +57,8 @@ export default function Nav() {
       </div>
       <div className="nav-sheet" id="nav-sheet" hidden={!open}>
         <Link to="/">Home</Link>
-        <Link to="/students">For students</Link>
+        <Link to="/students">For students &amp; parents</Link>
         <Link to="/partners">For recruiters</Link>
-        <Link to="/parents">For parents</Link>
         <Link to="/recruiters">Who recruits</Link>
         <Link to="/forms">Register to recruit →</Link>
       </div>

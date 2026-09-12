@@ -3,6 +3,8 @@ import WhyRecruit from "../components/sections/WhyRecruit";
 import Cohort from "../components/sections/Cohort";
 import Recruit from "../components/sections/Recruit";
 import { COPY, CONTACT } from "../data/placements";
+import buildingColour from "../assets/rvu-building-colour.webp";
+import buildingDark from "../assets/rvu-building-dark.webp";
 
 // Corporate partners — efficient interaction, engagement and relevant information.
 export default function Partners() {
@@ -13,6 +15,8 @@ export default function Partners() {
         title="Hire from RV University."
         hi={[2, 3]}
         lede={COPY.carIntro}
+        bg={buildingColour}
+        bgDark={buildingDark}
         facts={[
           ["1,600+", "industry-ready graduates"],
           ["17", "programmes across 6 schools"],
