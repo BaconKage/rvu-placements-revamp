@@ -55,20 +55,27 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
       rx: (rnd() - 0.5) * 170, ry: (rnd() - 0.5) * 170, rz: (rnd() - 0.5) * 100,
       delay: rnd() * 900,
     }));
+    const introDuration = INTRO_MS + Math.max(...cloud.map((c) => c.delay));
 
     const s = (st.current = {
       W: 0, H: 0, cw: 0, ch: 0, sized: false,
       bx: new Float32Array(n), by: new Float32Array(n),
+      sx: new Float64Array(cols), nx: new Float64Array(cols), ax: new Float64Array(cols),
+      sy: new Float64Array(rows), ny: new Float64Array(rows), ay: new Float64Array(rows),
       dx: 0, dy: 0, x: 0, y: 0, swing: 0, fling: 0, flingY: 0,
       dragging: false, moved: false, dist: 0, lx: 0, ly: 0, lastDx: 0, lastDy: 0,
       hot: -1, hold: false, zoom: 0, zoomT: 0, zoomW: 0, zy: 0,
-      introAt: reduce ? -1e9 : null, visible: false, raf: 0, last: 0,
+      introAt: reduce ? -1e9 : null, inView: false, visible: false, raf: 0, last: 0,
       hoverT: new Float32Array(n), hover: new Float32Array(n), seen: new Uint8Array(n),
-      op: new Float32Array(n).fill(-1), vis: new Uint8Array(n).fill(2),
+      // Compare integer opacity steps. Float32 values such as 0.95 do not
+      // equal JS's rounded 0.95, which used to rewrite opacity every frame.
+      op: new Uint8Array(n).fill(255), vis: new Uint8Array(n).fill(2),
+      transforms: new Array(n),
     });
 
     const size = () => {
       s.W = stage.clientWidth; s.H = stage.clientHeight;
+      if (!s.W || !s.H) return;
       const narrow = s.W < 700;
       const w = narrow ? 170 : 212, h = narrow ? 226 : 272;
       // one even gap in both directions
@@ -90,6 +97,7 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
         s.dx = s.x = narrow ? s.cw / 2 : 0;
         if (centreRow) s.dy = s.y = s.ch / 2;
       }
+      s.kick?.();
     };
     size();
     const ro = new ResizeObserver(size);
@@ -116,25 +124,50 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
       if (!reduce) s.swing += (clamp((vx / f) * 0.4, -10, 10) - s.swing) * (1 - Math.pow(0.88, f));
 
       const since = s.introAt == null ? 0 : t - s.introAt;
+      const introDone = s.introAt != null && since >= introDuration;
       const hk = 1 - Math.pow(0.84, f);
       const halfW = s.W / 2, halfH = s.H / 2;
       const els = cardRefs.current;
+      let hoverMoving = false;
+
+      // Every card in a column/row shares the same wrapped position. Compute
+      // it once per axis without rounding away the existing 3D geometry.
+      for (let col = 0; col < cols; col++) {
+        s.sx[col] = wrap(s.bx[col] + s.x, worldW);
+        s.nx[col] = s.sx[col] / halfW;
+        s.ax[col] = Math.abs(s.nx[col]);
+      }
+      for (let row = 0; row < rows; row++) {
+        s.sy[row] = wrap(s.by[row * cols] + s.y, worldH);
+        s.ny[row] = s.sy[row] / halfH;
+        s.ay[row] = Math.abs(s.ny[row]);
+      }
 
       for (let i = 0; i < n; i++) {
         const el = els[i];
         if (!el) continue;
-        const sx = wrap(s.bx[i] + s.x, worldW), sy = wrap(s.by[i] + s.y, worldH);
-        const nx = sx / halfW, ny = sy / halfH;
-        const ax = nx < 0 ? -nx : nx, ay = ny < 0 ? -ny : ny;
-        const kI = s.introAt == null ? 0 : easeInOut(clamp((since - cloud[i].delay) / INTRO_MS, 0, 1));
+        const { col, row } = cards[i];
+        const sx = s.sx[col], sy = s.sy[row];
+        const nx = s.nx[col], ny = s.ny[row];
+        const ax = s.ax[col], ay = s.ay[row];
+        const kI = introDone ? 1 : s.introAt == null ? 0 : easeInOut(clamp((since - cloud[i].delay) / INTRO_MS, 0, 1));
 
         if (kI >= 1 && (ax > 1.45 || ay > 1.5)) {
-          if (s.vis[i] !== 0) { el.style.visibility = "hidden"; s.vis[i] = 0; }
+          if (s.vis[i] !== 0) {
+            el.style.visibility = "hidden";
+            el.style.willChange = "auto";
+            s.vis[i] = 0;
+          }
           continue;
         }
-        if (s.vis[i] !== 1) { el.style.visibility = "visible"; s.vis[i] = 1; }
+        if (s.vis[i] !== 1) {
+          el.style.visibility = "visible";
+          el.style.willChange = "transform";
+          s.vis[i] = 1;
+        }
 
         const h = (s.hover[i] += (s.hoverT[i] - s.hover[i]) * hk);
+        if (Math.abs(s.hoverT[i] - h) > 0.001) hoverMoving = true;
         let x = sx, y = sy - h * 8;
         let z = nx * nx * 210 + ny * ny * 70 + h * 80;
         let rx = ny * 9 * (1 - h * 0.6);
@@ -150,12 +183,16 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
           sc = mix(0.4, 1, kI); op = mix(0.9, op, kI);
         }
 
-        el.style.transform =
+        const transform =
           `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) ` +
           `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg)` +
           (sc !== 1 ? ` scale(${sc.toFixed(3)})` : "");
-        const o = Math.round(op * 20) / 20;
-        if (o !== s.op[i]) { el.style.opacity = o; s.op[i] = o; }
+        if (transform !== s.transforms[i]) {
+          el.style.transform = transform;
+          s.transforms[i] = transform;
+        }
+        const o = Math.round(op * 20);
+        if (o !== s.op[i]) { el.style.opacity = o / 20; s.op[i] = o; }
       }
 
       // camera dolly into the opened card
@@ -167,27 +204,45 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
           : `translate3d(0,${(-s.zy * s.zoom).toFixed(1)}px,${(s.zoom * ZOOM_Z).toFixed(1)}px)`;
       }
 
-      s.raf = requestAnimationFrame(frame);
+      // The drift still runs at the display's refresh rate. A settled open
+      // card (or reduced-motion wall) sleeps until the next interaction.
+      if ((!reduce && !s.hold) || !introDone || hoverMoving ||
+          Math.abs(s.dx - s.x) > 0.01 || Math.abs(s.dy - s.y) > 0.01 ||
+          Math.abs(s.swing) > 0.001 || Math.abs(s.zoomT - s.zoom) > 0.0004) {
+        s.raf = requestAnimationFrame(frame);
+      }
     };
     const kick = () => {
       if (!s.raf && s.visible) { s.last = 0; s.raf = requestAnimationFrame(frame); }
     };
+    s.kick = kick;
 
     // the fly-in waits for the preloader to start dissolving
     const startIntro = () => { if (s.introAt == null && s.visible) s.introAt = performance.now(); };
-    const onPreloaded = () => startIntro();
+    const onPreloaded = () => { startIntro(); kick(); };
     addEventListener("rvu:preloaded", onPreloaded);
 
-    const io = new IntersectionObserver(([e]) => {
-      s.visible = e.isIntersecting;
+    const updateVisibility = () => {
+      s.visible = s.inView && !document.hidden;
+      stage.toggleAttribute("data-paused", !s.visible);
       if (s.visible) {
         if (window.__rvuPreloaded) startIntro();
         kick();
+      } else {
+        cancelAnimationFrame(s.raf);
+        s.raf = 0;
+        s.last = 0;
       }
+    };
+    document.addEventListener("visibilitychange", updateVisibility);
+    const io = new IntersectionObserver(([e]) => {
+      s.inView = e.isIntersecting;
+      updateVisibility();
     });
     io.observe(stage);
 
     const isUi = (target) => !!target.closest?.(".rw-detail");
+    let releaseTimer;
 
     // ---- drag / swipe ----
     const dragMove = (e) => {
@@ -197,27 +252,32 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
       s.lastDx = ddx; s.lastDy = ddy;
       s.dist += Math.abs(ddx) + Math.abs(ddy);
       if (s.dist > 6) s.moved = true;
+      kick();
     };
     const up = () => {
       if (!s.dragging) return;
       s.dragging = false;
       // the click that ends a drag still sees moved=true; clear it afterwards so
       // keyboard Enter and later clicks open cards again
-      setTimeout(() => { s.moved = false; }, 0);
+      clearTimeout(releaseTimer);
+      releaseTimer = setTimeout(() => { s.moved = false; }, 0);
       if (!reduce) { s.fling = clamp(s.lastDx * 0.9, -40, 40); s.flingY = clamp(s.lastDy * 0.6, -30, 30); }
       stage.classList.remove("is-dragging");
       removeEventListener("pointermove", dragMove);
       removeEventListener("pointerup", up);
       removeEventListener("pointercancel", up);
+      kick();
     };
     const down = (e) => {
       if (e.button !== 0 || isUi(e.target)) return;
+      clearTimeout(releaseTimer);
       s.dragging = true; s.moved = false; s.dist = 0; s.lastDx = s.lastDy = 0; s.fling = s.flingY = 0;
       s.lx = e.clientX; s.ly = e.clientY;
       stage.classList.add("is-dragging");
       addEventListener("pointermove", dragMove);
       addEventListener("pointerup", up);
       addEventListener("pointercancel", up);
+      kick();
     };
 
     // ---- hover ----
@@ -229,6 +289,7 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
         s.hoverT[i] = 1;
         if (!s.seen[i]) { s.seen[i] = 1; cb.current.onSeen?.(i); }
       }
+      kick();
     };
     const hoverMove = (e) => {
       if (s.dragging && s.moved) return setHot(-1);
@@ -243,6 +304,7 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
       e.preventDefault();
       const unit = e.deltaMode === 1 ? 32 : 1;
       s.dx -= (e.deltaY + e.deltaX) * 0.9 * unit;
+      kick();
     };
     const key = (e) => {
       if (e.target.closest(".rw-detail")) return;
@@ -250,6 +312,7 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
       if (!m) return;
       e.preventDefault();
       s.dx += m[0] * s.cw; s.dy += m[1] * s.ch;
+      kick();
     };
 
     if (interactive) {
@@ -266,6 +329,9 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
       s.visible = false;
       if (s.raf) cancelAnimationFrame(s.raf);
       io.disconnect(); ro.disconnect(); up();
+      clearTimeout(releaseTimer);
+      s.kick = null;
+      document.removeEventListener("visibilitychange", updateVisibility);
       removeEventListener("rvu:preloaded", onPreloaded);
       stage.removeEventListener("pointerdown", down);
       stage.removeEventListener("pointermove", hoverMove);
@@ -282,6 +348,7 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
     const { cols, rows } = layout;
     s.dx -= wrap(s.bx[i] + s.x, cols * s.cw);
     s.dy -= wrap(s.by[i] + s.y, rows * s.ch);
+    s.kick?.();
   }, [layout]);
 
   const wasDrag = useCallback(() => !!st.current?.moved, []);
@@ -306,6 +373,7 @@ export function useCurvedWall({ stageRef, cardRefs, layout, onSeen, interactive 
     if (!s) return;
     s.hold = false;
     s.zoomT = 0;
+    s.kick?.();
   }, []);
 
   return { focusCard, wasDrag, markSeen, zoomTo, zoomOut };

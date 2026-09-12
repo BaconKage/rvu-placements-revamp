@@ -12,7 +12,7 @@ export default function Logo({ co }) {
     return <span className="rw-mono">{co.replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase()}</span>;
   }
   return (
-    <img src={sources[idx]} alt="" draggable="false" loading="lazy"
+    <img src={sources[idx]} alt="" draggable="false" loading="lazy" decoding="async"
       onError={() => setIdx((i) => i + 1)} />
   );
 }

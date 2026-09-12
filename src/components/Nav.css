@@ -55,7 +55,7 @@
 .nav-sheet a:last-child { border-bottom: 0; color: var(--bronze-2); }
 
 /* on the white home: no bar, just the marks */
-.nav.on-hero { background: transparent; border-bottom-color: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.nav.on-hero:not(.stuck) { background: transparent; border-bottom-color: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
 
 /* over the dark recruiter wall */
 .nav.on-dark { background: rgba(18, 26, 31, 0.55); border-bottom-color: rgba(245, 242, 234, 0.08); backdrop-filter: none; -webkit-backdrop-filter: none; }

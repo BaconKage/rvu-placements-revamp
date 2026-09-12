@@ -5,26 +5,30 @@ import { useEffect, useRef, useState } from "react";
 // scroll and the IntersectionObserver's initial entry is missed.
 export function useCountUp(target, { duration = 1400, decimals = 0, delay = 0 } = {}) {
   const ref = useRef(null);
-  const [val, setVal] = useState(target);
-  const started = useRef(false);
+  const format = (value) => decimals > 0 ? value.toFixed(decimals) : Math.round(value).toLocaleString("en-IN");
+  const [display, setDisplay] = useState(() => format(target));
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setVal(target); return; }
-    setVal(0);
+    const formatValue = (value) => decimals > 0 ? value.toFixed(decimals) : Math.round(value).toLocaleString("en-IN");
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setDisplay(formatValue(target)); return; }
+    let started = false;
+    let raf = 0;
+    let previous = formatValue(0);
+    setDisplay(previous);
 
     const run = () => {
-      if (started.current) return;
-      started.current = true;
+      if (started) return;
+      started = true;
       const t0 = performance.now() + delay;
       const tick = (now) => {
         const p = Math.max(0, Math.min(1, (now - t0) / duration));
-        setVal(target * (1 - Math.pow(1 - p, 3)));
-        if (p < 1) requestAnimationFrame(tick);
-        else setVal(target);
+        const next = formatValue(target * (1 - Math.pow(1 - p, 3)));
+        if (next !== previous) { setDisplay(next); previous = next; }
+        if (p < 1) raf = requestAnimationFrame(tick);
       };
-      requestAnimationFrame(tick);
+      raf = requestAnimationFrame(tick);
     };
 
     const inView = () => {
@@ -38,12 +42,10 @@ export function useCountUp(target, { duration = 1400, decimals = 0, delay = 0 } 
     );
     io.observe(el);
     // fallback: after any preloader has released, animate if we're on screen
-    const fb = setTimeout(() => { if (!started.current && inView()) { run(); io.disconnect(); } }, 2500);
+    const fb = setTimeout(() => { if (!started && inView()) { run(); io.disconnect(); } }, 2500);
 
-    return () => { io.disconnect(); clearTimeout(fb); };
-  }, [target, duration, delay]);
+    return () => { io.disconnect(); clearTimeout(fb); cancelAnimationFrame(raf); };
+  }, [target, duration, delay, decimals]);
 
-  const display =
-    decimals > 0 ? val.toFixed(decimals) : Math.round(val).toLocaleString("en-IN");
   return [ref, display];
 }

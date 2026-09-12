@@ -1,9 +1,8 @@
 /* ==========================================================================
    Home — the front door. RVU's own palette only: gold #d0a863, slate #233039,
    ink #050a09 on white; Playfair Display + Cantarell as on rvu.edu.in.
-   One screen, no scroll.
+   One screen when it fits; allow natural scrolling on smaller screens.
    ========================================================================== */
-html.home-lock, html.home-lock body { overflow: hidden; height: 100%; overscroll-behavior: none; }
 
 .hero {
   --h-bg: #ffffff;
@@ -14,13 +13,13 @@ html.home-lock, html.home-lock body { overflow: hidden; height: 100%; overscroll
   --h-gold-text: #9c7837;   /* the gold, deepened for small text on white */
   --h-card: #ffffff;
   --h-on-slate: #ffffff;
-  position: relative; height: 100vh; min-height: 520px; overflow: hidden;
+  position: relative; min-height: max(520px, 100vh); overflow: hidden;
   display: grid; place-items: center;
   padding: calc(var(--nav-h) + 8px) var(--gut) 56px;
   background: var(--h-bg); color: var(--h-ink);
   font-family: "Cantarell", var(--sans);
 }
-@supports (height: 100svh) { .hero { height: 100svh; } }
+@supports (height: 100svh) { .hero { min-height: max(520px, 100svh); } }
 :root[data-theme="dark"] .hero {
   --h-bg: #1a242b;
   --h-ink: #f5f2ea;

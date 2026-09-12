@@ -17,27 +17,44 @@ export default function Process({ idx = "03" }) {
       rowsRef.current.forEach((r) => r?.classList.add("lit"));
       return;
     }
-    let ticking = false;
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const r = sec.getBoundingClientRect();
-        const vh = innerHeight;
-        const p = (vh * 0.62 - r.top) / (r.height * 0.82);
-        const prog = Math.max(0, Math.min(1, p));
-        spine.style.transform = `scaleY(${prog.toFixed(3)})`;
-        rowsRef.current.forEach((row) => {
-          if (!row) return;
-          const rr = row.getBoundingClientRect();
-          row.classList.toggle("lit", rr.top < vh * 0.66);
-        });
-        ticking = false;
+    let raf = 0;
+    let visible = false;
+    let lastProgress;
+    const update = () => {
+      raf = 0;
+      // Finish all layout reads before changing a class or inline style.
+      const r = sec.getBoundingClientRect();
+      const vh = innerHeight;
+      const lit = rowsRef.current.map((row) => row && row.getBoundingClientRect().top < vh * 0.66);
+      const prog = Math.max(0, Math.min(1, (vh * 0.62 - r.top) / (r.height * 0.82))).toFixed(3);
+      if (prog !== lastProgress) {
+        spine.style.transform = `scaleY(${prog})`;
+        lastProgress = prog;
+      }
+      rowsRef.current.forEach((row, i) => {
+        if (row && row.classList.contains("lit") !== lit[i]) row.classList.toggle("lit", lit[i]);
       });
     };
+    const onScroll = () => {
+      if (!raf && visible) raf = requestAnimationFrame(update);
+    };
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      // Also settle the final state when an anchor jumps past the section.
+      if (!raf) raf = requestAnimationFrame(update);
+    }, { rootMargin: "100px" });
+    io.observe(sec);
+    const ro = new ResizeObserver(onScroll);
+    ro.observe(sec);
     addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => removeEventListener("scroll", onScroll);
+    addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      removeEventListener("scroll", onScroll);
+      removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+      io.disconnect();
+      ro.disconnect();
+    };
   }, []);
 
   return (
