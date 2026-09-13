@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import Stamp from "./Stamp";
 import { CONTACT } from "../../data/placements";
-import { programmeOf, eligibleCount, formatDate } from "../../data/recruitForm";
+import { programmeOf, eligibleCount, formatDate, roleKey } from "../../data/recruitForm";
 
 const Ctx = createContext(null);
 
@@ -32,11 +32,16 @@ const list = (items) =>
 
 const MODE_PHRASE = { "On campus": "on campus", Virtual: "virtually", Hybrid: "in hybrid mode" };
 
-export default function RecruitDocument({ data: d, errors, active, onPick, refNo, submittedOn }) {
+export default function RecruitDocument({ data: d, errors, active, onPick, refNo, submittedOn, demo }) {
   const today = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
   const progs = d.programmes.map(programmeOf).filter(Boolean);
   const pool = eligibleCount(d.programmes);
-  const roles = d.roles.filter((r, i) => i === 0 || r.title || r.openings);
+  // Keep each role's position in d.roles: blanks link by it, so hiding an empty
+  // role in the letter must not shift the ones after it. A role with an error
+  // stays visible so its red blank can lead back to the field.
+  const roles = d.roles
+    .map((r, i) => ({ ...r, i }))
+    .filter((r) => r.i === 0 || r.title || r.openings || errors[roleKey(r.i, "title")] || errors[roleKey(r.i, "openings")]);
   const locked = !!submittedOn;
 
   return (
@@ -78,10 +83,10 @@ export default function RecruitDocument({ data: d, errors, active, onPick, refNo
         <table className="rd-table">
           <thead><tr><th>Role</th><th>Openings</th><th>CTC / stipend</th><th>Location</th></tr></thead>
           <tbody>
-            {roles.map((r, i) => (
-              <tr key={i}>
-                <td><Blank k={i === 0 ? "role-title" : `role-${i}`} value={r.title} ph="role title" /></td>
-                <td><Blank k={i === 0 ? "role-openings" : `role-${i}`} value={r.openings} ph="—" /></td>
+            {roles.map((r) => (
+              <tr key={r.i}>
+                <td><Blank k={roleKey(r.i, "title")} value={r.title} ph="role title" /></td>
+                <td><Blank k={roleKey(r.i, "openings")} value={r.openings} ph="—" /></td>
                 <td>{r.ctc || <span className="rd-muted">not stated</span>}</td>
                 <td>{r.place || <span className="rd-muted">—</span>}</td>
               </tr>
@@ -122,7 +127,7 @@ export default function RecruitDocument({ data: d, errors, active, onPick, refNo
           </span>
         </div>
 
-        {locked && <Stamp refNo={refNo} date={submittedOn} />}
+        {locked && <Stamp refNo={refNo} date={submittedOn} demo={demo} />}
       </article>
     </Ctx.Provider>
   );

@@ -270,7 +270,7 @@ export function GovernanceSection({ idx }) {
             <a className="gov-card" href="#process">
               <span className="gov-card-k">Eligibility</span>
               <span className="gov-card-v">{ELIGIBILITY.length} conditions before any drive</span>
-              <span className="gov-card-p">No backlogs, training attendance, a signed declaration, experiential components and a clean disciplinary record.</span>
+              <span className="gov-card-p">No backlogs unless a recruiter permits them, training attendance, a signed declaration, experiential components (unless School leadership approves an exception) and a clean disciplinary record.</span>
             </a>
             <a className="gov-card" href="#training">
               <span className="gov-card-k">Preparation</span>
