@@ -14,7 +14,7 @@
   --h-card: #ffffff;
   --h-on-slate: #ffffff;
   --h-gate: #233039;        /* line colour of the campus-gate backdrop */
-  --h-blue: #6f9be0;        /* hover accent on the choice buttons: light enough for the slate fill */
+  --h-hover-mark: #d0a863;  /* choice-button icon, rule and arrow on hover: gold on the navy fill */
   position: relative; min-height: max(520px, 100vh); overflow: hidden;
   display: grid; place-items: center;
   padding: calc(var(--nav-h) + 8px) var(--gut) 56px;
@@ -31,7 +31,7 @@
   --h-card: #233039;
   --h-on-slate: #1a242b;
   --h-gate: #f5f2ea;
-  --h-blue: #1f4e9c;        /* deep enough to read on the gold hover fill */
+  --h-hover-mark: #233039;  /* navy on the gold hover fill */
 }
 
 /* RVU's campus gate in line art: a faint backdrop along the bottom of the front
@@ -119,18 +119,18 @@
 .choice:hover::after, .choice:focus-visible::after { opacity: 1; transform: none; }
 .choice:focus-visible { box-shadow: 0 0 0 3px var(--h-gold); }
 
-/* gold at rest, blue on hover (gold would vanish into the gold hover fill in dark mode) */
+/* gold at rest; on hover it takes --h-hover-mark (RVU palette only), so it never vanishes into the fill */
 .choice-mark { flex: none; width: clamp(40px, 4vw, 50px); height: auto; aspect-ratio: 48 / 56; color: var(--h-gold); transition: color 0.35s var(--ease); }
-.choice:hover .choice-mark, .choice:focus-visible .choice-mark { color: var(--h-blue); }
+.choice:hover .choice-mark, .choice:focus-visible .choice-mark { color: var(--h-hover-mark); }
 
 .choice-lock { display: flex; flex-direction: column; min-width: 0; }
 .choice-top { font-weight: 700; font-size: 10.5px; line-height: 1; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.8; }
 .choice-word { margin-top: 4px; font-weight: 700; font-size: clamp(1.2rem, 0.9rem + 0.8vw, 1.6rem); line-height: 1; letter-spacing: 0.01em; text-transform: uppercase; white-space: nowrap; }
 .choice-rule { height: 2px; margin: 7px 0 6px; background: currentColor; transition: background 0.35s var(--ease); }
-.choice:hover .choice-rule, .choice:focus-visible .choice-rule { background: var(--h-blue); }
+.choice:hover .choice-rule, .choice:focus-visible .choice-rule { background: var(--h-hover-mark); }
 .choice-tag { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-size: 13.5px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .choice-arrow { flex: none; margin-left: auto; padding-left: 10px; font-size: 20px; color: var(--h-gold); transition: transform 0.35s var(--ease), color 0.35s var(--ease); }
-.choice:hover .choice-arrow, .choice:focus-visible .choice-arrow { transform: translateX(4px); color: var(--h-blue); }
+.choice:hover .choice-arrow, .choice:focus-visible .choice-arrow { transform: translateX(4px); color: var(--h-hover-mark); }
 
 .hero-foot {
   position: absolute; left: var(--gut); right: var(--gut); bottom: clamp(12px, 2.4vh, 22px);
