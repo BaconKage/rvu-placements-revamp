@@ -52,6 +52,27 @@ export const eligibleCount = (keys) => keys.reduce((a, k) => a + (programmeOf(k)
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+// Per-role field keys, built from the role's position in d.roles. The form and
+// the letter both use these, so a blank always points at its own role.
+export const roleKey = (i, field) => `role-${i}-${field}`;
+
+const isWholePositive = (v) => /^\d+$/.test(String(v).trim()) && Number(v) > 0;
+
+// Local "YYYY-MM-DD" for today, the earliest date a drive can be requested for.
+export function todayIso() {
+  const t = new Date();
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+}
+function dateError(iso) {
+  if (!iso) return "Pick a preferred date.";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso) || Number.isNaN(new Date(`${iso}T00:00:00`).getTime())) return "Enter a valid date.";
+  if (iso < todayIso()) return "Choose today or a later date.";
+  const limit = new Date();
+  limit.setFullYear(limit.getFullYear() + 2);
+  if (new Date(`${iso}T00:00:00`) > limit) return "Choose a date within the next two years.";
+  return null;
+}
+
 // key -> message. Keys match data-field attributes in the form and the letter.
 export function validate(d) {
   const e = {};
@@ -62,25 +83,33 @@ export function validate(d) {
   if (!EMAIL.test(d.email.trim())) e.email = "Enter a valid work email.";
   if (d.phone && !/^[+\d][\d\s-]{7,}$/.test(d.phone.trim())) e.phone = "That phone number looks incomplete.";
   if (!d.engagement.length) e.engagement = "Choose at least one type of engagement.";
-  if (!d.roles[0]?.title.trim()) e["role-title"] = "Name at least one role.";
-  if (!(Number(d.roles[0]?.openings) > 0)) e["role-openings"] = "How many openings?";
+  d.roles.forEach((r, i) => {
+    if (!r.title.trim()) e[roleKey(i, "title")] = i === 0 ? "Name at least one role." : "Name this role, or remove it.";
+    if (!isWholePositive(r.openings)) e[roleKey(i, "openings")] = "Enter a whole number of openings (1 or more).";
+  });
   if (!d.programmes.length) e.programmes = "Select at least one programme.";
   if (d.cgpa && !(Number(d.cgpa) >= 0 && Number(d.cgpa) <= 10)) e.cgpa = "CGPA is on a 10-point scale.";
   if (!d.stages.length) e.stages = "Add at least one selection stage.";
-  if (!d.driveDate) e.driveDate = "Pick a preferred date.";
+  const dateErr = dateError(d.driveDate);
+  if (dateErr) e.driveDate = dateErr;
   if (!d.mode) e.mode = "Choose how the drive runs.";
   if (!d.consent) e.consent = "Please confirm to submit.";
   return e;
 }
 
-// Twelve things that make the letter whole.
+// The required parts of the letter, each done when validate() has no error for
+// it — so the meter reads full exactly when the form can be submitted.
+// Optional fields (city, website, phone, CGPA, JD, notes) never count.
+const REQUIRED = [
+  (k) => k === "org", (k) => k === "sector", (k) => k === "contact", (k) => k === "designation",
+  (k) => k === "email", (k) => k === "engagement", (k) => k.startsWith("role-"),
+  (k) => k === "programmes", (k) => k === "stages", (k) => k === "driveDate", (k) => k === "mode",
+  (k) => k === "consent",
+];
 export function completion(d) {
-  const checks = [
-    d.org.trim(), d.sector, d.location.trim(), d.contact.trim(), d.designation.trim(), EMAIL.test(d.email.trim()),
-    d.engagement.length, d.roles[0]?.title.trim() && Number(d.roles[0]?.openings) > 0,
-    d.programmes.length, d.stages.length, d.driveDate, d.mode,
-  ];
-  return { done: checks.filter(Boolean).length, total: checks.length };
+  const keys = Object.keys(validate(d));
+  const done = REQUIRED.filter((part) => !keys.some(part)).length;
+  return { done, total: REQUIRED.length };
 }
 
 export function makeRef() {
