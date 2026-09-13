@@ -244,7 +244,7 @@ export function SectorsSection({ idx, title = "Who recruits, by sector.", hi = [
           <p className="sec-pipe">
             <b>{total} organisations</b> recruited through RV drives in the published sheets, with <b>{UPCOMING.length} more</b> in the pipeline.
           </p>
-          {!peek && <Link className="btn ghost" to="/recruiters">Explore the recruiter wall <span className="arrow">→</span></Link>}
+          {!peek && <Link className="btn gold" to="/recruiters">View more companies recruiting <span className="arrow">→</span></Link>}
         </div>
       </div>
     </section>
@@ -264,16 +264,19 @@ export function GovernanceSection({ idx }) {
             <ul className="tick-list">{GOVERNANCE.map((g) => <li key={g}>{g}</li>)}</ul>
           </div>
           <div className="gov-cards">
-            <Link className="gov-card" to="/students#process">
+            {/* bare #anchors (this section only renders on /students): the in-page smooth-scroll
+                handler scrolls on every click, while a router Link to the same URL did nothing
+                the second time because the location never changed */}
+            <a className="gov-card" href="#process">
               <span className="gov-card-k">Eligibility</span>
               <span className="gov-card-v">{ELIGIBILITY.length} conditions before any drive</span>
               <span className="gov-card-p">No backlogs, training attendance, a signed declaration, experiential components and a clean disciplinary record.</span>
-            </Link>
-            <Link className="gov-card" to="/students#training">
+            </a>
+            <a className="gov-card" href="#training">
               <span className="gov-card-k">Preparation</span>
               <span className="gov-card-v">Mandatory pre-placement training</span>
               <span className="gov-card-p">Technical, soft-skills and behavioural training, with minimum 80% attendance across all components.</span>
-            </Link>
+            </a>
             <a className="gov-card" href={MAIL}>
               <span className="gov-card-k">Contact</span>
               <span className="gov-card-v">{CONTACT.office}</span>
