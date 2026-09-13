@@ -136,7 +136,8 @@ html.home-lock, html.home-lock body { overflow: hidden; height: 100%; overscroll
 .rw-stats { display: flex; gap: clamp(18px, 3vw, 40px); margin: 0; }
 .rw-stats div { display: flex; flex-direction: column; align-items: flex-end; }
 .rw-stats dt { font-family: var(--display); font-size: clamp(1.5rem, 1rem + 1.2vw, 2.2rem); line-height: 1; color: var(--rw-ink); }
-.rw-stats dt em { font-style: normal; color: var(--rw-accent); font-size: 0.6em; margin-left: 2px; vertical-align: super; }
+/* + and % sit at the number's size, matching the stat tiles on the audience pages */
+.rw-stats dt em { font-style: normal; color: inherit; font-size: 1em; margin-left: 1px; vertical-align: baseline; }
 .rw-stats dd { margin: 6px 0 0; font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rw-muted); }
 
 /* overlay: footer — legend + explored count */
