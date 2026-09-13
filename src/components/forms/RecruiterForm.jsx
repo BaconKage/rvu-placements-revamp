@@ -1,7 +1,7 @@
 import { TextField, FieldGroup } from "./Field";
 import { SCHOOLS } from "../../data/placements";
 import {
-  SECTORS, ENGAGEMENTS, STAGES, MODES, SECTIONS, SCHOOL_ABBR, eligibleCount,
+  SECTORS, ENGAGEMENTS, STAGES, MODES, SECTIONS, SCHOOL_ABBR, eligibleCount, roleKey, todayIso,
 } from "../../data/recruitForm";
 
 function Section({ id, n, title, children }) {
@@ -13,7 +13,7 @@ function Section({ id, n, title, children }) {
   );
 }
 
-export default function RecruiterForm({ data: d, set, errors, onFocus, onBlur, onSubmit, sending }) {
+export default function RecruiterForm({ data: d, set, errors, onFocus, onBlur, onSubmit, sending, demo }) {
   const bind = (field) => ({ field, value: d[field], onChange: (v) => set(field, v), error: errors[field], onFocus, onBlur });
   const toggleIn = (key, item) => set(key, d[key].includes(item) ? d[key].filter((x) => x !== item) : [...d[key], item]);
 
@@ -88,24 +88,25 @@ export default function RecruiterForm({ data: d, set, errors, onFocus, onBlur, o
 
         <div className="fm-roles">
           {d.roles.map((r, i) => (
-            <div className="fm-role" key={i} data-field={i === 0 ? undefined : `role-${i}`}>
+            <div className="fm-role" key={i}>
               <div className="fm-role-head mono">
                 <span>Role {i + 1}</span>
                 {i > 0 && <button type="button" className="fm-x" onClick={() => dropRole(i)} aria-label={`Remove role ${i + 1}`}>Remove</button>}
               </div>
               <div className="fm-two">
-                <TextField field={i === 0 ? "role-title" : `role-${i}-title`} label="Role title" value={r.title}
-                  onChange={(v) => setRole(i, "title", v)} error={i === 0 ? errors["role-title"] : undefined}
-                  onFocus={() => onFocus(i === 0 ? "role-title" : `role-${i}`)} onBlur={onBlur} placeholder="SDE-1" />
-                <TextField field={i === 0 ? "role-openings" : `role-${i}-openings`} label="Openings" value={r.openings} type="number" min="1"
-                  onChange={(v) => setRole(i, "openings", v)} error={i === 0 ? errors["role-openings"] : undefined}
-                  onFocus={() => onFocus(i === 0 ? "role-openings" : `role-${i}`)} onBlur={onBlur} />
+                <TextField field={roleKey(i, "title")} label="Role title" value={r.title}
+                  onChange={(v) => setRole(i, "title", v)} error={errors[roleKey(i, "title")]}
+                  onFocus={onFocus} onBlur={onBlur} placeholder="SDE-1" />
+                <TextField field={roleKey(i, "openings")} label="Openings" value={r.openings}
+                  type="number" min="1" step="1" inputMode="numeric"
+                  onChange={(v) => setRole(i, "openings", v)} error={errors[roleKey(i, "openings")]}
+                  onFocus={onFocus} onBlur={onBlur} />
               </div>
               <div className="fm-two">
-                <TextField field={`role-${i}-ctc`} label="CTC / stipend" value={r.ctc} optional placeholder="₹12 LPA"
-                  onChange={(v) => setRole(i, "ctc", v)} onFocus={() => onFocus(i === 0 ? "role-title" : `role-${i}`)} onBlur={onBlur} />
-                <TextField field={`role-${i}-place`} label="Work location" value={r.place} optional placeholder="Bengaluru / remote"
-                  onChange={(v) => setRole(i, "place", v)} onFocus={() => onFocus(i === 0 ? "role-title" : `role-${i}`)} onBlur={onBlur} />
+                <TextField field={roleKey(i, "ctc")} label="CTC / stipend" value={r.ctc} optional placeholder="₹12 LPA"
+                  onChange={(v) => setRole(i, "ctc", v)} onFocus={() => onFocus(roleKey(i, "title"))} onBlur={onBlur} />
+                <TextField field={roleKey(i, "place")} label="Work location" value={r.place} optional placeholder="Bengaluru / remote"
+                  onChange={(v) => setRole(i, "place", v)} onFocus={() => onFocus(roleKey(i, "title"))} onBlur={onBlur} />
               </div>
             </div>
           ))}
@@ -192,7 +193,7 @@ export default function RecruiterForm({ data: d, set, errors, onFocus, onBlur, o
 
       <Section id="drive" n={6} title="The drive">
         <div className="fm-two">
-          <TextField {...bind("driveDate")} label="Preferred date" type="date" />
+          <TextField {...bind("driveDate")} label="Preferred date" type="date" min={todayIso()} />
           <FieldGroup field="mode" label="Mode" error={errors.mode} onFocus={onFocus} onBlur={onBlur}>
             <div className="fm-seg" role="radiogroup">
               {MODES.map((m) => (
@@ -218,9 +219,13 @@ export default function RecruiterForm({ data: d, set, errors, onFocus, onBlur, o
 
       <div className="fm-submit">
         <button type="submit" className="btn fm-submit-btn" disabled={sending}>
-          {sending ? "Sending…" : "Sign & send the letter"} <span className="arrow">→</span>
+          {sending ? "Sending…" : demo ? "Sign & prepare the letter" : "Sign & send the letter"} <span className="arrow">→</span>
         </button>
-        <span className="fm-hint">Your draft saves in this browser as you type.</span>
+        <span className="fm-hint">
+          {demo
+            ? "Demo site: this prepares your letter but does not send it to CAR. You can email it to them on the next step. Your draft saves in this browser as you type."
+            : "Your draft saves in this browser as you type."}
+        </span>
       </div>
     </form>
   );

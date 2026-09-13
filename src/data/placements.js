@@ -118,10 +118,10 @@ export const WHY = [
 
 // Student Eligibility — verbatim
 export const ELIGIBILITY = [
-  "No academic backlogs at the time of registering for placement drives.",
+  "No academic backlogs at the time of registering for placement drives (unless permitted by a recruiter).",
   "Minimum 80% attendance in mandatory pre-placement training.",
   "Submission of the Placement Registration & Declaration Form.",
-  "Completion of required experiential components (internship / immersion / capstone).",
+  "Completion of required experiential components (internship / immersion / capstone), unless exceptionally approved by School leadership.",
   "Compliance with all company-specific eligibility criteria.",
   "No pending disciplinary case with STDC.",
 ];
