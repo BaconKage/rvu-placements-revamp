@@ -1,47 +1,85 @@
-# RV University — Placements (Revamp Concept)
+# RV University Placements (Revamp)
 
-A concept redesign of the RV University placements page, built for the
+A redesign of the RV University placements website, built for the
 **RVU Placement Website Revamp Competition**.
 
-**The idea — _The Offer Wall._** The hero isn't a banner, it's the data: a
-draggable wall of real offer cards. Drag it, throw it, recentre it. It then
-resolves into a quiet, precise document — the record, the cohort ledger, the
-salary spread, and the five gates a student passes.
+**Live:** https://rvu-placements-revamp.vercel.app
 
-## Design language
-Adopted from RV University's own brand tokens and the reference sites studied:
+## Pages
 
-- **Palette** — RVU's published variables: brass `#d0a863`, slate `#233039`,
-  ink `#050a09`, on a warm paper ground (never pure white). Light default,
-  dark theme via the toggle.
-- **Type** — **Fraunces** (display + numerals), **Sora** (wordmark),
-  **Manrope** (body), **IBM Plex Mono** (labels/data) — the same family the
-  RVU club site (RVibe) uses.
-- **Motion** — CSS keyframes + `IntersectionObserver` reveals, one rAF-driven
-  draggable plane. No animation libraries. ~53 kB gzip JS.
+| Route | What it is |
+| --- | --- |
+| `/` | Front door. RVU logo, a short intro, and two paths: Student / Parent or Recruiter. |
+| `/students` | Everything a student or parent needs: eligibility, pre-placement training and conduct, internships, the numbers, who recruits, the 2024 cohort, and governance. |
+| `/partners` | For recruiters: why hire from RVU, the talent pool, how to engage, current recruiters, and contact. |
+| `/recruiters` | "Who recruits": a curved, draggable wall of recruiter cards. Click a card to zoom in. |
+| `/forms` | Recruiter registration form. |
 
-## Data & honesty
-Every figure comes from the placements page currently on `rvu.edu.in`.
-Recruiter names are intentionally left as **empty slots** the office fills —
-the wall is a template, not a claim about who recruits here. Aviatrix is the
-only named recruiter because RVU itself publishes it as the ₹43.5 LPA source.
-Two published discrepancies are surfaced on the page for CAR to reconcile.
+`/parents` redirects to `/students`, since the two audiences share one page.
 
-## Run
+## Design
+
+- **Colours:** RVU's own palette only: gold `#d0a863` and navy slate `#233039`
+  on a warm paper ground. There's a light and dark theme (toggle in the nav).
+- **Type:** Hanken Grotesk for headings, IBM Plex Sans for body text, IBM Plex
+  Mono for labels, and Newsreader on the recruiter wall. The home page uses
+  Playfair Display and Cantarell, matching rvu.edu.in.
+- **Imagery:** campus photos and line-art illustrations, with separate light
+  and dark versions where it matters. Only the current theme's image is loaded.
+- **Motion:** Lenis smooth scrolling, scroll reveals, and the recruiter wall.
+  No animation libraries.
+
+## Run it locally
+
 ```bash
 npm install
-npm run dev      # http://localhost:5173
-npm run build    # production build -> dist/
+npm run dev       # http://localhost:5173
+npm run build     # production build in dist/
+npm run preview   # serve the build
 ```
 
-## Structure
+Performance checks (keep these passing):
+
+```bash
+node --experimental-vm-modules --test tests/animation-performance.test.mjs
+```
+
+See [PERFORMANCE.md](PERFORMANCE.md) for what was optimised and why. In short,
+the wall's animation loop sleeps when it's off-screen, hidden or settled, and
+the audience pages are lazy-loaded.
+
+## Project structure
+
 ```
 src/
-  data/placements.js      all published figures + the offer-wall generator
-  hooks/                  useReveal · useCountUp · useDraggableWall · useTheme
+  App.jsx                 routes (audience pages are lazy-loaded)
+  pages/                  Home · Students · Partners · RecruiterWall · Forms
   components/
-    Preloader · Nav
-    sections/             Hero · Record · Kinetic · Cohort · Spread · Process · Recruit
-    ui/                   OfferCard · Eyebrow
-  styles/                 tokens.css · base.css
+    Nav · Preloader · ScrollManager · Atmosphere
+    sections/             page sections: Process, Record, Cohort, Recruit,
+                          WhyRecruit, Recruiters (the wall), Outcomes, Audience
+    forms/                recruiter registration form parts
+    ui/                   Eyebrow · Words · Logo · OfferCard
+  hooks/                  useTheme · useSmoothScroll · useReveal · useCountUp
+                          useMagnetic · useCurvedWall · useDraggableWall
+  data/                   placements.js · recruiterWall.js · recruitForm.js
+  styles/                 tokens.css (colours, type) · base.css
+public/                   favicon
+tests/                    animation performance tests
 ```
+
+Deployed on Vercel. `vercel.json` rewrites every path to `index.html` so
+client-side routes work on refresh.
+
+## Data
+
+Statistics, programme names, eligibility rules, training and governance text
+are taken from [rvu.edu.in/placements](https://rvu.edu.in/placements/).
+Company names, roles and channels come from the student-maintained RVU / RVCE
+2023-batch placement sheets. This is a design concept, not an official
+university site.
+
+## Team
+
+- **Shubhang Srinivas Varda** ([@BaconKage](https://github.com/BaconKage))
+- **Rohit Jaysheel Diggi** ([@Rohx24](https://github.com/Rohx24))
