@@ -68,7 +68,9 @@ export default function Home() {
             <img className="logo-light" src={logoBlue} alt="RV University" width="783" height="391" />
             <img className="logo-dark" src={logoGold} alt="RV University" width="512" height="258" />
           </span>
-          <span className="hero-kicker rise" style={{ "--d": "40ms" }}>RV University · Placements</span>
+          <span className="hero-kicker rise" style={{ "--d": "40ms" }}>
+            <a href="https://rvu.edu.in" target="_blank" rel="noopener noreferrer">RV University</a> · Placements
+          </span>
           <h1 className="hero-title rise" style={{ "--d": "80ms" }}>Career Development and Corporate Relations</h1>
           <p className="hero-sub rise" style={{ "--d": "160ms" }}>Empowering Industry Innovators with Top-Tier Talent</p>
           <p className="hero-para rise" style={{ "--d": "220ms" }}>

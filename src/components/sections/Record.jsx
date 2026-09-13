@@ -28,7 +28,7 @@ export default function Record({ idx = "01" }) {
     <section className="section record" id="record">
       <div className="wrap">
         <Eyebrow idx={idx}>The record</Eyebrow>
-        <h2 className="serif record-h"><Words text="The year, in the numbers CAR reported." hi={new Set([5])} /></h2>
+        <h2 className="serif record-h"><Words text="Placements, by the numbers." hi={new Set([3])} /></h2>
       </div>
       <div className="wrap record-grid-wrap">
         <div className="stat-grid reveal" ref={ref}>
