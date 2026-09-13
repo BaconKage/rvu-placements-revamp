@@ -16,7 +16,8 @@ function StatTile({ s }) {
       <div className="stat-v num" ref={isNum ? ref : null}>
         {s.pre && <span className="stat-pre">{s.pre}</span>}
         {isNum ? count : s.v}
-        {s.unit && <em>{s.unit}</em>}
+        {/* symbols (+, %) sit at the number's size; word units (LPA) stay a small label */}
+        {s.unit && <em className={/^[+%]$/.test(s.unit) ? "sym" : undefined}>{s.unit}</em>}
       </div>
       <span className="stat-k mono">{s.k}</span>
       <p className="stat-note">{s.note}</p>
