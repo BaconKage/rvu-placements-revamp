@@ -22,7 +22,7 @@
 .why-cell.in .why-rule { transform: scaleX(1); }
 
 .why-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); color: var(--ink); margin: 0 0 12px; letter-spacing: -0.02em; }
-.why-p { margin: 0; font-size: 13.5px; line-height: 1.65; color: var(--slate-2); max-width: 34ch; }
+.why-p { margin: 0; font-size: 15px; line-height: 1.65; color: var(--slate-2); max-width: 34ch; }
 
 @media (max-width: 860px) { .why-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .why-grid { grid-template-columns: 1fr; } }

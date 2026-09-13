@@ -7,7 +7,7 @@ import "./Recruit.css";
 
 export default function Recruit() {
   const ref = useReveal();
-  const mag = useMagnetic(0.35);
+  const mag = useMagnetic(0.1); // gentle enough that the wide email button stays inside its card
   return (
     <section className="recruit" id="recruit">
       <div className="wrap">
