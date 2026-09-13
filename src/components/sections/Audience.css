@@ -13,6 +13,7 @@
 .ph-has-bg { position: relative; overflow: hidden; isolation: isolate; }
 .ph-bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
 .ph-bg img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 68% 62%; opacity: 0.6; } /* kept quiet behind the copy */
+.ph-bg.ph-bg-right img { object-position: 84% 60%; } /* phones: keep the students' table in frame */
 :root[data-theme="dark"] .ph-bg.has-dark img { opacity: 0.5; } /* the night art's lit windows read brighter */
 .ph-bg::after {
   content: ""; position: absolute; inset: 0;
@@ -38,6 +39,19 @@
       linear-gradient(90deg, transparent 0%, #000 22%, #000 86%, transparent 100%),
       linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.35) 12%, #000 32%);
     mask-composite: intersect;
+  }
+  /* art whose subject fills its right half (the students' table): pinned to the right
+     edge so the whole group shows, and raised toward the top so the faces sit above the
+     stats box instead of behind it; only the left and top fade */
+  .ph-bg.ph-bg-right img {
+    left: auto; right: 0; top: 4%; bottom: auto;
+    /* raised off the bottom, so it also needs a fade along its lower edge */
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, #000 22%),
+      linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.35) 12%, #000 32%, #000 74%, transparent 100%);
+    mask-image:
+      linear-gradient(90deg, transparent 0%, #000 22%),
+      linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.35) 12%, #000 32%, #000 74%, transparent 100%);
   }
   .ph-bg::after {
     background:
@@ -68,6 +82,14 @@
 }
 .ph-fact dt { font-size: clamp(2rem, 3.4vw, 2.8rem); color: var(--slate); white-space: nowrap; }
 .ph-fact dd { margin: 0; color: var(--slate-3); line-height: 1.45; }
+/* headers with artwork (Students, Recruiters): the box lets the art show through, with
+   stronger text to stay readable. Row rules move onto the rows, since the 1px grid gaps
+   would otherwise show the tint. */
+.ph-has-bg .ph-facts { background: transparent; gap: 0; }
+.ph-has-bg .ph-fact { background: color-mix(in srgb, var(--paper) 72%, transparent); }
+.ph-has-bg .ph-fact + .ph-fact { border-top: 1px solid var(--line); }
+.ph-has-bg .ph-fact dt { color: var(--ink); }
+.ph-has-bg .ph-fact dd { color: var(--slate-2); }
 .ph-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: clamp(28px, 4vw, 44px); }
 .ph-link {
   display: inline-flex; align-items: center; gap: 9px; padding: 8px 14px; border-radius: 999px;

@@ -66,7 +66,7 @@ export default function Process({ idx = "03" }) {
       <div className="wrap">
         <Eyebrow idx={idx}>Student eligibility</Eyebrow>
         <h2 className="serif process-h">
-          <Words text="What it takes to sit a drive." hi={new Set([4])} />
+          <Words text="What it takes to join a drive." hi={new Set([4])} />
         </h2>
 
         <div className="timeline">
