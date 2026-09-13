@@ -14,6 +14,10 @@
   letter-spacing: 0.06em; color: var(--slate-3); margin-left: 6px; vertical-align: super;
 }
 .stat-hero .stat-v em { color: var(--brass-d); }
+.stat-v em.sym {
+  font-family: inherit; font-size: 1em; font-weight: inherit; letter-spacing: inherit;
+  color: inherit; margin-left: 1px; vertical-align: baseline;
+}
 .stat-k { display: block; margin-top: 16px; }
 .stat-note { font-size: 13.5px; color: var(--slate-3); margin: 6px 0 0; line-height: 1.5; }
 
