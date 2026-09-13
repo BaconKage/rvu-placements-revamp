@@ -12,6 +12,7 @@ import imgCollaboration from "../../assets/internships/collaboration.webp";
 import Eyebrow from "../ui/Eyebrow";
 import Words from "../ui/Words";
 import { useReveal } from "../../hooks/useReveal";
+import { useMagnetic } from "../../hooks/useMagnetic";
 import {
   CONTACT, GOVERNANCE, TRAINING, TRAINING_NOTES, RESPONSIBILITIES, INTERNSHIPS,
   RECRUITER_SECTORS, RECRUITER_CATEGORIES, UPCOMING, ELIGIBILITY,
@@ -319,6 +320,8 @@ export function EngageSection({ idx }) {
 
 // ---- shared footer: contact, the other paths, disclaimer ----
 export function SiteFooter({ contact = true }) {
+  // same pull-toward-the-cursor email button as the Recruiters page's contact card
+  const mag = useMagnetic(0.1);
   return (
     <footer className="site-foot" id="contact">
       <div className="wrap">
@@ -332,7 +335,7 @@ export function SiteFooter({ contact = true }) {
             <div className="sf-card">
               <span className="mono sf-k">Visit</span>
               <address className="sf-addr">{CONTACT.lines.map((l) => <span key={l}>{l}</span>)}</address>
-              <a className="btn" href={MAIL}>{CONTACT.email} <span className="arrow">→</span></a>
+              <a className="btn magnetic" ref={mag} href={MAIL}>{CONTACT.email} <span className="arrow">→</span></a>
             </div>
           </div>
         )}
