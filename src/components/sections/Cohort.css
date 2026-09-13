@@ -25,11 +25,11 @@
 
 .rank-label { grid-row: span 2; display: flex; flex-direction: column; gap: 6px; }
 .rank-name {
-  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--band-accent);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--band-accent);
 }
 .rank-v { display: flex; align-items: baseline; gap: 10px; }
 .rank-v .num { font-size: clamp(24px, 2.6vw, 34px); line-height: 1; color: var(--band-fg); }
-.rank-share { font-family: var(--mono); font-size: 10.5px; color: var(--band-muted); }
+.rank-share { font-family: var(--mono); font-size: 11.5px; color: var(--band-muted); }
 
 .rank-bar { display: flex; gap: 2px; height: 22px; min-width: 4px; align-self: center; }
 .rank-seg {
@@ -42,7 +42,7 @@
 
 .rank-progs {
   list-style: none; margin: 0; padding: 0;
-  display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; color: var(--band-muted);
+  display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 14.5px; color: var(--band-muted);
 }
 .rank-progs li { display: inline-flex; align-items: center; gap: 7px; transition: color 0.25s var(--ease); }
 .rank-progs li.on { color: var(--band-fg); }
@@ -57,5 +57,5 @@
   .rank-label { grid-row: auto; flex-direction: row; align-items: baseline; justify-content: space-between; gap: 12px; }
   .rank-name { white-space: normal; }
   .rank-v .num { font-size: 22px; }
-  .rank-progs { font-size: 12px; }
+  .rank-progs { font-size: 13px; }
 }

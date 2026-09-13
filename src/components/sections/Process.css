@@ -22,10 +22,10 @@
 
 .tl-n { font-size: clamp(20px, 2.6vw, 30px); color: var(--slate-4); transition: color .5s var(--ease); }
 .tl-row.lit .tl-n { color: var(--brass-2); }
-.tl-req { font-size: clamp(14px, 1.7vw, 18px); color: var(--slate-3); line-height: 1.45; max-width: 52ch; transition: color .5s var(--ease); }
+.tl-req { font-size: clamp(15px, 1.8vw, 19px); color: var(--slate-3); line-height: 1.45; max-width: 52ch; transition: color .5s var(--ease); }
 .tl-row.lit .tl-req { color: var(--ink); }
 
-.process-foot { margin-top: 30px; font-size: 10px; letter-spacing: .1em; color: var(--slate-3); text-transform: none; }
+.process-foot { margin-top: 30px; font-size: 11px; letter-spacing: .1em; color: var(--slate-3); text-transform: none; }
 
 /* students in a practice boardroom, filling the space beside the list and fading into
    the paper before the text. Drawn above the rows but ignores the pointer, so a row's
