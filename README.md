@@ -1,6 +1,6 @@
 # RV University Placements (Revamp)
 
-A redesign of the RV University placements website, built for the
+A redesign of the RV University placement website, built for the
 **RVU Placement Website Revamp Competition**.
 
 **Live:** https://rvu-placements-revamp.vercel.app
