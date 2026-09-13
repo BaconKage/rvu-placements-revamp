@@ -16,7 +16,7 @@ export default function Students() {
         kicker="For students & parents"
         title="Your route to a placement."
         hi={[4]}
-        lede="RV University brings the RV Group’s legacy to six schools in Bengaluru, from engineering and business to design, law and film. Its placement office connects 1,600+ graduates with 50+ recruiters on campus. Here’s how students get there, and what parents should know."
+        lede="RV University brings the RV Group’s legacy to six schools in Bengaluru, from engineering and business to design, law and film. Its placement office connects 1,600+ graduates with 250+ recruiting organisations. Here’s how students get there, and what parents should know."
         bg={studentsColour}
         bgDark={studentsDark}
         bgAlign="right"
@@ -33,7 +33,7 @@ export default function Students() {
           ["#process", "Eligibility"],
           ["#training", "Training & conduct"],
           ["#internships", "Internships"],
-          ["#record", "The numbers"],
+          ["#record", "Numbers & packages"],
           ["#sectors", "Recruiters"],
           ["#cohort", "Who is eligible"],
           ["#governance", "Governance & support"],
