@@ -72,13 +72,28 @@ export const UPCOMING = [
   "Go Desi", "Skylark Drones", "GyanSys", "Astuto", "MSG Global", "AcceleratorX", "Dover",
 ];
 
-// ---- Headline stats — breadth first, no salary ceiling ----
+// ---- Headline stats — as published on rvu.edu.in/placements ----
 export const STATS = [
-  { v: "50", unit: "+", k: "Recruiters on campus", note: "MNCs, GCCs, consulting, finance, startups.", hero: true },
+  { v: "250", unit: "+", k: "Recruiting organisations", note: "MNCs, GCCs, technology, consulting, finance, startups.", hero: true },
   { v: "425", unit: "+", k: "Offers facilitated", note: "CAR facilitated over 400 placement offers." },
   { v: "1,600", unit: "+", k: "Industry-ready graduates", note: "A multidisciplinary talent pool." },
   { v: "6", unit: "", k: "Schools eligible", note: "Engineering to Liberal Arts." },
   { v: "25", unit: "%", k: "Held more than one offer", note: "A quarter chose between offers." },
+];
+
+// ---- Packages — from the official counters and the "Placement Performance"
+// note on rvu.edu.in/placements. Band counts are CAR's own approximations. ----
+export const PACKAGES = [
+  { v: "43.5", pre: "₹", unit: "LPA", k: "Highest package", note: "Offered by Aviatrix, which also made a ₹33 LPA offer.", hero: true },
+  { v: "8", pre: "₹", unit: "LPA", k: "Average package", note: "The average across the offers CAR reported." },
+  { v: "4", pre: "₹", unit: "LPA", k: "Minimum package", note: "The campus floor CAR maintained." },
+  { v: "20", unit: "", k: "Offers above ₹20 LPA", note: "CAR reports about 20 offers in the ₹20–33 LPA range." },
+];
+export const PACKAGE_BANDS = [
+  { band: "Below ₹10 LPA", lo: 80, hi: 90 },
+  { band: "₹10–20 LPA", lo: 40, hi: 50 },
+  { band: "₹20–33 LPA", lo: 20, hi: 20 },
+  { band: "₹43.5 LPA", lo: 1, hi: 1, note: "Highest · Aviatrix" },
 ];
 
 // School → programmes → eligible headcount (as published)

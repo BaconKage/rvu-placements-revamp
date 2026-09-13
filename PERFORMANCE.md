@@ -107,10 +107,9 @@ the existing 3D blur means GPU capability continues to matter.
    outcomes/cohort sections say 2024, and the current official page discusses
    2025–26. Give each dataset its own year and source/updated date, rather than
    making mixed cohorts appear to describe one placement cycle.
-2. **Explain the recruiter count's scope.** The concept uses “50+ recruiters
-   on campus,” while the university reports 250+ recruiting organisations.
-   These may count different groups or periods; have CAR confirm the labels
-   before changing a figure. The official source is
+2. **Recruiter count (done).** The site now uses the university's published
+   figure of 250+ recruiting organisations, and lists the official package
+   figures alongside it. The official source is
    [RVU's placement page](https://rvu.edu.in/placements/).
 3. **Offer a searchable recruiter list alongside the wall.** Retain the
    immersive wall and let someone looking for one company find it quickly.

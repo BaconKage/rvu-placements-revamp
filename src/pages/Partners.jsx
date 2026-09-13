@@ -20,7 +20,7 @@ export default function Partners() {
         facts={[
           ["1,600+", "industry-ready graduates"],
           ["17", "programmes across 6 schools"],
-          ["50+", "recruiters on campus"],
+          ["250+", "recruiting organisations"],
         ]}
         actions={[
           { to: "/forms", label: "Register to recruit", primary: true },
