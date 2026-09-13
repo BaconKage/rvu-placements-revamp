@@ -7,7 +7,10 @@ import { CONTACT } from "../data/placements";
 import { EMPTY, DRAFT_KEY, validate, completion, makeRef, summary } from "../data/recruitForm";
 import "./Forms.css";
 
+// Where registrations go. Unset (this demo build): nothing is sent, and the page
+// says so. Set: the letter counts as received only after the endpoint confirms.
 const ENDPOINT = import.meta.env.VITE_RECRUIT_ENDPOINT;
+const DEMO = !ENDPOINT;
 
 function loadDraft() {
   try {
@@ -27,7 +30,7 @@ export default function Forms() {
   const [errors, setErrors] = useState({});
   const [tried, setTried] = useState(false);
   const [active, setActive] = useState(null);
-  const [status, setStatus] = useState("idle"); // idle | sending | done | error
+  const [status, setStatus] = useState("idle"); // idle | sending | done (received) | prepared (demo) | error
   const [refNo, setRefNo] = useState("");
   const [submittedOn, setSubmittedOn] = useState("");
   const [sheet, setSheet] = useState(false);
@@ -37,7 +40,7 @@ export default function Forms() {
 
   useEffect(() => { if (tried) setErrors(validate(data)); }, [data, tried]);
   useEffect(() => {
-    if (status === "done") return;
+    if (status === "done") return; // cleared on confirmed receipt; don't write it back
     try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); } catch {}
   }, [data, status]);
 
@@ -65,29 +68,40 @@ export default function Forms() {
       first.querySelector("input, select, textarea, button")?.focus({ preventScroll: true });
       return;
     }
-    setStatus("sending");
-    const ref = makeRef();
-    try {
-      if (ENDPOINT) {
-        const res = await fetch(ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...data, ref, submittedAt: new Date().toISOString() }),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      } else {
-        await new Promise((r) => setTimeout(r, 700)); // concept demo: nothing leaves the browser
-      }
-      setRefNo(ref);
-      setSubmittedOn(new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }));
-      setStatus("done");
+    const today = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+    const showLetter = () => {
       setActive(null);
-      try { localStorage.removeItem(DRAFT_KEY); } catch {}
       if (matchMedia("(max-width: 900px)").matches) setSheet(true);
       else if (window.__lenis) window.__lenis.scrollTo(0, { duration: 1 });
       else window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    // Demo: no fake send. The letter is signed and ready to email; the draft stays saved.
+    if (DEMO) {
+      setRefNo("");
+      setSubmittedOn(today);
+      setStatus("prepared");
+      showLetter();
+      return;
+    }
+
+    setStatus("sending");
+    const ref = makeRef();
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, ref, submittedAt: new Date().toISOString() }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      // receipt confirmed: only now is it "Received", and only now is the draft cleared
+      setRefNo(ref);
+      setSubmittedOn(today);
+      setStatus("done");
+      try { localStorage.removeItem(DRAFT_KEY); } catch {}
+      showLetter();
     } catch {
-      setStatus("error");
+      setStatus("error"); // draft kept, nothing claimed
     }
   };
 
@@ -96,7 +110,8 @@ export default function Forms() {
   };
 
   const { done, total } = completion(data);
-  const mailto = `mailto:${CONTACT.email}?subject=${encodeURIComponent(`Recruiter registration — ${data.org} (${refNo})`)}&body=${encodeURIComponent(summary(data, refNo))}`;
+  const mailto = `mailto:${CONTACT.email}?subject=${encodeURIComponent(`Recruiter registration — ${data.org}${refNo ? ` (${refNo})` : ""}`)}&body=${encodeURIComponent(summary(data, refNo || "not yet assigned"))}`;
+  const signed = status === "done" || status === "prepared";
 
   return (
     <main className="fm">
@@ -106,8 +121,8 @@ export default function Forms() {
           <div>
             <h1 className="serif fm-title"><Words text="Register to recruit." hi={new Set([2])} /></h1>
             <p className="lede fm-dek">
-              Fill in the form and watch your letter of intent write itself. When it's complete, sign it and
-              CAR stamps it received. It takes about four minutes.
+              Fill in the form and watch your letter of intent write itself. When it's complete, sign it
+              {DEMO ? " and email it to CAR." : " and send it to CAR."} It takes about four minutes.
             </p>
           </div>
           <div className="fm-meter" aria-live="polite">
@@ -124,27 +139,36 @@ export default function Forms() {
               <span className="mono fm-done-k">Received · {refNo}</span>
               <h2 className="serif fm-done-h">Thank you, {data.contact.split(" ")[0]}.</h2>
               <p>
-                Your letter of intent from <b>{data.org}</b> is on file with the Corporate &amp; Alumni Relations
-                office. The team will contact you at <b>{data.email}</b> to confirm the drive.
+                Your letter of intent from <b>{data.org}</b> reached the Corporate &amp; Alumni Relations office.
+                The team will contact you at <b>{data.email}</b> to confirm the drive.
               </p>
-              {!ENDPOINT && (
-                <p className="fm-hint">
-                  Concept build: no data left this browser. Use “Email a copy” to send the letter to CAR.
-                </p>
-              )}
               <div className="fm-done-actions">
                 <button type="button" className="btn" onClick={() => window.print()}>Print / save PDF <span className="arrow">→</span></button>
-                <a className="btn ghost" href={mailto}>Email a copy</a>
                 <button type="button" className="btn ghost" onClick={reset}>Start another</button>
               </div>
+            </div>
+          ) : status === "prepared" ? (
+            <div className="fm-done">
+              <span className="mono fm-done-k demo">Demo · not sent to CAR</span>
+              <h2 className="serif fm-done-h">Your letter is ready, {data.contact.split(" ")[0]}.</h2>
+              <p>
+                This is a demonstration site, so <b>nothing has been sent</b> and CAR has not received this
+                registration. To register <b>{data.org}</b>, email the letter to <b>{CONTACT.email}</b>.
+              </p>
+              <div className="fm-done-actions">
+                <a className="btn" href={mailto}>Email the letter to CAR <span className="arrow">→</span></a>
+                <button type="button" className="btn ghost" onClick={() => window.print()}>Print / save PDF</button>
+                <button type="button" className="btn ghost" onClick={() => setStatus("idle")}>Edit the letter</button>
+              </div>
+              <p className="fm-hint">Your draft stays saved in this browser.</p>
             </div>
           ) : (
             <>
               <RecruiterForm data={data} set={set} errors={errors} onFocus={onFocus} onBlur={onBlur}
-                onSubmit={onSubmit} sending={status === "sending"} />
+                onSubmit={onSubmit} sending={status === "sending"} demo={DEMO} />
               {status === "error" && (
                 <p className="fm-err fm-send-err" role="alert">
-                  We couldn't send that. Check your connection and try again, or <a href={mailto}>email the letter to CAR</a>.
+                  We couldn't confirm that CAR received it, so nothing has been marked as sent. Try again, or <a href={mailto}>email the letter to CAR</a>.
                 </p>
               )}
             </>
@@ -158,7 +182,7 @@ export default function Forms() {
               <button type="button" className="fm-doc-close" onClick={() => setSheet(false)} aria-label="Close preview">×</button>
             </div>
             <RecruitDocument data={data} errors={errors} active={active} onPick={onPick}
-              refNo={refNo} submittedOn={status === "done" ? submittedOn : ""} />
+              refNo={refNo} submittedOn={signed ? submittedOn : ""} demo={status === "prepared"} />
           </div>
         </aside>
       </div>
