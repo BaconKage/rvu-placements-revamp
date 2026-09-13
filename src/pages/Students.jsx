@@ -4,6 +4,8 @@ import Record from "../components/sections/Record";
 import Cohort from "../components/sections/Cohort";
 import { RecruiterPeek } from "../components/sections/Outcomes";
 import { CONTACT, ELIGIBILITY } from "../data/placements";
+import studentsColour from "../assets/students-colour.webp";
+import studentsDark from "../assets/students-dark.webp";
 
 // Students & parents — one path: the placement process and resources students
 // need, followed by the numbers, recruiters and governance parents look for.
@@ -15,8 +17,11 @@ export default function Students() {
         title="Your route to a placement."
         hi={[4]}
         lede="RV University brings the RV Group’s legacy to six schools in Bengaluru, from engineering and business to design, law and film. Its placement office connects 1,600+ graduates with 50+ recruiters on campus. Here’s how students get there, and what parents should know."
+        bg={studentsColour}
+        bgDark={studentsDark}
+        bgAlign="right"
         facts={[
-          [String(ELIGIBILITY.length), "conditions to sit a placement drive"],
+          [String(ELIGIBILITY.length), "eligibility conditions for placement drives"],
           ["80%", "minimum attendance in pre-placement training"],
           ["425+", "offers facilitated by CAR"],
         ]}

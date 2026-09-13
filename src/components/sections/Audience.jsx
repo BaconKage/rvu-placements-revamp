@@ -43,7 +43,7 @@ function useDarkTheme(watch) {
   return dark;
 }
 
-export function PageHead({ kicker, title, hi = [], lede, facts = [], links = [], actions = [], bg, bgDark }) {
+export function PageHead({ kicker, title, hi = [], lede, facts = [], links = [], actions = [], bg, bgDark, bgAlign }) {
   const ref = useReveal();
   const dark = useDarkTheme(!!bgDark);
   // only the current theme's artwork is in the page, so the other one is never downloaded early
@@ -51,7 +51,7 @@ export function PageHead({ kicker, title, hi = [], lede, facts = [], links = [],
   return (
     <header className={`ph${bg ? " ph-has-bg" : ""}`}>
       {bg && (
-        <div className={`ph-bg${bgDark ? " has-dark" : ""}`} aria-hidden="true">
+        <div className={`ph-bg${bgDark ? " has-dark" : ""}${bgAlign === "right" ? " ph-bg-right" : ""}`} aria-hidden="true">
           <img key={art} src={art} alt="" width="1600" height="845" decoding="async" />
         </div>
       )}
@@ -256,7 +256,7 @@ export function GovernanceSection({ idx }) {
     <section className="section aud-sec gov" id="governance">
       <div className="wrap">
         <Eyebrow idx={idx}>Governance &amp; support</Eyebrow>
-        <h2 className="serif aud-h"><Words text="A process with clear rules and one accountable office." hi={new Set([4])} /></h2>
+        <h2 className="serif aud-h"><Words text="The people behind your placements." hi={new Set([3])} /></h2>
         <div className="aud-two">
           <div>
             <h3 className="mono aud-sub">Placement governance</h3>
