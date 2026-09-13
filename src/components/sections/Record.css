@@ -16,3 +16,39 @@
 .stat-hero .stat-v em { color: var(--brass-d); }
 .stat-k { display: block; margin-top: 16px; }
 .stat-note { font-size: 13.5px; color: var(--slate-3); margin: 6px 0 0; line-height: 1.5; }
+
+/* ---- packages: same ruled tiles, then the spread by band ---- */
+.stat-v .stat-pre { font-size: 0.62em; margin-right: 2px; vertical-align: 0.28em; color: inherit; }
+.record-grid-wrap .pk-head { margin: clamp(44px, 6vw, 72px) 0 22px; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 32px; }
+.record .pk-h { margin: 0; font-size: var(--step-2); color: var(--ink); letter-spacing: -0.02em; }
+.record .pk-lede { margin: 0; max-width: 52ch; font-size: 14.5px; line-height: 1.6; color: var(--slate-2); }
+.pk-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+.pk-bands {
+  margin-top: 14px; padding: clamp(20px, 3vw, 30px); border: 1px solid var(--line); border-radius: 16px;
+  background: var(--card);
+}
+.pk-bands-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 20px; margin-bottom: 18px; }
+.record .pk-sub { margin: 0; font-size: 11.5px; color: var(--bronze-2); }
+.pk-caption { font-size: 12.5px; color: var(--slate-3); }
+.pk-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.pk-row { display: grid; grid-template-columns: minmax(96px, 150px) minmax(0, 1fr) 70px; align-items: center; gap: 8px 18px; }
+.pk-band { font-size: 14.5px; color: var(--ink); }
+.pk-track { position: relative; height: 12px; border-radius: 999px; background: var(--paper-2); overflow: hidden; }
+.pk-range, .pk-fill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; transform-origin: left; }
+.pk-range { background: var(--bronze-l); opacity: 0.55; }
+.pk-fill { background: var(--bronze); }
+.record .pk-count { font-size: 17px; color: var(--slate); text-align: right; white-space: nowrap; }
+.pk-row:last-child .pk-fill { background: var(--bronze-d); }
+.record .pk-note { grid-column: 2 / -1; margin-top: -6px; font-size: 10px; letter-spacing: 0.12em; color: var(--bronze-2); }
+:root[data-theme="dark"] .pk-range { opacity: 0.35; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pk-bands .pk-range, .pk-bands .pk-fill { transform: scaleX(0); transition: transform 1s var(--ease-nk); transition-delay: var(--d, 0ms); }
+  .pk-bands.in .pk-range, .pk-bands.in .pk-fill { transform: scaleX(1); }
+}
+@media (max-width: 560px) {
+  .pk-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .pk-track { grid-column: 1 / -1; grid-row: 2; }
+  .record .pk-note { grid-column: 1 / -1; margin-top: -2px; }
+}
