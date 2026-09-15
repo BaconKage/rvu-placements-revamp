@@ -68,7 +68,7 @@ export default function PlacementVideo() {
         </span>
         <span className="pv-corner tl" aria-hidden="true" />
         <span className="pv-corner br" aria-hidden="true" />
-        <span className="pv-chip mono" aria-hidden="true"><i />Inside the CAR office</span>
+        <span className="pv-chip mono" aria-hidden="true">Inside the CAR office</span>
         <span className="pv-play" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M8 5.2v13.6L19 12 8 5.2Z" /></svg>
         </span>
