@@ -1,0 +1,103 @@
+/* ---- placement office video: a navy poster tile that opens the film in a circular reveal ----
+   base.css loads after this file, so rules on elements that also carry .mono sit under .pv-tile. */
+.pv-tile {
+  --px: 0px; --py: 0px;
+  position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; margin-top: 28px; padding: 0;
+  border: 0; border-radius: 16px; overflow: hidden; isolation: isolate; cursor: pointer; text-align: left;
+  background: #233039; color: #f5f2ea; box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.pv-tile:hover { box-shadow: 0 26px 50px -28px rgba(35, 48, 57, 0.55); transform: translateY(-2px); }
+.pv-tile:focus-visible { outline: 2px solid #d0a863; outline-offset: 4px; }
+
+.pv-media { position: absolute; inset: 0; z-index: -1; }
+.pv-media img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  filter: saturate(0.85) brightness(0.92);
+  transform: translate(calc(var(--px) * -0.4), calc(var(--py) * -0.4)) scale(1.06);
+  transition: transform 0.9s var(--ease), filter 0.5s var(--ease);
+}
+.pv-tile:hover .pv-media img {
+  filter: saturate(1) brightness(1);
+  transform: translate(calc(var(--px) * -0.4), calc(var(--py) * -0.4)) scale(1.1);
+}
+.pv-tile::after { /* navy wash so the caption reads over any frame */
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(35, 48, 57, 0.2) 0%, rgba(35, 48, 57, 0) 28%, rgba(35, 48, 57, 0.62) 60%, rgba(35, 48, 57, 0.95) 100%);
+}
+
+/* gold corner brackets, as on the home page, easing outward on hover */
+.pv-corner { position: absolute; width: 28px; height: 28px; border: 0 solid #d0a863; pointer-events: none; transition: transform 0.45s var(--ease); }
+.pv-corner.tl { top: 14px; left: 14px; border-top-width: 2px; border-left-width: 2px; }
+.pv-corner.br { right: 14px; bottom: 14px; border-right-width: 2px; border-bottom-width: 2px; }
+.pv-tile:hover .pv-corner.tl, .pv-tile:focus-visible .pv-corner.tl { transform: translate(-5px, -5px); }
+.pv-tile:hover .pv-corner.br, .pv-tile:focus-visible .pv-corner.br { transform: translate(5px, 5px); }
+
+.pv-tile .pv-chip {
+  position: absolute; top: 20px; left: 54px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 11px;
+  border-radius: 999px; border: 1px solid rgba(245, 242, 234, 0.16); background: rgba(35, 48, 57, 0.72);
+  font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #f5f2ea;
+}
+.pv-chip i { width: 7px; height: 7px; border-radius: 50%; background: #d0a863; }
+.pv-tile:hover .pv-chip i { animation: pvPulse 1.6s var(--ease) infinite; } /* only while hovered */
+@keyframes pvPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
+
+.pv-play {
+  position: absolute; left: 50%; top: 46%; width: clamp(62px, 7vw, 82px); aspect-ratio: 1;
+  display: grid; place-items: center; border-radius: 50%; background: #d0a863; color: #233039;
+  box-shadow: 0 18px 40px -14px rgba(0, 0, 0, 0.55);
+  transform: translate(-50%, -50%) translate(var(--px), var(--py));
+  transition: transform 0.35s var(--ease), background 0.3s var(--ease);
+}
+.pv-play::before { /* a thin gold ring that settles in around the button on hover */
+  content: ""; position: absolute; inset: -12px; border-radius: 50%; border: 1px solid rgba(208, 168, 99, 0.6);
+  opacity: 0; transform: scale(0.85); transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+}
+.pv-tile:hover .pv-play { background: #f5f2ea; }
+.pv-tile:hover .pv-play::before, .pv-tile:focus-visible .pv-play::before { opacity: 1; transform: scale(1); }
+.pv-play svg { width: 38%; height: 38%; margin-left: 6%; fill: currentColor; }
+
+.pv-cap { position: absolute; left: 24px; right: 24px; bottom: 22px; display: flex; flex-direction: column; gap: 6px; }
+.pv-tile .pv-k { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #d0a863; }
+.pv-t {
+  max-width: 30ch; font-family: var(--serif); font-weight: 600; font-size: clamp(1.1rem, 0.9rem + 0.8vw, 1.5rem);
+  line-height: 1.2; letter-spacing: -0.01em; color: #f5f2ea;
+}
+
+/* the player: full-screen navy, grown as a circle from the press point */
+.pv-dialog {
+  position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0;
+  padding: clamp(16px, 5vw, 64px); border: 0; overflow: hidden; color: #f5f2ea;
+  background: rgba(20, 28, 34, 0.95); display: grid; place-items: center;
+}
+.pv-dialog:not([open]) { display: none; }
+.pv-dialog::backdrop { background: transparent; }
+.pv-dialog[open] { animation: pvReveal 0.75s var(--ease-nk) both; }
+@keyframes pvReveal {
+  from { clip-path: circle(0 at var(--vx, 50%) var(--vy, 50%)); }
+  to { clip-path: circle(150vmax at var(--vx, 50%) var(--vy, 50%)); }
+}
+.pv-frame {
+  position: relative; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #000;
+  width: min(1120px, 100%, calc((100dvh - 2 * clamp(16px, 5vw, 64px)) * 16 / 9));
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.8);
+  outline: 1px solid rgba(208, 168, 99, 0.35); outline-offset: 10px;
+}
+.pv-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.pv-close {
+  position: absolute; top: clamp(12px, 2.4vw, 28px); right: clamp(12px, 2.4vw, 28px); width: 44px; height: 44px;
+  display: grid; place-items: center; border-radius: 50%; border: 1px solid rgba(245, 242, 234, 0.3);
+  background: rgba(35, 48, 57, 0.8); color: #f5f2ea; font-size: 24px; line-height: 1; cursor: pointer;
+  transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.pv-close:hover, .pv-close:focus-visible { background: #d0a863; border-color: #d0a863; color: #233039; }
+
+@media (max-width: 560px) {
+  .pv-tile .pv-chip { left: 46px; }
+  .pv-t { font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pv-dialog[open] { animation: none; }
+  .pv-tile, .pv-media img, .pv-play, .pv-play::before, .pv-corner { transition: none; }
+  .pv-tile:hover .pv-chip i { animation: none; }
+}

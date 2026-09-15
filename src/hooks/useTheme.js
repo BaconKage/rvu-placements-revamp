@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 
-// Explicit light/dark toggle. Defaults to system (no attribute) until the
-// visitor chooses, then persists the choice.
+// Explicit light/dark toggle. Every visit starts in light; a switch to dark lasts
+// for that visit only (sessionStorage), so a new visit is light again.
 export function useTheme() {
   const [theme, setTheme] = useState(() => {
-    try { return localStorage.getItem("rvu-theme") || "system"; }
-    catch { return "system"; }
+    try {
+      localStorage.removeItem("rvu-theme"); // older builds remembered the theme across visits
+      return sessionStorage.getItem("rvu-theme") || "light";
+    } catch { return "light"; }
   });
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === "system") root.removeAttribute("data-theme");
-    else root.setAttribute("data-theme", theme);
-    try { localStorage.setItem("rvu-theme", theme); } catch {}
+    if (theme === "dark") root.setAttribute("data-theme", "dark");
+    else root.removeAttribute("data-theme");
+    try { sessionStorage.setItem("rvu-theme", theme); } catch {}
   }, [theme]);
 
   // The CSS only goes dark on [data-theme="dark"], so "system" renders light.

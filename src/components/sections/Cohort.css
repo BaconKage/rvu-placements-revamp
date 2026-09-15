@@ -9,14 +9,13 @@
   box-shadow: var(--shadow);
   overflow: hidden;
 }
-.band .eyebrow .mono, .band .eyebrow .idx { color: var(--band-accent); }
-.band .eyebrow .line { background: var(--band-line); }
-.band-h { font-size: var(--step-3); color: var(--band-fg); }
-.band-h .w-hi { color: var(--band-accent); }
-.band-lede { color: var(--band-muted); margin-top: 16px; max-width: 52ch; }
+/* heading on the paper above the band, matching the other sections */
+.cohort-head { margin-bottom: clamp(24px, 3.5vw, 40px); }
+.cohort .cohort-h { font-size: var(--step-3); color: var(--ink); max-width: 20ch; }
+.cohort .cohort-lede { margin: 14px 0 0; max-width: 52ch; }
 
 /* ranked bars: one row per school, bar length = eligible students */
-.rank { list-style: none; margin: 40px 0 0; padding: 0; display: flex; flex-direction: column; }
+.rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .rank-row {
   display: grid; grid-template-columns: minmax(200px, 270px) 1fr; column-gap: clamp(20px, 3vw, 40px); row-gap: 10px;
   padding: 18px 0; border-top: 1px solid var(--band-line);
