@@ -43,11 +43,7 @@ export default function RecruiterList() {
     <main className="aud rl">
       <header className="wrap rl-head">
         <Eyebrow>Who recruits · 2025–26</Eyebrow>
-        <h1 className="serif rl-title"><Words text="Every organisation, in one list." hi={new Set([1])} /></h1>
-        <p className="lede rl-lede">
-          The same {HIRED.length + PIPELINE.length} organisations as the recruiter wall: {HIRED.length} that hired
-          through RV drives, with the roles they hired for, and {PIPELINE.length} lined up for upcoming campus drives.
-        </p>
+        <h1 className="serif rl-title"><Words text="All organisations that have hired from RV University." hi={new Set([6, 7])} /></h1>
         <div className="rl-tools">
           <label className="rl-search">
             <span className="mono">Search</span>
