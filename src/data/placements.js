@@ -86,7 +86,6 @@ export const STATS = [
 export const PACKAGES = [
   { v: "43.5", pre: "₹", unit: "LPA", k: "Highest package", note: "Offered by Aviatrix, which also made a ₹33 LPA offer.", hero: true },
   { v: "8", pre: "₹", unit: "LPA", k: "Average package", note: "The average across the offers CAR reported." },
-  { v: "4", pre: "₹", unit: "LPA", k: "Minimum package", note: "The campus floor CAR maintained." },
   { v: "20", unit: "", k: "Offers above ₹20 LPA", note: "CAR reports about 20 offers in the ₹20–33 LPA range." },
 ];
 export const PACKAGE_BANDS = [
