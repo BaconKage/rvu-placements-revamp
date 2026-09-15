@@ -12,6 +12,7 @@ import RecruiterWall from "./pages/RecruiterWall";
 const Students = lazy(() => import("./pages/Students"));
 const Partners = lazy(() => import("./pages/Partners"));
 const Forms = lazy(() => import("./pages/Forms"));
+const RecruiterList = lazy(() => import("./pages/RecruiterList"));
 
 export default function App() {
   useSmoothScroll();
@@ -25,6 +26,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/recruiters" element={<RecruiterWall />} />
+          {/* the wall's organisations as a plain list, linked only from the wall */}
+          <Route path="/recruiters/list" element={<RecruiterList />} />
           <Route path="/students" element={<Students />} />
           <Route path="/partners" element={<Partners />} />
           {/* students and parents share one page; old /parents links land there */}
