@@ -443,7 +443,7 @@ export function SiteFooter({ contact = true }) {
           </nav>
 
           <div className="sf-legal">
-            <span>© 2026 RV University Placements revamp · Student design concept</span>
+            <span>© 2026 RV University Placements revamp · Student design concept by Rohit Jaysheel Diggi & Shubhang Srinivas Varda</span>
             <a href={`${RVU}/privacy-policy/`} {...EXT}>Privacy Policy</a>
             <a href={`${RVU}/terms-conditions/`} {...EXT}>Terms &amp; Conditions</a>
           </div>
