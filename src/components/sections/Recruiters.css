@@ -71,12 +71,11 @@ html.home-lock, html.home-lock body { overflow: hidden; height: 100%; overscroll
 
 .rw-mono { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: #4c5a62; }
 
-/* logo panel — every card, logo centred at one height */
+/* logo panel — every card, logo centred at one height, always in the company's own colours */
 .rw-pic {
   flex: none; height: 40%; margin-bottom: 12px; border-radius: 7px; overflow: hidden;
-  display: grid; place-items: center; background: #eeebe3; filter: grayscale(1) contrast(1.05);
+  display: grid; place-items: center; background: #eeebe3;
 }
-.rw-card:hover .rw-pic { filter: none; }
 .rw-pic img { height: 46px; width: auto; max-width: 70%; object-fit: contain; pointer-events: none; }
 .rw-pic .rw-mono { font-size: 30px; }
 
