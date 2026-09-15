@@ -224,6 +224,15 @@
   background: var(--card); border: 1px solid var(--line); transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
 }
 .gov-card:hover { border-color: var(--bronze); transform: translateY(-2px); }
+/* with the video under the governance list, the left column runs taller: the three cards share
+   the full column height so both columns start and end level (cards centre their text) */
+.gov .aud-two { align-items: stretch; }
+.gov .gov-cards { display: grid; grid-auto-rows: 1fr; }
+.gov .gov-card { justify-content: center; }
+/* whichever column is taller, the video's bottom edge meets the last card's */
+.gov .aud-two > div:first-child { display: flex; flex-direction: column; }
+.gov .aud-two > div:first-child .tick-list { margin-bottom: 28px; }
+.gov .aud-two > div:first-child .pv-tile { margin-top: auto; }
 .gov-card-k { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bronze-2); }
 .gov-card-v { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; letter-spacing: -0.02em; color: var(--ink); }
 .gov-card-p { font-size: 15.5px; line-height: 1.55; color: var(--slate-2); }

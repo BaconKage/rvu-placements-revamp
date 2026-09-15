@@ -10,6 +10,7 @@ import imgInternational from "../../assets/internships/international.webp";
 import imgCollaboration from "../../assets/internships/collaboration.webp";
 import Eyebrow from "../ui/Eyebrow";
 import Words from "../ui/Words";
+import PlacementVideo from "./PlacementVideo";
 import { useReveal } from "../../hooks/useReveal";
 import { useMagnetic } from "../../hooks/useMagnetic";
 import {
@@ -261,6 +262,7 @@ export function GovernanceSection({ idx }) {
           <div>
             <h3 className="mono aud-sub">Placement governance</h3>
             <ul className="tick-list">{GOVERNANCE.map((g) => <li key={g}>{g}</li>)}</ul>
+            <PlacementVideo />
           </div>
           <div className="gov-cards">
             {/* bare #anchors (this section only renders on /students): the in-page smooth-scroll

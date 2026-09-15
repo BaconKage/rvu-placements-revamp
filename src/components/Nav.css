@@ -71,6 +71,13 @@
 .nav.on-dark .nav-sheet a:last-child { color: #d0a863; }
 
 @media (max-width: 1100px) { .nav-right { gap: 16px; } }
+/* narrower desktops: drop the "Placements" label beside the logo, then tighten the links,
+   so the brand never runs into them before the menu button takes over at 900px */
+@media (max-width: 1180px) { .brandmark .divider, .brandmark .dept { display: none; } }
+@media (max-width: 1040px) {
+  .nav-right { gap: 12px; }
+  .nav .nav-link, .nav .nav-cta { letter-spacing: 0.08em; }
+}
 @media (max-width: 900px) {
   .brandmark .divider, .brandmark .dept { display: none; }
   .nav-link, .nav-cta { display: none; }

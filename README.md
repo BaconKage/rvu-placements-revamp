@@ -10,7 +10,7 @@ A redesign of the RV University placement website, built for the
 | Route | What it is |
 | --- | --- |
 | `/` | Front door. RVU logo, a short intro, and two paths: Student / Parent or Recruiter. |
-| `/students` | Everything a student or parent needs: eligibility, pre-placement training and conduct, internships, the numbers, who recruits, the 2024 cohort, and governance. |
+| `/students` | Everything a student or parent needs: eligibility, pre-placement training and conduct, internships, the numbers, who recruits, the 2025–26 cohort, and governance. |
 | `/partners` | For recruiters: why hire from RVU, the talent pool, how to engage, current recruiters, and contact. |
 | `/recruiters` | "Who recruits": a curved, draggable wall of recruiter cards. Click a card to zoom in. |
 | `/forms` | Recruiter registration form. |
