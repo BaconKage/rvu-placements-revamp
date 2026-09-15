@@ -31,7 +31,7 @@ export default function Cohort({ idx = "02" }) {
       {/* eyebrow and heading sit on the paper like every other section; the band holds the chart */}
       <div className="wrap cohort-head">
         <Eyebrow idx={idx}>Schools eligible for recruitment</Eyebrow>
-        <h2 className="serif cohort-h"><Words text="The 2024 cohort." hi={new Set([1])} /></h2>
+        <h2 className="serif cohort-h"><Words text="The 2025–26 cohort." hi={new Set([1])} /></h2>
         <p className="lede cohort-lede">Students eligible for recruitment, by school and programme.</p>
       </div>
       <div className="band reveal" ref={ref}>

@@ -138,7 +138,7 @@ export default function Recruiters() {
 
       <header className="rw-head">
         <div>
-          <span className="rw-kicker"><em>RV University</em> Placements · 2024–25</span>
+          <span className="rw-kicker"><em>RV University</em> Placements · 2025–26</span>
           <h1 className="rw-title">Who recruits from <em>RV University.</em></h1>
         </div>
         <dl className="rw-stats">
