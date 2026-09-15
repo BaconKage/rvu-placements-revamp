@@ -38,9 +38,6 @@
   border-radius: 999px; border: 1px solid rgba(245, 242, 234, 0.16); background: rgba(35, 48, 57, 0.72);
   font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #f5f2ea;
 }
-.pv-chip i { width: 7px; height: 7px; border-radius: 50%; background: #d0a863; }
-.pv-tile:hover .pv-chip i { animation: pvPulse 1.6s var(--ease) infinite; } /* only while hovered */
-@keyframes pvPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
 
 .pv-play {
   position: absolute; left: 50%; top: 46%; width: clamp(62px, 7vw, 82px); aspect-ratio: 1;
@@ -99,5 +96,4 @@
 @media (prefers-reduced-motion: reduce) {
   .pv-dialog[open] { animation: none; }
   .pv-tile, .pv-media img, .pv-play, .pv-play::before, .pv-corner { transition: none; }
-  .pv-tile:hover .pv-chip i { animation: none; }
 }
