@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import logoBlue from "../../assets/rvu-logo-blue-nav.webp";
 import logoGold from "../../assets/rvu-logo-gold.avif";
 import imgSummer from "../../assets/internships/summer.webp";
 import imgWinter from "../../assets/internships/winter.webp";
@@ -321,14 +320,53 @@ export function EngageSection({ idx }) {
   );
 }
 
-// ---- shared footer: contact, the other paths, disclaimer ----
+// ---- shared footer: the CAR contact block, then a university footer in RVU navy ----
+// University links and social accounts mirror the footer on rvu.edu.in (same labels, same destinations).
+const RVU = "https://rvu.edu.in";
+const FOOTER_GROUPS = [
+  { title: "Placements", links: [
+    ["Home", "/"], ["For students & parents", "/students"], ["For recruiters", "/partners"],
+    ["Who recruits", "/recruiters"], ["Register to recruit", "/forms"],
+  ]},
+  { title: "University", links: [
+    ["About", `${RVU}/rvu-at-a-glance/`], ["Schools & Programmes", `${RVU}/schools-programmes/`], ["Library", `${RVU}/library/`],
+    ["Research", `${RVU}/research/`], ["Media & Events", `${RVU}/events/`], ["Careers", `${RVU}/careers/`],
+    ["Faculty", `${RVU}/faculty/`], ["Mysuru Campus", "https://mysuru.rvu.edu.in/"],
+  ]},
+  { title: "Schools", links: [
+    ["School of Liberal Arts and Sciences", "https://solas.rvu.edu.in/"], ["School of Design and Innovation", "https://sdi.rvu.edu.in/"],
+    ["School of Economics and Business", "https://soeb.rvu.edu.in/"], ["School of Computer Science and Engineering", "https://socse.rvu.edu.in/"],
+    ["School of Law", "https://sol.rvu.edu.in/"], ["School of Film, Media and Creative Arts", "https://sofmca.rvu.edu.in/"],
+    ["School of Allied and Healthcare Professions", "https://soahp.rvu.edu.in/"],
+  ]},
+  { title: "Admissions", links: [
+    ["How to Apply", `${RVU}/admissions/#admissionsprocess`], ["Financial Aid & Support", `${RVU}/admissions/#financialaid`],
+    ["Cancellation & Refund Policy", `${RVU}/admissions/#cancellation`], ["Student Activities", `${RVU}/events/`],
+  ]},
+  { title: "Helpful links", links: [
+    ["Annual Reports", `${RVU}/annual-reports/`], ["Approvals", `${RVU}/approvals/`], ["Disclosures", `${RVU}/disclosures/`],
+    ["Statutory Committees", `${RVU}/statutory-committees/`], ["IQAC", `${RVU}/internal-quality-assurance-cell-iqac/`],
+    ["University Grievance Committees", `${RVU}/university-grievance-committees/`], ["Anti-Ragging Helpline", `${RVU}/anti-ragging-helpline/`],
+    ["Contact", `${RVU}/contact/`],
+  ]},
+];
+const SOCIALS = [
+  ["Facebook", "https://www.facebook.com/RV.University1/", <path key="p" d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21h3.1Z" />],
+  ["Instagram", "https://www.instagram.com/rv.university/", <g key="g" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" /></g>],
+  ["LinkedIn", "https://www.linkedin.com/school/rv-university/", <path key="p" d="M6.5 9H3.6v11h2.9V9ZM5 4.2a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM20.4 13.7c0-3-1.6-4.9-4.3-4.9-1.6 0-2.6.9-3 1.6V9h-2.9v11h2.9v-5.7c0-1.5.5-2.7 2-2.7s1.9 1.2 1.9 2.8V20h3.4v-6.3Z" />],
+  ["YouTube", "https://www.youtube.com/c/RVUniversity", <path key="p" d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8A26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8ZM10 15V9l5.2 3L10 15Z" />],
+  ["X", "https://twitter.com/_RVUniversity_", <path key="p" d="M17.6 3.5h3l-6.6 7.5 7.8 9.5h-6.1l-4.8-6-5.5 6H2.4l7-8L2 3.5h6.2l4.3 5.5 5.1-5.5Zm-1 15.3h1.7L7.5 5.1H5.7l10.9 13.7Z" />],
+];
+const EXT = { target: "_blank", rel: "noopener noreferrer" };
+
 export function SiteFooter({ contact = true }) {
   // same pull-toward-the-cursor email button as the Recruiters page's contact card
   const mag = useMagnetic(0.1);
+  const toTop = () => (window.__lenis ? window.__lenis.scrollTo(0, { duration: 1.2 }) : window.scrollTo({ top: 0, behavior: "smooth" }));
   return (
     <footer className="site-foot" id="contact">
-      <div className="wrap">
-        {contact && (
+      {contact && (
+        <div className="wrap sf-contact-wrap">
           <div className="sf-contact">
             <div>
               <span className="mono sf-k">{CONTACT.office}</span>
@@ -341,27 +379,72 @@ export function SiteFooter({ contact = true }) {
               <a className="btn magnetic" ref={mag} href={MAIL}>{CONTACT.email} <span className="arrow">→</span></a>
             </div>
           </div>
-        )}
-        <nav className="sf-links" aria-label="Site">
-          <Link to="/">Home</Link>
-          <Link to="/recruiters">Who recruits</Link>
-          <Link to="/students">For students &amp; parents</Link>
-          <Link to="/partners">For recruiters</Link>
-          <Link to="/forms">Register to recruit</Link>
-        </nav>
-        <div className="sf-bar">
-          {/* same lockup as the nav: blue logo on light, gold in dark mode */}
-          <span className="sf-brand">
-            <img className="sf-logo logo-light" src={logoBlue} alt="RV University" width="336" height="168" />
-            <img className="sf-logo logo-dark" src={logoGold} alt="RV University" width="512" height="258" />
-            <span className="sf-divider" />
-            <span className="sf-dept mono">Placements</span>
-          </span>
-          <p className="sf-disclaimer mono">
-            Design concept for the RV University Placement Website Revamp Competition. Statistics, programme names,
-            benefit descriptions, eligibility rules and governance text are taken from rvu.edu.in/placements. Company
-            names, roles and channels are drawn from the student-maintained RVU / RVCE 2023-batch placement sheets.
-          </p>
+        </div>
+      )}
+
+      <div className="sf-uni">
+        <div className="wrap">
+          <div className="sf-top">
+            <Link className="sf-brand" to="/" aria-label="RV University Placements home">
+              <img className="sf-logo" src={logoGold} alt="RV University" width="512" height="258" />
+              <span className="sf-divider" />
+              <span className="sf-dept mono">Placements</span>
+            </Link>
+            <p className="sf-mantra">Go, change the world</p>
+            <div className="sf-about">
+              <span className="mono sf-about-k">About this design</span>
+              <p>
+                A design concept for the RV University Placement Website Revamp Competition. Statistics, programme names,
+                eligibility rules and governance text are taken from{" "}
+                <a href={`${RVU}/placements/`} {...EXT}>rvu.edu.in/placements</a>. Company names, roles and channels come
+                from the student-maintained RVU / RVCE 2023-batch placement sheets.
+              </p>
+            </div>
+          </div>
+
+          <div className="sf-mid">
+            <div>
+              <span className="mono sf-kicker">Placements · RV University</span>
+              <p className="sf-title">Career Development and Corporate Relations</p>
+              <p className="sf-place">RV University · Bengaluru</p>
+            </div>
+            <address className="sf-reach">
+              <span>Placement and internship enquiries</span>
+              <a href={MAIL}>{CONTACT.email}</a>
+              <span>{CONTACT.lines.join(", ")}</span>
+            </address>
+            <div className="sf-act">
+              <ul className="sf-socials" aria-label="RV University on social media">
+                {SOCIALS.map(([name, href, icon]) => (
+                  <li key={name}>
+                    <a href={href} {...EXT} aria-label={`RV University on ${name}`}>
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{icon}</svg>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <button type="button" className="sf-top-btn mono" onClick={toTop}>Back to top <span aria-hidden="true">↑</span></button>
+            </div>
+          </div>
+
+          <nav className="sf-grid" aria-label="Footer">
+            {FOOTER_GROUPS.map((g) => (
+              <div className="sf-group" key={g.title}>
+                <h3 className="sf-group-h">{g.title}</h3>
+                <ul>
+                  {g.links.map(([label, href]) => (
+                    <li key={label}>{href.startsWith("/") ? <Link to={href}>{label}</Link> : <a href={href} {...EXT}>{label}</a>}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+
+          <div className="sf-legal">
+            <span>© 2026 RV University Placements revamp · Student design concept</span>
+            <a href={`${RVU}/privacy-policy/`} {...EXT}>Privacy Policy</a>
+            <a href={`${RVU}/terms-conditions/`} {...EXT}>Terms &amp; Conditions</a>
+          </div>
         </div>
       </div>
     </footer>
